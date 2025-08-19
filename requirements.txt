@@ -1,0 +1,13 @@
+Flask==2.2.5
+Werkzeug==2.2.3
+aiohttp==3.9.5
+requests==2.32.3
+web3==6.20.3
+eth-account==0.11.3
+python-dotenv==1.0.1
+flashbots==2.0.0
+tenacity==8.3.0
+redis==5.0.7
+tronpy==0.4.0
+hexbytes==0.3.1
+pytest==8.3.2
