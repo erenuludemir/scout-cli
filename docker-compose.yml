@@ -5,7 +5,8 @@ services:
     container_name: gli-container
     ports:
       - "5003:5002"
-    env_file: [.env]
+    env_file:
+      - .env
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
@@ -21,13 +22,16 @@ services:
     container_name: gli-mainnet
     ports:
       - "5002:5002"
-    env_file: [.env]
-    environment: ["CHAIN_ID=1"]
+    env_file:
+      - .env
+    environment:
+      - CHAIN_ID=1
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
       - "autoheal=true"
-    depends_on: [gli]
+    depends_on:
+      - gli
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:5002/ >/dev/null || exit 1"]
       interval: 30s
@@ -39,13 +43,16 @@ services:
     container_name: gli-sepolia
     ports:
       - "5004:5002"
-    env_file: [.env]
-    environment: ["CHAIN_ID=11155111"]
+    env_file:
+      - .env
+    environment:
+      - CHAIN_ID=11155111
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
       - "autoheal=true"
-    depends_on: [gli]
+    depends_on:
+      - gli
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:5002/ >/dev/null || exit 1"]
       interval: 30s

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os, time, json, asyncio
 
 try:
-    from etherscan_v2_client import EtherscanV2Client  # opsiyonel
+    from etherscan_v2_client import EtherscanV2Client
 except Exception:
     EtherscanV2Client = None
 
@@ -28,9 +28,7 @@ INFURA_PROJECT_ID = os.getenv("INFURA_PROJECT_ID")
 if not INFURA_PROJECT_ID:
     raise RuntimeError("INFURA_PROJECT_ID missing")
 
-CHAIN_ID = int(os.getenv("CHAIN_ID", "1"))
-RPC = f"https://mainnet.infura.io/v3/{INFURA_PROJECT_ID}" if CHAIN_ID == 1 else f"https://sepolia.infura.io/v3/{INFURA_PROJECT_ID}"
-w3 = Web3(Web3.HTTPProvider(RPC))
+w3 = Web3(Web3.HTTPProvider(f"https://mainnet.infura.io/v3/{INFURA_PROJECT_ID}"))
 
 SENDER = os.getenv("ETH_SENDER_ADDRESS")
 PRIV   = os.getenv("ETH_PRIVATE_KEY")
@@ -38,7 +36,7 @@ if not SENDER or not PRIV:
     raise RuntimeError("ETH_SENDER_ADDRESS / ETH_PRIVATE_KEY missing")
 
 SENDER = Web3.to_checksum_address(SENDER)
-USDT   = Web3.to_checksum_address("0xdAC17F958D2ee523a2206206994597C13D831ec7") if CHAIN_ID==1 else Web3.to_checksum_address("0x0000000000000000000000000000000000000000")
+USDT   = Web3.to_checksum_address("0xdAC17F958D2ee523a2206206994597C13D831ec7")
 
 ERC20_ABI = [
   {"constant":False,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"type":"function"},
@@ -49,28 +47,12 @@ ERC20_ABI = [
 erc20 = w3.eth.contract(address=USDT, abi=ERC20_ABI)
 app = Flask(__name__)
 
-def _mwei_to_float(n):  # USDT (6 decimals)
+def _mwei_to_float(n):
   return float(Web3.from_wei(n, "mwei"))
 
 @app.get("/")
 def root():
-  return {"ok": True, "network": "ethereum-mainnet" if CHAIN_ID==1 else f"chain-{CHAIN_ID}", "sender": SENDER}
-
-@app.post("/balance")
-def balance():
-  try:
-    data = request.get_json(force=True) or {}
-    addr_raw = data.get("address", SENDER)
-    addr = Web3.to_checksum_address(addr_raw)
-    eth = float(w3.from_wei(w3.eth.get_balance(addr), "ether"))
-    usdt = None
-    try:
-      usdt = _mwei_to_float(erc20.functions.balanceOf(addr).call())
-    except Exception:
-      pass
-    return jsonify({"status":"ok","address":addr,"eth":eth,"usdt":usdt})
-  except Exception as e:
-    return jsonify({"status":"error","message":str(e)}), 500
+  return {"ok": True, "network":"ethereum-mainnet", "sender": SENDER}
 
 @app.post("/estimate")
 def estimate():
@@ -86,7 +68,7 @@ def estimate():
     nonce = w3.eth.get_transaction_count(SENDER)
     gas_price = w3.eth.gas_price
     tx = erc20.functions.transfer(recipient, value_usdt).build_transaction({
-      "chainId": CHAIN_ID, "from": SENDER, "nonce": nonce,
+      "chainId": 1, "from": SENDER, "nonce": nonce,
     })
 
     try:
@@ -99,11 +81,18 @@ def estimate():
     eth_usd = get_eth_usd()
 
     return jsonify({
-      "status":"ok","chain":CHAIN_ID,"token":"USDT","decimals":6,
-      "from": SENDER,"to": recipient,
-      "amount_usdt_6": amount_6,"amount_usdt_human": amount_6/1_000_000.0,
-      "gas_price_wei": int(gas_price),"gas_used_estimate": int(gas_estimate),
-      "fee_eth": float(fee_eth),"eth_usd": eth_usd,
+      "status":"ok",
+      "chain":"ethereum-mainnet",
+      "token":"USDT",
+      "decimals":6,
+      "from": SENDER,
+      "to": recipient,
+      "amount_usdt_6": amount_6,
+      "amount_usdt_human": amount_6/1_000_000.0,
+      "gas_price_wei": int(gas_price),
+      "gas_used_estimate": int(gas_estimate),
+      "fee_eth": float(fee_eth),
+      "eth_usd": eth_usd,
       "fee_usd_estimate": (float(fee_eth)*eth_usd) if eth_usd else None,
       "notes":"Estimate only; final usage may vary."
     })
@@ -124,7 +113,7 @@ def transfer():
     nonce = w3.eth.get_transaction_count(SENDER)
     gas_price = w3.eth.gas_price
     built = erc20.functions.transfer(recipient, value_usdt).build_transaction({
-      "chainId": CHAIN_ID, "from": SENDER, "nonce": nonce, "gas": 120000, "gasPrice": gas_price
+      "chainId": 1, "from": SENDER, "nonce": nonce, "gas": 120000, "gasPrice": gas_price
     })
     signed = w3.eth.account.sign_transaction(built, private_key=PRIV)
     raw_hex = signed.rawTransaction.hex()
@@ -132,8 +121,11 @@ def transfer():
 
     if os.getenv("GLI_DRY_RUN", "1") == "1":
       return jsonify({
-        "status":"preview","tx_hash_computed": hash_hex,"raw_tx": raw_hex,
-        "gas_price_wei": int(gas_price),"gas_limit": int(built.get("gas", 0)),
+        "status":"preview",
+        "tx_hash_computed": hash_hex,
+        "raw_tx": raw_hex,
+        "gas_price_wei": int(gas_price),
+        "gas_limit": int(built.get("gas", 0)),
         "fee_estimate_eth": float(Web3.from_wei(gas_price * built.get("gas", 0), "ether")),
         "note":"Set GLI_DRY_RUN=0 to broadcast"
       })
@@ -156,16 +148,21 @@ def transfer():
       usdt_sender = None; usdt_rec = None
 
     details = {
-      "network": "ethereum-mainnet" if CHAIN_ID==1 else f"chain-{CHAIN_ID}",
+      "network":"ethereum-mainnet",
       "status":"success" if receipt.status==1 else "reverted",
-      "tx_hash": th,"block_number": receipt.blockNumber,"timestamp": block.timestamp,
-      "from": SENDER,"to": recipient,"contract": USDT,
-      "value_usdt_6dec": amount_6,"value_usdt_human": amount_6/1_000_000.0,
+      "tx_hash": th,
+      "block_number": receipt.blockNumber,
+      "timestamp": block.timestamp,
+      "from": SENDER,
+      "to": recipient,
+      "contract": USDT,
+      "value_usdt_6dec": amount_6,
+      "value_usdt_human": amount_6/1_000_000.0,
       "transaction_fee_eth": float(Web3.from_wei(eff * receipt.gasUsed, "ether")),
-      "gas_price_wei": int(eff),"gas_limit": int(built.get("gas", 0)),"gas_used": int(receipt.gasUsed),
+      "gas_price_wei": int(eff),
+      "gas_limit": int(built.get("gas", 0)),
+      "gas_used": int(receipt.gasUsed),
       "burnt_fees_wei": int(burnt),
-      "gas_fees_eip1559": {"base": int(base) if base is not None else None, "effective": int(eff) if eff is not None else None},
-      "txn_type": 2,"nonce": built.get("nonce"),"position_in_block": None,
       "other_attributes": {"type": "ERC20.transfer","input_data": built.get("data")},
       "balances": {
         "sender_eth": float(sender_eth),
@@ -181,38 +178,6 @@ def transfer():
       pass
 
     return jsonify(details)
-  except Exception as e:
-    return jsonify({"status":"error","message":str(e)}), 500
-
-@app.get("/txstatus/<txhash>")
-def txstatus(txhash: str):
-  try:
-    tx = w3.eth.get_transaction(txhash)
-    rcpt = w3.eth.get_transaction_receipt(txhash)
-    block = w3.eth.get_block(rcpt.blockNumber)
-    conf = int(w3.eth.block_number - rcpt.blockNumber)
-    base = getattr(block, "baseFeePerGas", None)
-    eff = getattr(rcpt, "effectiveGasPrice", tx.get("gasPrice"))
-    burnt = (base * rcpt.gasUsed) if base is not None else None
-    return jsonify({
-      "transaction_hash": txhash,
-      "status": "success" if rcpt.status==1 else "reverted",
-      "block": rcpt.blockNumber,
-      "confirmations": conf,
-      "timestamp": block.timestamp,
-      "from": tx["from"], "to": tx.get("to"),
-      "value_eth": float(w3.from_wei(tx["value"], "ether")),
-      "transaction_fee_eth": float(Web3.from_wei(eff * rcpt.gasUsed, "ether")) if eff else None,
-      "gas": {
-        "price_wei": int(eff) if eff else None,
-        "limit": int(tx["gas"]),
-        "used": int(rcpt.gasUsed),
-        "base_fee_wei": int(base) if base is not None else None,
-        "burnt_fees_wei": int(burnt) if burnt is not None else None
-      },
-      "type": int(tx.get("type", 0)),
-      "nonce": int(tx["nonce"])
-    })
   except Exception as e:
     return jsonify({"status":"error","message":str(e)}), 500
 
