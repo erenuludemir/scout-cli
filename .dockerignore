@@ -7,3 +7,5 @@ __pycache__/
 .git
 .gitignore
 Dockerfile
+.env
+logs/
