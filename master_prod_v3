@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP_DIR="${APP_DIR:-$HOME/QuantumAI-Dockerized-System}"
+ENVFILE="${ENVFILE:-$HOME/QuantumAI-Dockerized-System/.env}"
+IMG="${IMG:-erenuludemir/gli-app:latest}"
+CTR="${CTR:-gli-container}"
+HOST_PORT="${HOST_PORT:-5003}"
+GLI_DRY_RUN=1
+REBUILD=0
+DO_DB=0
+CHAIN="eth"
+AMOUNT="100000"
+DO_ESTIMATE=0
+
+usage(){ cat <<USG
+Kullanım:
+  ./master_prod_v3 [--dry-run|--live] [--rebuild] [--no-db] [--port=5007] [--env=/path/.env] [--amount=100000] [--chain=eth] [--estimate]
+USG
+}
+
+need(){ command -v "$1" >/dev/null 2>&1 || { echo "❌ Missing: $1"; exit 1; }; }
+
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) GLI_DRY_RUN=1 ;;
+    --live) GLI_DRY_RUN=0 ;;
+    --rebuild) REBUILD=1 ;;
+    --no-db) DO_DB=0 ;;
+    --estimate) DO_ESTIMATE=1 ;;
+    --port=*) HOST_PORT="${arg#*=}" ;;
+    --env=*) ENVFILE="${arg#*=}" ;;
+    --amount=*) AMOUNT="${arg#*=}" ;;
+    --chain=*) CHAIN="${arg#*=}" ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Bilinmeyen argüman: $arg"; usage; exit 1 ;;
+  esac
+done
+
+need docker; need curl; need jq
+mkdir -p "$APP_DIR/logs" "$APP_DIR/tmp"
+[ -f "$ENVFILE" ] || { echo "❌ .env yok: $ENVFILE"; exit 1; }
+echo "[master] ✅ .env: $ENVFILE"
+
+if [ "$REBUILD" -eq 1 ]; then
+  echo "[master] 🔨 Rebuild image: $IMG"
+  docker build --no-cache -t "$IMG" "$APP_DIR" >/dev/null
+fi
+
+echo "[master] MODE: $( [ "$GLI_DRY_RUN" -eq 1 ] && echo DRY-RUN || echo LIVE ) | CHAIN: $(echo "$CHAIN" | tr '[:lower:]' '[:upper:]') | PORT: $HOST_PORT"
+docker rm -f "$CTR" >/dev/null 2>&1 || true
+docker run -d --name "$CTR" \
+  --env-file "$ENVFILE" \
+  -e GLI_DRY_RUN="$GLI_DRY_RUN" \
+  -p "${HOST_PORT}:5002" \
+  "$IMG" >/dev/null
+
+echo -n "[master] Sağlık kontrolü"
+for i in $(seq 1 30); do
+  if curl -sf "http://127.0.0.1:${HOST_PORT}/" >/dev/null 2>&1; then echo " ✓"; break; fi
+  echo -n "."
+  sleep 1
+done
+curl -s "http://127.0.0.1:${HOST_PORT}/" | jq .
+
+RECIP="$(grep -E '^ETH_RECIPIENT_ADDRESS=' "$ENVFILE" | cut -d= -f2 || true)"
+[ -z "${RECIP:-}" ] && RECIP="0xRecipient"
+
+if [ "$DO_ESTIMATE" -eq 1 ]; then
+  echo "[master] ➜ GAS ESTIMATE: amount=${AMOUNT}, to=${RECIP}"
+  EST="$(curl -s -X POST "http://127.0.0.1:${HOST_PORT}/estimate" \
+    -H 'Content-Type: application/json' \
+    -d "{\"recipient\":\"${RECIP}\",\"amount\":${AMOUNT}}")"
+  echo "$EST" | jq .
+  TS="$(date -u +%Y%m%dT%H%M%SZ)"
+  OUT_JSON="$APP_DIR/logs/gas_quote_${TS}.json"
+  echo "$EST" | jq . > "$OUT_JSON" 2>/dev/null || echo "$EST" > "$OUT_JSON"
+  echo "[master] 📝 Estimate raporu: $OUT_JSON"
+  exit 0
+fi
+
+echo "[master] ➜ TRANSFER: amount=${AMOUNT}, to=${RECIP}"
+RESP="$(curl -s -X POST "http://127.0.0.1:${HOST_PORT}/transfer" \
+  -H 'Content-Type: application/json' \
+  -d "{\"recipient\":\"${RECIP}\",\"amount\":${AMOUNT}}")"
+echo "$RESP" | jq . || echo "$RESP"
+TS="$(date -u +%Y%m%dT%H%M%SZ)"
+OUT_JSON="$APP_DIR/logs/tx_report_${TS}.json"
+echo "$RESP" | jq . > "$OUT_JSON" 2>/dev/null || echo "$RESP" > "$OUT_JSON"
+echo "[master] 📝 Rapor: $OUT_JSON"
+
+echo "✅ Bitti."

@@ -1,0 +1,472 @@
+.env Lerin hepsini birbirlerine karışmayacak bir şekilde tek bir çatı altında topla istemcilerine çağrı yığın signallerini ilet ihtiyaç halinde tek noktadan çağırılsın. 
+
+
+erenuludemir@192 QuantumAI-Dockerized-System % find ~ -type f -name ".env" -not -path "*/.venv/*" 2>/dev/null
+
+rg -n --hidden --iglob '!.venv' \
+  -e 'PRIVATE_KEY\s*=\s*0x[0-9a-fA-F]{64}' \
+  -e 'ETH_PRIVATE_KEY\s*=\s*0x[0-9a-fA-F]{64}' \
+  -e 'FLASHBOTS_SIGNER_PRIVATE_KEY\s*=\s*0x[0-9a-fA-F]{64}' \
+  -e 'INFURA_PROJECT_ID\s*=' \
+  -e 'ETHERSCAN_API_KEY\s*=' \
+  ~ 2>/dev/null
+
+cd ~/QuantumAI-Dockerized-System
+git rev-list --all | xargs -I{} git grep -n --color=never \
+  -e '0x[0-9a-fA-F]\{64\}' \
+  -e 'INFURA_PROJECT_ID' \
+  -e 'ETHERSCAN_API_KEY' {} 2>/dev/null
+/Users/erenuludemir/qai-borsa-platform/.env
+/Users/erenuludemir/.backup-vscode/20250821_212644/extensions.disabled/donjayamanne.python-environment-manager-1.2.7/pythonFiles/.env
+/Users/erenuludemir/.backup-vscode/20250821_212644/extensions.disabled/redis.redis-for-vscode-1.4.0-darwin-arm64/.env
+/Users/erenuludemir/.backup-vscode/20250821_212644/extensions.disabled/local-smart.excel-live-server-4.0.30/.env
+/Users/erenuludemir/.backup-vscode/20250821_212644/extensions.disabled/syler.sass-indented-1.8.33/.env
+/Users/erenuludemir/Desktop/tmp_flashbot/flashbot_healthcheck.py/.env
+/Users/erenuludemir/Library/Mobile Documents/comappleCloudDocs/QuantumAI-Blockchain-Panel/usdt_env/terk_transfer/crosschain_transfer/derivative-bet/hardhat-multibet-project/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Borsa_Platformu_QuantumAI/scripts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-anonymous-users/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-anonymous-users/nodejs/server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-anonymous-users/csharp/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-link-unfurling-meeting/csharp/Source/Microsoft.Teams.Samples.LinkUnfurling.Web/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-sso-adaptivecard/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-graph-toolkit/csharp/TabGraphToolkit/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-complete-sample/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-channel-lifecycle/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-link-unfurling-in-share-to-teams/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-adaptive-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-cache-meetings/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-meeting-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-stage-view/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-checkin-location/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-bulk-meetings/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-bulk-meetings/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-bulk-meetings/csharp/EventMeeting/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-meeting-transcript-recording/nodejs/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-meeting-transcript-recording/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-meeting-transcript-recording/csharp/MeetingTranscriptRecording/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-staggered-permission/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-sso/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-sso/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-localization/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-localization/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-channel-group-sso-quickstart/js/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-channel-group-sso-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-channel-group-sso-quickstart/ts/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-channel-group-sso-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/api-doc-search/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msteams-application-resourcehub/Source/microsoft-teams-apps-selfhelp/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-link-unfurling/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-details-tab/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-details-tab/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-file-upload/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-sidepanel/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-sidepanel/nodejs/server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-proactive-installation/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-channel-group-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-channel-group-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-activity-feed-broadcast/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-all-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meeting-tabs/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-archive-groupchat-messages/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-live-caption/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-task-module/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-adaptive-card-actions/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-app-navigation/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-request-approval/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-conversation-sso-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-teams-tag/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-teams-tag/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-people-picker-adaptive-card/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-message-reaction/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-join-team-using-qr-code/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meeting-recruitment-app/nodejs/api/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-external-auth/nodejs/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-external-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-installation-using-qr-code/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-suggested-actions/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-deeplink/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-virtual-assistant/echo-skill-bot/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-virtual-assistant/ai-skill-bot/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-audio-state/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/incoming-webhook/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-action/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-release-management/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-transcription/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-complete-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-search-sso-config/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-receive-channel-messages-withRSC/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-search/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-appcatalog-lifecycle/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-conversation-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-change-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-token-app/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-token-app/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-activity-feed/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-stage-view/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-nested-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-formatting-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-events/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-navbar-menu/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-pinned-messages/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-pinned-messages/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-pinned-messages/csharp/GraphPinnedMessage/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-personal-sso-quickstart/js/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-personal-sso-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-personal-sso-quickstart/ts/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-personal-sso-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-context-app/nodejs/server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-context-app/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-daily-task-reminder/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-app-installation-lifecycle/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-request-approval/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-change-notification-team-channel/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-change-notification-team-channel/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-action-preview/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-app-icon-badging/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-conversation/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-share-to-stage-signing/csharp/Source/MeetingSigning.Web/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-type-ahead-search-adaptive-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-sequential-flow-adaptive-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/connector-todo-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-teams-authentication/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-action-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/graph-rsc/nodeJs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/meetings-attendance-report/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-initiate-thread-in-channel/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-message-reminder/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-multi-hub/ts/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-multi-hub/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-ai-sentiment-analysis/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-tab-conversations/csharp/Source/ConversationalTabs.Web/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/msgext-search-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/bot-sharepoint-file-viewer/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-personal-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/tab-personal-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkullanıcılar/Virtual Assistant Bot (Root Bot) - Code Samples | Microsoft Learn/samples/app-task-module/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/USDTPRO-clean/USDTPRO/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/iCLOUDdeskop/iCLOUDSdeskop/RecoveredFilesOrganized/key/project_root/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/iCLOUDdeskop/iCLOUDSdeskop/QuantumAI_System_DMG/pci_admin_paneli_full_ready/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/iCLOUDdeskop/iCLOUDSdeskop/Drop Box/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/iCLOUDdeskop/iCLOUDSdeskop/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/quantumai_bot/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/usdt_env/terk_transfer/crosschain_transfer/derivative-bet/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/usdt_env/terk_transfer/crosschain_transfer/derivative-bet/hardhat-multibet-project/QuantumAI/managers/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/usdt_env/terk_transfer/crosschain_transfer/derivative-bet/hardhat-multibet-project/QuantumAI/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/usdt_env/terk_transfer/crosschain_transfer/derivative-bet/hardhat-multibet-project/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/usdt_env/terk_transfer/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/usdt_env/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/scripts/QuantumAI_System_DMG/pci_admin_paneli_full_ready/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/scripts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/gny-rs-quantum-robot/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel/gny-rs-quantum-robot/scripts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/4543147194590787-EREN ULLUDEMIR IS BANK PRE-AUT TRANSACTION TYPES 9.996K/eren-uludemir-0787-isbank-5b-pre-auth-transaction-type/node_modules/psl/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-anonymous-users/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-anonymous-users/nodejs/server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-anonymous-users/csharp/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-link-unfurling-meeting/csharp/Source/Microsoft.Teams.Samples.LinkUnfurling.Web/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-sso-adaptivecard/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-graph-toolkit/csharp/TabGraphToolkit/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-complete-sample/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-channel-lifecycle/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-link-unfurling-in-share-to-teams/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-adaptive-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-cache-meetings/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-meeting-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-stage-view/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-checkin-location/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-bulk-meetings/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-bulk-meetings/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-bulk-meetings/csharp/EventMeeting/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-meeting-transcript-recording/nodejs/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-meeting-transcript-recording/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-meeting-transcript-recording/csharp/MeetingTranscriptRecording/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-staggered-permission/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-sso/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-sso/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-localization/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-localization/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-channel-group-sso-quickstart/js/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-channel-group-sso-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-channel-group-sso-quickstart/ts/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-channel-group-sso-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/api-doc-search/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msteams-application-resourcehub/Source/microsoft-teams-apps-selfhelp/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-link-unfurling/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-details-tab/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-details-tab/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-file-upload/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-sidepanel/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-sidepanel/nodejs/server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-proactive-installation/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-channel-group-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-channel-group-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-activity-feed-broadcast/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-all-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meeting-tabs/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-archive-groupchat-messages/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-live-caption/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-task-module/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-adaptive-card-actions/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-app-navigation/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-request-approval/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-conversation-sso-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-teams-tag/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-teams-tag/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-people-picker-adaptive-card/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-message-reaction/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-join-team-using-qr-code/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meeting-recruitment-app/nodejs/api/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-external-auth/nodejs/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-external-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-installation-using-qr-code/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-suggested-actions/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-deeplink/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-virtual-assistant/echo-skill-bot/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-virtual-assistant/ai-skill-bot/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-audio-state/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/incoming-webhook/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-action/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-release-management/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-transcription/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-complete-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-search-sso-config/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-receive-channel-messages-withRSC/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-search/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-appcatalog-lifecycle/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-conversation-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-change-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-token-app/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-token-app/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-activity-feed/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-stage-view/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-nested-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-formatting-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-events/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-navbar-menu/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-pinned-messages/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-pinned-messages/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-pinned-messages/csharp/GraphPinnedMessage/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-personal-sso-quickstart/js/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-personal-sso-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-personal-sso-quickstart/ts/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-personal-sso-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-context-app/nodejs/server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-context-app/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-daily-task-reminder/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-app-installation-lifecycle/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-request-approval/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-change-notification-team-channel/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-change-notification-team-channel/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-action-preview/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-app-icon-badging/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-conversation/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-share-to-stage-signing/csharp/Source/MeetingSigning.Web/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-type-ahead-search-adaptive-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-sequential-flow-adaptive-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/connector-todo-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-teams-authentication/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-action-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/graph-rsc/nodeJs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/meetings-attendance-report/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-initiate-thread-in-channel/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-message-reminder/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-multi-hub/ts/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-multi-hub/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-ai-sentiment-analysis/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-tab-conversations/csharp/Source/ConversationalTabs.Web/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/msgext-search-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/bot-sharepoint-file-viewer/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-personal-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/tab-personal-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/VİSA-SUNUCU-İSTEMCİ-SERTFİKASI/FALCON-12 NOVEMBER 2024/app-task-module/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/belgeler/PROCREDİT/esp-idf-old/examples/protocols/http_server/restful_server/front/web-demo/node_modules/psl/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-anonymous-users/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-anonymous-users/nodejs/server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-anonymous-users/csharp/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-link-unfurling-meeting/csharp/Source/Microsoft.Teams.Samples.LinkUnfurling.Web/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-sso-adaptivecard/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-graph-toolkit/csharp/TabGraphToolkit/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-complete-sample/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-channel-lifecycle/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-link-unfurling-in-share-to-teams/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-adaptive-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-cache-meetings/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-meeting-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-stage-view/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-checkin-location/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-bulk-meetings/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-bulk-meetings/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-bulk-meetings/csharp/EventMeeting/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-meeting-transcript-recording/nodejs/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-meeting-transcript-recording/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-meeting-transcript-recording/csharp/MeetingTranscriptRecording/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-staggered-permission/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-sso/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-sso/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-localization/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-localization/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-channel-group-sso-quickstart/js/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-channel-group-sso-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-channel-group-sso-quickstart/ts/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-channel-group-sso-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/api-doc-search/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msteams-application-resourcehub/Source/microsoft-teams-apps-selfhelp/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-link-unfurling/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-details-tab/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-details-tab/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-file-upload/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-sidepanel/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-sidepanel/nodejs/server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-proactive-installation/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-channel-group-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-channel-group-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-activity-feed-broadcast/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-all-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meeting-tabs/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-archive-groupchat-messages/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-live-caption/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-task-module/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-adaptive-card-actions/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-app-navigation/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-request-approval/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-conversation-sso-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-teams-tag/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-teams-tag/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-people-picker-adaptive-card/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-message-reaction/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-join-team-using-qr-code/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meeting-recruitment-app/nodejs/api/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-external-auth/nodejs/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-external-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-installation-using-qr-code/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-suggested-actions/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-deeplink/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-virtual-assistant/echo-skill-bot/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-virtual-assistant/ai-skill-bot/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-audio-state/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/incoming-webhook/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-action/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-release-management/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-transcription/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-complete-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-search-sso-config/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-receive-channel-messages-withRSC/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-search/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-appcatalog-lifecycle/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-conversation-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-change-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-token-app/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-token-app/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-activity-feed/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-stage-view/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-nested-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-formatting-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-events/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-navbar-menu/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-pinned-messages/nodejs/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-pinned-messages/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-pinned-messages/csharp/GraphPinnedMessage/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-personal-sso-quickstart/js/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-personal-sso-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-personal-sso-quickstart/ts/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-personal-sso-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-context-app/nodejs/server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-context-app/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-daily-task-reminder/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-app-installation-lifecycle/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-request-approval/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-change-notification-team-channel/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-change-notification-team-channel/nodejs/client/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-action-preview/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-app-icon-badging/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-conversation/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-share-to-stage-signing/csharp/Source/MeetingSigning.Web/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-type-ahead-search-adaptive-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-sequential-flow-adaptive-cards/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/connector-todo-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-notification/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-teams-authentication/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-action-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/graph-rsc/nodeJs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/meetings-attendance-report/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-initiate-thread-in-channel/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-message-reminder/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-multi-hub/ts/api-server/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-multi-hub/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-ai-sentiment-analysis/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-tab-conversations/csharp/Source/ConversationalTabs.Web/ClientApp/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/msgext-search-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-auth/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/bot-sharepoint-file-viewer/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-personal-quickstart/js/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/tab-personal-quickstart/ts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/BTC_HOST/samples/app-task-module/nodejs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Öğelerle Yeni Klasör 4/BTC_HOST_PORTAL/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/intelligent_security_fabric/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI_Temp/QuantumAI-Blockchain-Panel.app/Contents/MacOS/production_build/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/intelligent_security_fabric_full/Bitcoin-Full-Node/Bitcoin-Core/ai_modules/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/intelligent_security_fabric_full/Bitcoin-Full-Node/Bitcoin-Core/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/intelligent_security_fabric_full/intelligent_security_fabric_full/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/gny-rs-quantum-robot/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkitaplık/MacOS_Disc_Acma_SONRASI_GELEN_DOSYALAR/qai-borsa-platform/backend-python/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkitaplık/MacOS_Disc_Acma_SONRASI_GELEN_DOSYALAR/qai-borsa-platform/backend-node/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkitaplık/MacOS_Disc_Acma_SONRASI_GELEN_DOSYALAR/QuantumAI_System_DMG/pci_admin_paneli_full_ready/pci_admin_paneli/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkitaplık/Quantum-AI-Destekli-Blockchain-Tabanlı-Yatırım/_backups/2025-06-19-171247/key/project_root/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkitaplık/Quantum-AI-Destekli-Blockchain-Tabanlı-Yatırım/key/project_root/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkitaplık/MacOS-Dosya-Tasima/Quantum-AI-Blockchain-Panel/production_build/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/MacOSkitaplık/MacOS-Dosya-Tasima/QuantumAI_System_Panel/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/pci_admin_paneli/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/pci_admin_paneli/scripts/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/pci_admin_paneli/gas_api/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/pci_admin_paneli/pm2/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel-iCloudBackup/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel-iCloudBackup/scripts/QuantumAI_System_DMG/pci_admin_paneli_full_ready/.env
+/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel-iCloudBackup/gny-rs-quantum-robot/.env
+/Users/erenuludemir/Library/Containers/com.barebones.bbedit/Data/Library/BBEdit/Rescued Documents/.env
+/Users/erenuludemir/Users/erenuludemir/Library/Mobile Documents/com~apple~CloudDocs/QuantumAI-Blockchain-Panel-iCloudBackup/gny-rs-quantum-robot/.env
+/Users/erenuludemir/QuantumAI-Dockerized-System/ quantumai-usdt-v2/.env
+/Users/erenuludemir/QuantumAI-Dockerized-System/usdt/.env
+/Users/erenuludemir/QuantumAI-Dockerized-System/.env
+/Users/erenuludemir/QuantumAI-Dockerized-System/stack/.env
+/Users/erenuludemir/QuantumAI-Dockerized-System/gli-app/.env
+/Users/erenuludemir/QuantumAI-Dockerized-System/gli-app/gli-app/gli-app/.env
+/Users/erenuludemir/Downloads/.env
+/Users/erenuludemir/gli-app/.env
+f60b2c11aed241c86ba1a1db516af95db0d9302a:.env:4:TX_SENDER_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+f60b2c11aed241c86ba1a1db516af95db0d9302a:.env:5:FLASHBOTS_SIGNER_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+f60b2c11aed241c86ba1a1db516af95db0d9302a:.env:8:INFURA_PROJECT_ID=a1308e9977764245b8d7b532a59ac7ee 
+f60b2c11aed241c86ba1a1db516af95db0d9302a:.env:13:ETH_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+f60b2c11aed241c86ba1a1db516af95db0d9302a:.env:14:PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+f60b2c11aed241c86ba1a1db516af95db0d9302a:.env:22:ETHERSCAN_API_KEY=6Z93N6IU7YNJMM3R9G18KXX4C48J3Q9UQV
+f60b2c11aed241c86ba1a1db516af95db0d9302a:app.py:27:INFURA_PROJECT_ID = os.getenv("INFURA_PROJECT_ID")
+f60b2c11aed241c86ba1a1db516af95db0d9302a:app.py:28:if not INFURA_PROJECT_ID:
+f60b2c11aed241c86ba1a1db516af95db0d9302a:app.py:29:    raise RuntimeError("INFURA_PROJECT_ID missing")
+f60b2c11aed241c86ba1a1db516af95db0d9302a:app.py:31:w3 = Web3(Web3.HTTPProvider(f"https://mainnet.infura.io/v3/{INFURA_PROJECT_ID}"))
+2caa6f855fad7dd332a385d7adb248f1420071a8:.env:4:TX_SENDER_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+2caa6f855fad7dd332a385d7adb248f1420071a8:.env:5:FLASHBOTS_SIGNER_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+2caa6f855fad7dd332a385d7adb248f1420071a8:.env:8:INFURA_PROJECT_ID=a1308e9977764245b8d7b532a59ac7ee 
+2caa6f855fad7dd332a385d7adb248f1420071a8:.env:13:ETH_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+2caa6f855fad7dd332a385d7adb248f1420071a8:.env:14:PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+2caa6f855fad7dd332a385d7adb248f1420071a8:.env:22:ETHERSCAN_API_KEY=6Z93N6IU7YNJMM3R9G18KXX4C48J3Q9UQV
+2caa6f855fad7dd332a385d7adb248f1420071a8:app.py:27:INFURA_PROJECT_ID = os.getenv("INFURA_PROJECT_ID")
+2caa6f855fad7dd332a385d7adb248f1420071a8:app.py:28:if not INFURA_PROJECT_ID:
+2caa6f855fad7dd332a385d7adb248f1420071a8:app.py:29:    raise RuntimeError("INFURA_PROJECT_ID missing")
+2caa6f855fad7dd332a385d7adb248f1420071a8:app.py:32:RPC = f"https://mainnet.infura.io/v3/{INFURA_PROJECT_ID}" if CHAIN_ID == 1 else f"https://sepolia.infura.io/v3/{INFURA_PROJECT_ID}"
+109d31557e45445340ed16c229b4243194a0cee9:.env:4:TX_SENDER_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+109d31557e45445340ed16c229b4243194a0cee9:.env:5:FLASHBOTS_SIGNER_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+109d31557e45445340ed16c229b4243194a0cee9:.env:8:INFURA_PROJECT_ID=a1308e9977764245b8d7b532a59ac7ee 
+109d31557e45445340ed16c229b4243194a0cee9:.env:13:ETH_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+109d31557e45445340ed16c229b4243194a0cee9:.env:14:PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f900a
+109d31557e45445340ed16c229b4243194a0cee9:.env:22:ETHERSCAN_API_KEY=6Z93N6IU7YNJMM3R9G18KXX4C48J3Q9UQV
+109d31557e45445340ed16c229b4243194a0cee9:app.py:27:INFURA_PROJECT_ID = os.getenv("INFURA_PROJECT_ID")
+109d31557e45445340ed16c229b4243194a0cee9:app.py:28:if not INFURA_PROJECT_ID:
+109d31557e45445340ed16c229b4243194a0cee9:app.py:29:    raise RuntimeError("INFURA_PROJECT_ID missing")
+109d31557e45445340ed16c229b4243194a0cee9:app.py:31:w3 = Web3(Web3.HTTPProvider(f"https://mainnet.infura.io/v3/{INFURA_PROJECT_ID}"))
+erenuludemir@192 QuantumAI-Dockerized-System % 
+

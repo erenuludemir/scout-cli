@@ -1,0 +1,14 @@
+.git
+.venv
+node_modules
+tmp
+logs
+*.log
+*.zip
+*.tar
+*.tar.gz
+*.qcow2
+*.iso
+__pycache__
+.scout-cli*
+*.db

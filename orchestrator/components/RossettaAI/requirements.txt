@@ -1,0 +1,3 @@
+# Placeholder requirements (none needed yet)
+# Minimal dependencies for RossettaAI placeholder service
+# (Stdlib only currently used; keep for future model libs)

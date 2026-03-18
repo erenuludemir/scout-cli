@@ -1,0 +1,39 @@
+[project]
+name = "quantumai-dockerized-system"
+version = "0.1.0"
+description = "QuantumAI microservices (USDT, Etherscan integration, gateway)"
+authors = [{name = "QuantumAI", email = "devnull@example.com"}]
+requires-python = ">=3.11"
+dependencies = [
+	"Flask==2.2.5",
+	"requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+	"pytest>=8.2",
+	"pytest-cov>=5.0",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["integrations", "usdt", "quantumai-usdt-v2", "health"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".venv", "_wheels"]
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E501"]
+

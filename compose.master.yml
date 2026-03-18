@@ -1,0 +1,105 @@
+name: quantumai-stack
+
+services:
+  gli:
+    container_name: gli-container
+    build: ./gli
+    image: erenuludemir/gli-app:latest
+    volumes:
+      - gli_logs:/var/log/qai
+    env_file:
+      - .env
+      - .env.local
+    environment:
+      - GLI_DRY_RUN=1
+    ports:
+      - "5006:5002"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import sys, urllib.request; r = urllib.request.urlopen('http://127.0.0.1:5002/', timeout=3); sys.exit(0 if r.status == 200 else 1)"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  gli-mainnet:
+    container_name: gli-mainnet
+    image: erenuludemir/gli-app:latest
+    volumes:
+      - gli_mainnet_logs:/var/log/qai
+    env_file:
+      - .env
+      - .env.local
+    environment:
+      - CHAIN_ID=1
+      - GLI_DRY_RUN=1
+    ports:
+      - "5002:5002"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import sys, urllib.request; r = urllib.request.urlopen('http://127.0.0.1:5002/', timeout=3); sys.exit(0 if r.status == 200 else 1)"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  gli-sepolia:
+    container_name: gli-sepolia
+    image: erenuludemir/gli-app:latest
+    volumes:
+      - gli_sepolia_logs:/var/log/qai
+    env_file:
+      - .env
+      - .env.local
+    environment:
+      - CHAIN_ID=11155111
+      - GLI_DRY_RUN=1
+    ports:
+      - "5004:5002"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import sys, urllib.request; r = urllib.request.urlopen('http://127.0.0.1:5002/', timeout=3); sys.exit(0 if r.status == 200 else 1)"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  autoheal:
+    container_name: autoheal
+    image: willfarrell/autoheal:latest
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=autoheal
+      - TZ=Europe/Istanbul
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower:latest
+    environment:
+      - TZ=Europe/Istanbul
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  gli_logs:
+  gli_mainnet_logs:
+  gli_sepolia_logs:
+
+networks:
+  default:
+    driver: bridge

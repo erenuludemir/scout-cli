@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "mode": "GRID",
+  "summary": "yatay_veya_dalgali_pazar_grid_uygun",
+  "leverage": {
+    "recommended_leverage": 5,
+    "volatility": 0.0043576195404608055,
+    "atr": 557.8609211848496,
+    "stop_distance": 669.4331054218195,
+    "risk_amount": 100.0,
+    "position_notional": 11041.484115642126,
+    "size_with_leverage": 55207.42057821063
+  },
+  "grid": {
+    "score": 2264560.974000008,
+    "realized": 524427.3800000008,
+    "fills": 989,
+    "max_drawdown": 476769.2199999951,
+    "lower": 62911.414391474646,
+    "upper": 79105.95487538213,
+    "grid_count": 20,
+    "leverage": 5,
+    "volatility_proxy": 0.004834501055609817,
+    "confidence": 0.6999999337620249,
+    "reason": "quantum_inspired_parameter_search",
+    "mc_p10": 71749.23965685414,
+    "mc_p50": 74604.33416671763,
+    "mc_p90": 77128.98738940594,
+    "stop_loss": 72182.46172548331,
+    "take_profit": 76486.25991152476,
+    "grid_step": 809.7270241953742,
+    "mode": "GRID"
+  }
+}

@@ -1,0 +1,17 @@
+services:
+  quantumai-usdt-v2:
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - REDIS_URL=redis://redis:6379/0
+      - ETHERSCAN_CACHE_TTL=60
+    depends_on:
+      - redis
+
+  redis:
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:

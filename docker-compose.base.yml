@@ -1,0 +1,26 @@
+name: quantumai-base
+
+services:
+  quantumai-usdt-v2:
+    container_name: quantumai-usdt-v2
+    build:
+      context: ./quantumai-usdt-v2
+    volumes:
+      - quantumai_usdt_v2_logs:/var/log/qai
+    environment:
+      - PYTHONUNBUFFERED=1
+      - REDIS_URL=redis://redis:6379/0
+      - ETHERSCAN_CACHE_TTL=60
+    ports:
+      - "5005:5002"
+    depends_on:
+      - redis
+
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    ports:
+      - "6381:6379"
+
+volumes:
+  quantumai_usdt_v2_logs:

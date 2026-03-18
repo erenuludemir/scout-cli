@@ -1,60 +1,15 @@
-name: quantumai-stack
+version: "3.8"
 services:
-  gli:
-    image: erenuludemir/gli-app:fixed
-    container_name: gli-container
+  quantumai-usdt:
+    build: .
     ports:
       - "5003:5002"
     env_file:
       - .env
-    restart: unless-stopped
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-      - "autoheal=true"
+    restart: always
+    container_name: quantumai-usdt
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:5002/ >/dev/null || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
       interval: 30s
-      timeout: 5s
-      retries: 5
-
-  gli-mainnet:
-    image: erenuludemir/gli-app:fixed
-    container_name: gli-mainnet
-    ports:
-      - "5002:5002"
-    env_file:
-      - .env
-    environment:
-      - CHAIN_ID=1
-    restart: unless-stopped
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-      - "autoheal=true"
-    depends_on:
-      - gli
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:5002/ >/dev/null || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-
-  gli-sepolia:
-    image: erenuludemir/gli-app:fixed
-    container_name: gli-sepolia
-    ports:
-      - "5004:5002"
-    env_file:
-      - .env
-    environment:
-      - CHAIN_ID=11155111
-    restart: unless-stopped
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-      - "autoheal=true"
-    depends_on:
-      - gli
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:5002/ >/dev/null || exit 1"]
-      interval: 30s
-      timeout: 5s
+      timeout: 10s
       retries: 5

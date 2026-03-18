@@ -1,0 +1,2832 @@
+{
+  "QuantumAI-Dockerized-System": {
+    "package.json": [
+      {
+        "date": "2025-08-17T16:04:48.022Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 105
+      },
+      {
+        "date": "2025-08-18T06:27:07.663Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 56
+      },
+      {
+        "date": "2025-08-21T03:03:40.592Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 2
+      }
+    ],
+    "quantumai-usdt/app.py": [
+      {
+        "date": "2025-08-17T16:47:48.622Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-17T16:47:48.622Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-17T20:35:51.376Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 39
+      }
+    ],
+    "desktop-tutorial/README.md": [
+      {
+        "date": "2025-08-17T16:49:22.568Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 28
+      },
+      {
+        "date": "2025-08-18T13:09:50.982Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-18T13:12:59.361Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 188
+      },
+      {
+        "date": "2025-08-18T13:24:03.589Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 664
+      }
+    ],
+    ".vscode/extensions.json": [
+      {
+        "date": "2025-08-17T16:56:55.083Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-17T16:57:40.565Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 46
+      },
+      {
+        "date": "2025-08-17T17:08:05.179Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 20
+      },
+      {
+        "date": "2025-08-17T20:02:00.313Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-18T09:08:20.530Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-18T09:14:45.154Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-18T09:15:10.225Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 25
+      },
+      {
+        "date": "2025-08-18T15:44:52.500Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 1
+      }
+    ],
+    "master_prod_v1": [
+      {
+        "date": "2025-08-17T17:31:55.864Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 1
+      }
+    ],
+    "master_prod_v3": [
+      {
+        "date": "2025-08-17T17:34:31.994Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 133
+      },
+      {
+        "date": "2025-08-17T17:34:42.784Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-17T17:36:00.889Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 78
+      },
+      {
+        "date": "2025-08-17T17:36:40.439Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 40
+      },
+      {
+        "date": "2025-08-17T17:36:49.478Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      }
+    ],
+    "scripts/auto_expire_transfer.py": [
+      {
+        "date": "2025-08-17T19:58:27.857Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-17T19:58:50.077Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 22
+      }
+    ],
+    "gli/app.py": [
+      {
+        "date": "2025-08-18T05:07:36.869Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-18T05:23:10.361Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 933
+      },
+      {
+        "date": "2025-08-18T05:23:10.367Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 933
+      },
+      {
+        "date": "2025-08-18T05:45:58.368Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 1369
+      },
+      {
+        "date": "2025-08-18T05:46:25.252Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 27
+      },
+      {
+        "date": "2025-08-18T05:48:23.811Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 119
+      },
+      {
+        "date": "2025-08-18T05:57:43.485Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 560
+      },
+      {
+        "date": "2025-08-18T05:58:46.168Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 63
+      },
+      {
+        "date": "2025-08-18T06:28:12.882Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-18T06:28:32.997Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 20
+      },
+      {
+        "date": "2025-08-18T06:29:29.517Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 57
+      },
+      {
+        "date": "2025-08-18T07:19:57.005Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 8
+      },
+      {
+        "date": "2025-08-18T07:21:38.780Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 102
+      },
+      {
+        "date": "2025-08-18T07:22:06.688Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 28
+      },
+      {
+        "date": "2025-08-18T07:22:24.651Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 18
+      },
+      {
+        "date": "2025-08-18T07:22:31.719Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-18T07:22:45.853Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 14
+      },
+      {
+        "date": "2025-08-18T07:22:53.212Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-18T07:22:56.786Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-18T07:23:03.755Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-18T07:23:14.405Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-18T07:23:23.708Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-18T07:23:34.744Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-18T07:24:17.350Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 43
+      },
+      {
+        "date": "2025-08-18T07:26:02.875Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 106
+      },
+      {
+        "date": "2025-08-18T07:26:06.865Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-18T07:26:36.141Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 29
+      },
+      {
+        "date": "2025-08-18T07:27:00.579Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 24
+      },
+      {
+        "date": "2025-08-18T07:27:10.324Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-18T07:27:40.263Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 30
+      },
+      {
+        "date": "2025-08-18T07:28:02.058Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 22
+      },
+      {
+        "date": "2025-08-18T07:28:41.785Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 40
+      },
+      {
+        "date": "2025-08-18T07:28:57.644Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 16
+      },
+      {
+        "date": "2025-08-18T07:29:03.824Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-18T07:29:12.454Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-18T07:29:47.412Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 35
+      },
+      {
+        "date": "2025-08-18T07:32:21.267Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 154
+      },
+      {
+        "date": "2025-08-18T07:32:33.272Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 12
+      },
+      {
+        "date": "2025-08-18T07:32:41.835Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-18T07:33:28.495Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 47
+      },
+      {
+        "date": "2025-08-18T07:33:41.021Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 13
+      },
+      {
+        "date": "2025-08-18T07:33:44.680Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-18T07:34:03.020Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 18
+      },
+      {
+        "date": "2025-08-18T07:34:07.522Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-18T07:34:58.572Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 51
+      },
+      {
+        "date": "2025-08-18T07:35:08.872Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-18T07:35:28.606Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 20
+      },
+      {
+        "date": "2025-08-18T07:35:50.546Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 22
+      },
+      {
+        "date": "2025-08-18T07:36:04.469Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 14
+      },
+      {
+        "date": "2025-08-18T07:36:07.394Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2025-08-18T07:37:30.712Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 39
+      },
+      {
+        "date": "2025-08-18T07:37:51.630Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 21
+      },
+      {
+        "date": "2025-08-18T07:38:26.831Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 35
+      },
+      {
+        "date": "2025-08-18T07:38:56.783Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 30
+      },
+      {
+        "date": "2025-08-18T07:39:17.013Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 20
+      },
+      {
+        "date": "2025-08-18T07:40:10.782Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 54
+      },
+      {
+        "date": "2025-08-18T07:47:50.040Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 21
+      },
+      {
+        "date": "2025-08-18T07:48:22.819Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 33
+      },
+      {
+        "date": "2025-08-18T07:51:04.163Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 118
+      },
+      {
+        "date": "2025-08-18T07:52:07.798Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 161
+      },
+      {
+        "date": "2025-08-18T07:52:07.800Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 161
+      },
+      {
+        "date": "2025-08-18T07:52:18.715Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 55
+      },
+      {
+        "date": "2025-08-18T07:52:20.219Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 75
+      },
+      {
+        "date": "2025-08-18T07:52:37.731Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 107
+      },
+      {
+        "date": "2025-08-18T07:52:39.070Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 65
+      },
+      {
+        "date": "2025-08-18T07:52:39.174Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 31
+      },
+      {
+        "date": "2025-08-18T08:48:58.325Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 21
+      },
+      {
+        "date": "2025-08-18T08:49:58.539Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 60
+      },
+      {
+        "date": "2025-08-18T08:51:05.940Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 67
+      },
+      {
+        "date": "2025-08-18T08:55:40.825Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 275
+      },
+      {
+        "date": "2025-08-18T08:55:50.097Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-18T08:56:07.846Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 18
+      },
+      {
+        "date": "2025-08-18T08:56:42.157Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 34
+      },
+      {
+        "date": "2025-08-18T08:57:54.180Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 18
+      },
+      {
+        "date": "2025-08-18T08:59:03.721Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 70
+      },
+      {
+        "date": "2025-08-18T08:59:20.755Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-18T08:59:24.455Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-18T08:59:44.295Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 12
+      }
+    ],
+    ".early.coverage/v8/coverage-final.json": [
+      {
+        "date": "2025-08-18T08:03:37.395Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 49
+      },
+      {
+        "date": "2025-08-18T09:17:27.011Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 24
+      },
+      {
+        "date": "2025-08-18T09:17:52.028Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 25
+      },
+      {
+        "date": "2025-08-18T09:18:08.339Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 16
+      },
+      {
+        "date": "2025-08-18T09:18:27.252Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 19
+      },
+      {
+        "date": "2025-08-18T09:18:35.526Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 8
+      },
+      {
+        "date": "2025-08-18T09:18:46.775Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-18T09:19:06.526Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 20
+      },
+      {
+        "date": "2025-08-18T09:19:18.903Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 12
+      },
+      {
+        "date": "2025-08-18T09:19:33.581Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 15
+      },
+      {
+        "date": "2025-08-18T11:02:47.974Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 33
+      },
+      {
+        "date": "2025-08-18T11:03:28.522Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 41
+      },
+      {
+        "date": "2025-08-18T11:03:55.291Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 27
+      },
+      {
+        "date": "2025-08-18T11:04:12.721Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-18T11:05:09.595Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 57
+      },
+      {
+        "date": "2025-08-18T15:16:55.819Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-18T17:37:06.515Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 43
+      },
+      {
+        "date": "2025-08-18T17:38:42.182Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 96
+      },
+      {
+        "date": "2025-08-18T20:08:08.344Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-18T20:08:26.923Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 19
+      },
+      {
+        "date": "2025-08-18T20:08:43.844Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-18T20:08:50.175Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-18T20:09:50.278Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 60
+      }
+    ],
+    ".vscode/settings.json": [
+      {
+        "date": "2025-08-18T08:04:35.142Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-21T03:15:55.812Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-21T03:16:46.504Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 51
+      }
+    ],
+    ".devcontainer/devcontainer.json": [
+      {
+        "date": "2025-08-18T09:09:23.903Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2025-08-18T09:12:49.688Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 34
+      },
+      {
+        "date": "2025-08-18T09:20:13.564Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-18T09:21:02.129Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 48
+      },
+      {
+        "date": "2025-08-18T10:54:41.471Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 66
+      },
+      {
+        "date": "2025-08-21T02:46:05.844Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-21T10:40:17.545Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 14
+      },
+      {
+        "date": "2025-08-21T15:20:51.076Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 22
+      }
+    ],
+    "app.py": [
+      {
+        "date": "2025-08-18T10:54:52.101Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-18T10:55:00.158Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 8
+      },
+      {
+        "date": "2025-08-18T10:55:02.761Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2025-08-18T10:55:13.041Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-18T10:55:14.356Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 1
+      },
+      {
+        "date": "2025-08-18T10:56:30.213Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 62
+      },
+      {
+        "date": "2025-08-21T02:32:51.151Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-21T02:32:57.180Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T02:33:04.555Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-21T02:33:19.737Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 15
+      },
+      {
+        "date": "2025-08-21T02:33:30.974Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-21T02:33:42.290Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-21T02:33:49.598Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-21T02:34:06.697Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-21T02:34:15.135Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 8
+      },
+      {
+        "date": "2025-08-21T02:35:14.651Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 60
+      },
+      {
+        "date": "2025-08-21T02:36:58.551Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 104
+      },
+      {
+        "date": "2025-08-21T02:37:47.782Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 49
+      },
+      {
+        "date": "2025-08-21T02:38:01.867Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 14
+      },
+      {
+        "date": "2025-08-21T02:38:23.837Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 22
+      },
+      {
+        "date": "2025-08-21T02:38:38.655Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 15
+      },
+      {
+        "date": "2025-08-21T02:38:46.392Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 8
+      },
+      {
+        "date": "2025-08-21T02:38:58.739Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 12
+      },
+      {
+        "date": "2025-08-21T02:39:08.339Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-21T02:39:17.335Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-21T02:39:24.333Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-21T02:39:47.970Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 24
+      },
+      {
+        "date": "2025-08-21T02:39:52.921Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-21T02:39:59.787Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-21T02:40:05.696Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T02:40:09.839Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-21T02:40:13.548Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-21T02:40:23.648Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-21T02:40:27.825Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-21T02:40:33.527Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T02:40:46.814Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 13
+      },
+      {
+        "date": "2025-08-21T02:41:03.804Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-21T02:41:34.307Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 31
+      },
+      {
+        "date": "2025-08-21T02:42:06.077Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 32
+      },
+      {
+        "date": "2025-08-21T02:42:13.626Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 8
+      },
+      {
+        "date": "2025-08-21T02:42:22.386Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-21T02:42:26.102Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-21T02:42:55.214Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 29
+      },
+      {
+        "date": "2025-08-21T02:42:58.438Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2025-08-21T02:43:21.493Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 23
+      },
+      {
+        "date": "2025-08-21T02:43:42.701Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 21
+      },
+      {
+        "date": "2025-08-21T02:43:48.847Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T02:43:54.594Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T02:44:03.868Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-21T02:44:09.843Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T03:06:54.691Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-21T03:08:54.034Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 119
+      },
+      {
+        "date": "2025-08-21T03:09:34.137Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 40
+      },
+      {
+        "date": "2025-08-21T04:38:12.441Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-21T04:40:28.011Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 136
+      },
+      {
+        "date": "2025-08-21T04:56:59.340Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 991
+      },
+      {
+        "date": "2025-08-21T05:17:12.218Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 1213
+      },
+      {
+        "date": "2025-08-21T18:05:55.156Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 58
+      },
+      {
+        "date": "2025-08-21T18:06:18.435Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 1
+      },
+      {
+        "date": "2025-08-21T18:06:33.968Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 16
+      },
+      {
+        "date": "2025-08-21T18:20:17.161Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 106
+      },
+      {
+        "date": "2025-08-21T18:21:14.658Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 57
+      },
+      {
+        "date": "2025-08-21T18:21:23.254Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-21T18:21:30.314Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-21T18:22:23.139Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 53
+      }
+    ],
+    "activate.sh": [
+      {
+        "date": "2025-08-18T10:58:12.686Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-18T10:59:29.620Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 69
+      },
+      {
+        "date": "2025-08-18T10:59:32.845Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-18T11:00:16.939Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 44
+      }
+    ],
+    ".env": [
+      {
+        "date": "2025-08-18T11:06:02.082Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-18T11:06:06.464Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-18T11:06:16.387Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-18T11:06:21.277Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-18T11:06:23.113Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 2
+      },
+      {
+        "date": "2025-08-18T11:06:25.797Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2025-08-18T11:06:28.527Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2025-08-18T11:06:29.896Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 1
+      },
+      {
+        "date": "2025-08-18T11:06:32.310Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 2
+      },
+      {
+        "date": "2025-08-18T11:06:33.976Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 2
+      },
+      {
+        "date": "2025-08-18T11:06:36.855Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2025-08-18T11:06:45.714Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-18T11:06:48.035Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 2
+      },
+      {
+        "date": "2025-08-18T11:06:53.194Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-18T11:06:56.743Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-18T11:08:24.925Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-18T11:08:27.043Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 2
+      },
+      {
+        "date": "2025-08-18T11:08:29.629Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 3
+      },
+      {
+        "date": "2025-08-18T11:08:31.083Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 1
+      },
+      {
+        "date": "2025-08-18T11:08:43.504Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 12
+      },
+      {
+        "date": "2025-08-18T11:08:48.675Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-18T11:09:16.475Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 28
+      },
+      {
+        "date": "2025-08-18T11:09:21.110Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-18T11:09:32.783Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 12
+      },
+      {
+        "date": "2025-08-18T11:09:55.685Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 23
+      },
+      {
+        "date": "2025-08-18T11:10:16.682Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-18T11:12:37.141Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 91
+      },
+      {
+        "date": "2025-08-18T11:12:37.487Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-18T11:12:41.905Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-18T11:14:01.379Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 79
+      }
+    ],
+    ".github/dependabot.yml": [
+      {
+        "date": "2025-08-18T19:14:11.400Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 66
+      },
+      {
+        "date": "2025-08-18T19:15:21.353Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 70
+      },
+      {
+        "date": "2025-08-18T19:28:44.052Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 803
+      },
+      {
+        "date": "2025-08-18T19:32:48.723Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 245
+      },
+      {
+        "date": "2025-08-18T19:33:32.620Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 44
+      },
+      {
+        "date": "2025-08-18T19:33:41.551Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-18T19:34:42.024Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 60
+      },
+      {
+        "date": "2025-08-18T19:35:54.968Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 73
+      },
+      {
+        "date": "2025-08-18T19:36:11.667Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-18T19:37:21.509Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 70
+      },
+      {
+        "date": "2025-08-18T19:38:16.799Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 55
+      },
+      {
+        "date": "2025-08-21T02:11:37.179Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-21T02:15:52.263Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 26
+      },
+      {
+        "date": "2025-08-21T02:24:28.118Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-21T02:25:43.512Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T02:26:29.533Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 46
+      },
+      {
+        "date": "2025-08-21T02:26:47.648Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 18
+      },
+      {
+        "date": "2025-08-21T02:28:16.535Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-21T02:28:25.002Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 8
+      },
+      {
+        "date": "2025-08-21T02:28:30.506Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-21T02:28:39.898Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-21T02:28:59.808Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 20
+      },
+      {
+        "date": "2025-08-21T02:29:08.395Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 9
+      },
+      {
+        "date": "2025-08-21T02:30:02.280Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 54
+      },
+      {
+        "date": "2025-08-21T02:30:31.353Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 29
+      },
+      {
+        "date": "2025-08-21T02:30:42.085Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 11
+      }
+    ],
+    ".early.coverage/python/coverage.json": [
+      {
+        "date": "2025-08-21T02:01:31.352Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-21T02:03:04.429Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 93
+      },
+      {
+        "date": "2025-08-21T02:03:53.646Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 49
+      },
+      {
+        "date": "2025-08-21T03:04:14.538Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 23
+      },
+      {
+        "date": "2025-08-21T10:08:46.680Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T10:40:28.921Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-21T10:41:43.015Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 74
+      },
+      {
+        "date": "2025-08-21T10:42:11.277Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 28
+      },
+      {
+        "date": "2025-08-21T10:42:15.778Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-21T10:42:20.471Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-21T10:42:30.088Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-21T10:42:46.046Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 16
+      },
+      {
+        "date": "2025-08-21T10:42:59.524Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 13
+      },
+      {
+        "date": "2025-08-21T10:43:09.337Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-21T10:43:16.356Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-21T13:01:37.431Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 21
+      },
+      {
+        "date": "2025-08-21T13:03:27.191Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 110
+      },
+      {
+        "date": "2025-08-21T14:24:47.980Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-21T15:21:31.537Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 39
+      },
+      {
+        "date": "2025-08-21T16:26:34.492Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 5
+      },
+      {
+        "date": "2025-08-21T16:27:13.704Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 40
+      }
+    ],
+    ".qai/test_early_brlct_monitor/__init__.py": [
+      {
+        "date": "2025-08-21T02:27:16.666Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      },
+      {
+        "date": "2025-08-21T02:27:16.667Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 0
+      }
+    ],
+    "Dockerfile.git": [
+      {
+        "date": "2025-08-21T02:56:34.001Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-21T02:57:42.557Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 69
+      },
+      {
+        "date": "2025-08-21T02:59:38.638Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 116
+      },
+      {
+        "date": "2025-08-21T14:36:41.774Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 11
+      },
+      {
+        "date": "2025-08-21T14:36:59.004Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-21T14:37:19.084Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 20
+      },
+      {
+        "date": "2025-08-21T14:37:40.811Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 22
+      },
+      {
+        "date": "2025-08-21T14:38:24.908Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 44
+      },
+      {
+        "date": "2025-08-21T14:39:05.345Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 40
+      }
+    ],
+    "app.py.bak.1755555461": [
+      {
+        "date": "2025-08-21T03:15:31.160Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 90
+      },
+      {
+        "date": "2025-08-21T03:19:17.344Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 23
+      },
+      {
+        "date": "2025-08-21T03:19:43.994Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 27
+      },
+      {
+        "date": "2025-08-21T03:19:45.765Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 2
+      },
+      {
+        "date": "2025-08-21T03:21:49.168Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 123
+      },
+      {
+        "date": "2025-08-21T03:22:05.688Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 16
+      },
+      {
+        "date": "2025-08-21T03:23:30.294Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 85
+      },
+      {
+        "date": "2025-08-21T03:23:50.425Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 20
+      },
+      {
+        "date": "2025-08-21T03:24:12.654Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 22
+      },
+      {
+        "date": "2025-08-21T03:24:49.228Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 37
+      },
+      {
+        "date": "2025-08-21T03:25:33.109Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 44
+      },
+      {
+        "date": "2025-08-21T03:25:36.707Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 4
+      },
+      {
+        "date": "2025-08-21T03:25:58.838Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 22
+      },
+      {
+        "date": "2025-08-21T03:28:25.015Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 146
+      },
+      {
+        "date": "2025-08-21T03:29:30.861Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 66
+      },
+      {
+        "date": "2025-08-21T03:37:36.580Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 486
+      },
+      {
+        "date": "2025-08-21T03:38:45.574Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 69
+      }
+    ],
+    "app.py.git": [
+      {
+        "date": "2025-08-21T04:35:42.947Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 30
+      },
+      {
+        "date": "2025-08-21T09:03:06.564Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 72
+      },
+      {
+        "date": "2025-08-21T09:03:47.959Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 42
+      },
+      {
+        "date": "2025-08-21T16:38:20.273Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 32
+      },
+      {
+        "date": "2025-08-21T16:38:36.697Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 16
+      },
+      {
+        "date": "2025-08-21T16:39:27.856Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 51
+      },
+      {
+        "date": "2025-08-21T16:41:08.511Z",
+        "user": {
+          "name": "Unknown",
+          "email": "unknown@example.com"
+        },
+        "timeSpent": 101
+      },
+      {
+        "date": "2025-08-21T16:42:17.660Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 69
+      },
+      {
+        "date": "2025-08-21T16:45:11.418Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 174
+      },
+      {
+        "date": "2025-08-21T16:45:53.226Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 42
+      },
+      {
+        "date": "2025-08-21T16:49:18.879Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 206
+      },
+      {
+        "date": "2025-08-21T16:50:05.693Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 47
+      },
+      {
+        "date": "2025-08-21T17:04:09.425Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 843
+      },
+      {
+        "date": "2025-08-21T18:08:29.618Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 115
+      },
+      {
+        "date": "2025-08-21T18:09:23.290Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 54
+      },
+      {
+        "date": "2025-08-21T18:10:21.387Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 58
+      },
+      {
+        "date": "2025-08-21T18:17:14.012Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 412
+      },
+      {
+        "date": "2025-08-21T18:17:24.163Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 10
+      },
+      {
+        "date": "2025-08-21T18:18:13.346Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 49
+      }
+    ],
+    "master_prod": [
+      {
+        "date": "2025-08-21T13:38:37.119Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 13
+      },
+      {
+        "date": "2025-08-21T13:38:56.676Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 20
+      },
+      {
+        "date": "2025-08-21T13:46:17.972Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 324
+      },
+      {
+        "date": "2025-08-21T13:47:36.676Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 79
+      },
+      {
+        "date": "2025-08-21T13:47:48.539Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 12
+      },
+      {
+        "date": "2025-08-21T13:47:56.057Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 8
+      },
+      {
+        "date": "2025-08-21T13:48:02.608Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 7
+      },
+      {
+        "date": "2025-08-21T13:48:08.650Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T13:48:42.273Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 34
+      },
+      {
+        "date": "2025-08-21T13:50:53.493Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-21T14:02:12.098Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 634
+      },
+      {
+        "date": "2025-08-21T14:06:24.994Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 253
+      },
+      {
+        "date": "2025-08-21T14:19:36.466Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 82
+      }
+    ],
+    ".vscode/launch.json": [
+      {
+        "date": "2025-08-21T18:25:03.291Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 42
+      },
+      {
+        "date": "2025-08-21T18:25:09.747Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 6
+      },
+      {
+        "date": "2025-08-21T18:25:27.124Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 17
+      },
+      {
+        "date": "2025-08-21T18:25:28.602Z",
+        "user": {
+          "name": "Eren ULUDEMİR",
+          "email": "erenuludemir@hotmail.com"
+        },
+        "timeSpent": 2
+      }
+    ]
+  }
+}

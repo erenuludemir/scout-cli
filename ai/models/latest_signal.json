@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "symbol": "BTCUSDT",
+  "interval": "1h",
+  "signal": "SELL",
+  "confidence": 0.9662,
+  "price": 73915.35,
+  "stop_loss": 72182.46172548,
+  "take_profit": 76486.25991152,
+  "reasons": [
+    "MACD_negatif_ivme",
+    "emir_defteri_alis_yonlu"
+  ],
+  "probabilities": {
+    "SELL": 0.9662,
+    "HOLD": 0.0313,
+    "BUY": 0.0025
+  },
+  "risk": {
+    "mc_p10": 71749.23965685,
+    "mc_p50": 74604.33416672,
+    "mc_p90": 77128.98738941
+  }
+}

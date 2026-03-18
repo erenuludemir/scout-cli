@@ -1,0 +1,8 @@
+{
+  "timestamp": "20250828T062435Z",
+  "samples": 0,
+  "approx_tokens": 0,
+  "model_artifact": "rossetta-simulated.bin",
+  "model_hash": "5feceb66ffc86f38",
+  "status": "simulated"
+}

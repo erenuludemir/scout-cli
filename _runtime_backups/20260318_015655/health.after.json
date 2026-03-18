@@ -1,0 +1,368 @@
+{
+  "ok": true,
+  "docker_host": "unix:///Users/erenuludemir/.colima/mcai-colima/docker.sock",
+  "stacks": {
+    "master": [
+      {
+        "Command": "\"/docker-entrypoint …\"",
+        "CreatedAt": "2026-03-18 01:28:00 +0300 +03",
+        "ExitCode": 0,
+        "Health": "healthy",
+        "ID": "5f3a74a4f696",
+        "Image": "willfarrell/autoheal:latest",
+        "Labels": "com.docker.compose.config-hash=d8eacea78c2a1bf1052d0a9671281dc50db83fc0c0f09122129d9153616b9857,com.docker.compose.image=sha256:23611cbf02e0ed01f828be809c1f1eaa5b0acacff2f5ee075d677b8eec9e26bb,com.docker.compose.oneoff=False,com.docker.compose.project=quantumai-stack,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.master.yml,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.service=autoheal,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.replace=autoheal,com.docker.compose.version=2.40.1",
+        "LocalVolumes": "0",
+        "Mounts": "/var/run/docke…",
+        "Name": "autoheal",
+        "Names": "autoheal",
+        "Networks": "quantumai-stack_default",
+        "Ports": "",
+        "Project": "quantumai-stack",
+        "Publishers": [],
+        "RunningFor": "29 minutes ago",
+        "Service": "autoheal",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 29 minutes (healthy)"
+      },
+      {
+        "Command": "\"gunicorn app:app --…\"",
+        "CreatedAt": "2026-03-18 01:56:59 +0300 +03",
+        "ExitCode": 0,
+        "Health": "healthy",
+        "ID": "b5c3893919ea",
+        "Image": "erenuludemir/gli-app:latest",
+        "Labels": "com.docker.compose.image=sha256:539323600964984275e59e243dbbc3561cdf41e78fe16ed7f732e0c788361e0b,com.docker.compose.oneoff=False,com.docker.compose.project=quantumai-stack,com.docker.compose.config-hash=ea59994802ad3c1075addd332d59153b2aeca68a3e285c09976beee93df6357a,com.docker.compose.depends_on=,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.master.yml,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.replace=gli-container,com.docker.compose.service=gli,com.docker.compose.version=2.40.1,com.docker.compose.container-number=1",
+        "LocalVolumes": "0",
+        "Mounts": "",
+        "Name": "gli-container",
+        "Names": "gli-container",
+        "Networks": "quantumai-stack_default",
+        "Ports": "0.0.0.0:5006->5002/tcp, [::]:5006->5002/tcp",
+        "Project": "quantumai-stack",
+        "Publishers": [
+          {
+            "URL": "0.0.0.0",
+            "TargetPort": 5002,
+            "PublishedPort": 5006,
+            "Protocol": "tcp"
+          },
+          {
+            "URL": "::",
+            "TargetPort": 5002,
+            "PublishedPort": 5006,
+            "Protocol": "tcp"
+          }
+        ],
+        "RunningFor": "19 seconds ago",
+        "Service": "gli",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 16 seconds (healthy)"
+      },
+      {
+        "Command": "\"gunicorn app:app --…\"",
+        "CreatedAt": "2026-03-18 01:56:59 +0300 +03",
+        "ExitCode": 0,
+        "Health": "healthy",
+        "ID": "aa80630735c3",
+        "Image": "erenuludemir/gli-app:latest",
+        "Labels": "com.docker.compose.config-hash=84ffc9b7121b039d445ae8021623dda1d9168481995e3a0b162379e24e4e7029,com.docker.compose.depends_on=,com.docker.compose.image=sha256:539323600964984275e59e243dbbc3561cdf41e78fe16ed7f732e0c788361e0b,com.docker.compose.oneoff=False,com.docker.compose.project=quantumai-stack,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.master.yml,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.version=2.40.1,com.docker.compose.container-number=1,com.docker.compose.replace=gli-mainnet,com.docker.compose.service=gli-mainnet",
+        "LocalVolumes": "0",
+        "Mounts": "",
+        "Name": "gli-mainnet",
+        "Names": "gli-mainnet",
+        "Networks": "quantumai-stack_default",
+        "Ports": "0.0.0.0:5002->5002/tcp, [::]:5002->5002/tcp",
+        "Project": "quantumai-stack",
+        "Publishers": [
+          {
+            "URL": "0.0.0.0",
+            "TargetPort": 5002,
+            "PublishedPort": 5002,
+            "Protocol": "tcp"
+          },
+          {
+            "URL": "::",
+            "TargetPort": 5002,
+            "PublishedPort": 5002,
+            "Protocol": "tcp"
+          }
+        ],
+        "RunningFor": "19 seconds ago",
+        "Service": "gli-mainnet",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 16 seconds (healthy)"
+      },
+      {
+        "Command": "\"gunicorn app:app --…\"",
+        "CreatedAt": "2026-03-18 01:56:59 +0300 +03",
+        "ExitCode": 0,
+        "Health": "healthy",
+        "ID": "b77572b3aa2e",
+        "Image": "erenuludemir/gli-app:latest",
+        "Labels": "com.docker.compose.container-number=1,com.docker.compose.image=sha256:539323600964984275e59e243dbbc3561cdf41e78fe16ed7f732e0c788361e0b,com.docker.compose.oneoff=False,com.docker.compose.project=quantumai-stack,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.replace=gli-sepolia,com.docker.compose.version=2.40.1,com.docker.compose.config-hash=54db6401dc1169b7783290b8686df320ffa5ff2f753fb3041c6cbfa1b3aaa9c8,com.docker.compose.depends_on=,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.master.yml,com.docker.compose.service=gli-sepolia",
+        "LocalVolumes": "0",
+        "Mounts": "",
+        "Name": "gli-sepolia",
+        "Names": "gli-sepolia",
+        "Networks": "quantumai-stack_default",
+        "Ports": "0.0.0.0:5004->5002/tcp, [::]:5004->5002/tcp",
+        "Project": "quantumai-stack",
+        "Publishers": [
+          {
+            "URL": "0.0.0.0",
+            "TargetPort": 5002,
+            "PublishedPort": 5004,
+            "Protocol": "tcp"
+          },
+          {
+            "URL": "::",
+            "TargetPort": 5002,
+            "PublishedPort": 5004,
+            "Protocol": "tcp"
+          }
+        ],
+        "RunningFor": "19 seconds ago",
+        "Service": "gli-sepolia",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 16 seconds (healthy)"
+      },
+      {
+        "Command": "\"/watchtower\"",
+        "CreatedAt": "2026-03-18 01:28:00 +0300 +03",
+        "ExitCode": 0,
+        "Health": "healthy",
+        "ID": "f12418ec66a4",
+        "Image": "containrrr/watchtower:latest",
+        "Labels": "com.centurylinklabs.watchtower=true,com.docker.compose.container-number=1,com.docker.compose.image=sha256:6dd50763bbd632a83cb154d5451700530d1e44200b268a4e9488fefdfcf2b038,com.docker.compose.project=quantumai-stack,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.master.yml,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.replace=watchtower,com.docker.compose.version=2.40.1,com.docker.compose.config-hash=ff8a653dafaa05490681fa82dd04197eafa04e6ea32a13efc2777526bedaad11,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.service=watchtower",
+        "LocalVolumes": "0",
+        "Mounts": "/var/run/docke…",
+        "Name": "watchtower",
+        "Names": "watchtower",
+        "Networks": "quantumai-stack_default",
+        "Ports": "8080/tcp",
+        "Project": "quantumai-stack",
+        "Publishers": [
+          {
+            "URL": "",
+            "TargetPort": 8080,
+            "PublishedPort": 0,
+            "Protocol": "tcp"
+          }
+        ],
+        "RunningFor": "29 minutes ago",
+        "Service": "watchtower",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 29 minutes (healthy)"
+      }
+    ],
+    "main": [
+      {
+        "Command": "\"gunicorn -b 0.0.0.0…\"",
+        "CreatedAt": "2026-03-17 23:44:35 +0300 +03",
+        "ExitCode": 0,
+        "Health": "healthy",
+        "ID": "daacb06ba291",
+        "Image": "quantumai-dockerized-system-dex:latest",
+        "Labels": "com.docker.compose.image=sha256:7dd7e339339fa10038a983b6c1502b84302cb4060a73031fa7aa4dc977747586,com.docker.compose.project=quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213,com.docker.compose.replace=dex-1,com.docker.compose.version=2.40.1,com.docker.compose.config-hash=770d9f72afdd0c989d580607e917dec9a58344cf1bb37cf904ee93dfc49bc08e,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.yml,/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.override.yml,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.service=dex,com.docker.compose.container-number=1,com.docker.compose.depends_on=",
+        "LocalVolumes": "0",
+        "Mounts": "",
+        "Name": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213-dex-1",
+        "Names": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213-dex-1",
+        "Networks": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213_default",
+        "Ports": "8080/tcp",
+        "Project": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213",
+        "Publishers": [
+          {
+            "URL": "",
+            "TargetPort": 8080,
+            "PublishedPort": 0,
+            "Protocol": "tcp"
+          }
+        ],
+        "RunningFor": "2 hours ago",
+        "Service": "dex",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 2 hours (healthy)"
+      },
+      {
+        "Command": "\"/docker-entrypoint.…\"",
+        "CreatedAt": "2026-03-17 20:37:39 +0300 +03",
+        "ExitCode": 0,
+        "Health": "healthy",
+        "ID": "f482e37d10a7",
+        "Image": "quantumai-dockerized-system-gateway:latest",
+        "Labels": "com.docker.compose.config-hash=35c38d8041552a6ecd67f7c6d5fdc0f6653ed4ff56270e08e11041f59b17b06c,com.docker.compose.depends_on=quantumai-usdt:service_healthy:false,dex:service_healthy:false,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.version=2.40.1,maintainer=qai,com.docker.compose.container-number=1,com.docker.compose.image=sha256:69933332fb47acc3727be0ce16b0b8988200a564a2d12be3c0113d3a054a9126,com.docker.compose.oneoff=False,com.docker.compose.project=quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.yml,com.docker.compose.replace=gateway-1,com.docker.compose.service=gateway",
+        "LocalVolumes": "0",
+        "Mounts": "",
+        "Name": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213-gateway-1",
+        "Names": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213-gateway-1",
+        "Networks": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213_default",
+        "Ports": "80/tcp, 0.0.0.0:5003->8080/tcp, [::]:5003->8080/tcp",
+        "Project": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213",
+        "Publishers": [
+          {
+            "URL": "",
+            "TargetPort": 80,
+            "PublishedPort": 0,
+            "Protocol": "tcp"
+          },
+          {
+            "URL": "0.0.0.0",
+            "TargetPort": 8080,
+            "PublishedPort": 5003,
+            "Protocol": "tcp"
+          },
+          {
+            "URL": "::",
+            "TargetPort": 8080,
+            "PublishedPort": 5003,
+            "Protocol": "tcp"
+          }
+        ],
+        "RunningFor": "5 hours ago",
+        "Service": "gateway",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 5 hours (healthy)"
+      },
+      {
+        "Command": "\"gunicorn -b 0.0.0.0…\"",
+        "CreatedAt": "2026-03-17 23:44:35 +0300 +03",
+        "ExitCode": 0,
+        "Health": "healthy",
+        "ID": "1249a5a8f786",
+        "Image": "quantumai-dockerized-system-quantumai-usdt:latest",
+        "Labels": "com.docker.compose.project=quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.yml,/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/compose.override.yml,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.config-hash=37e0dcb81f87e930b0901ee5de515136bf977f6ddd1d8aadd6e753185f4ad51c,com.docker.compose.oneoff=False,com.docker.compose.replace=quantumai-usdt-1,com.docker.compose.service=quantumai-usdt,com.docker.compose.version=2.40.1,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:efeed15de059e160bb5b0043d744263e6542bec03bc82154742ada0d8abe1dc0",
+        "LocalVolumes": "0",
+        "Mounts": "",
+        "Name": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213-quantumai-usdt-1",
+        "Names": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213-quantumai-usdt-1",
+        "Networks": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213_default",
+        "Ports": "8000/tcp",
+        "Project": "quantumai-dockerized-systemmigrated20250908_121149migrated20250908_1212213",
+        "Publishers": [
+          {
+            "URL": "",
+            "TargetPort": 8000,
+            "PublishedPort": 0,
+            "Protocol": "tcp"
+          }
+        ],
+        "RunningFor": "2 hours ago",
+        "Service": "quantumai-usdt",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 2 hours (healthy)"
+      }
+    ],
+    "base": [
+      {
+        "Command": "\"gunicorn app:app --…\"",
+        "CreatedAt": "2026-03-18 01:57:04 +0300 +03",
+        "ExitCode": 0,
+        "Health": "healthy",
+        "ID": "121d941c6295",
+        "Image": "quantumai-base-quantumai-usdt-v2",
+        "Labels": "com.docker.compose.oneoff=False,com.docker.compose.project=quantumai-base,com.docker.compose.replace=quantumai-usdt-v2,com.docker.compose.service=quantumai-usdt-v2,com.docker.compose.version=2.40.1,com.docker.compose.container-number=1,com.docker.compose.depends_on=redis:service_started:false,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/docker-compose.base.yml,/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/docker-compose.override.yml,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.config-hash=54fdb62f2a482691a608d5cb639fff25491813549a695356ef47ca6a319ef63c,com.docker.compose.image=sha256:6ed745045965608a5f1013d589131eba7e9caba342308259081cd41bcd4aea0e",
+        "LocalVolumes": "0",
+        "Mounts": "",
+        "Name": "quantumai-usdt-v2",
+        "Names": "quantumai-usdt-v2",
+        "Networks": "quantumai-base_default",
+        "Ports": "0.0.0.0:5005->5002/tcp, [::]:5005->5002/tcp",
+        "Project": "quantumai-base",
+        "Publishers": [
+          {
+            "URL": "0.0.0.0",
+            "TargetPort": 5002,
+            "PublishedPort": 5005,
+            "Protocol": "tcp"
+          },
+          {
+            "URL": "::",
+            "TargetPort": 5002,
+            "PublishedPort": 5005,
+            "Protocol": "tcp"
+          }
+        ],
+        "RunningFor": "15 seconds ago",
+        "Service": "quantumai-usdt-v2",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 13 seconds (healthy)"
+      },
+      {
+        "Command": "\"docker-entrypoint.s…\"",
+        "CreatedAt": "2026-03-18 01:52:15 +0300 +03",
+        "ExitCode": 0,
+        "Health": "",
+        "ID": "1d61496f9015",
+        "Image": "redis:7-alpine",
+        "Labels": "com.docker.compose.oneoff=False,com.docker.compose.project=quantumai-base,com.docker.compose.project.config_files=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/docker-compose.base.yml,/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3/docker-compose.override.yml,com.docker.compose.config-hash=14f19555e8124eac1c638ef9cc7760d66da2143b54b01fb115fdde499d4394d3,com.docker.compose.image=sha256:3b73847e72874be07e6657b129a94761662b79bc0f679273757d4218573b2a98,com.docker.compose.project.working_dir=/Users/erenuludemir/QuantumAI-Dockerized-System.migrated.20250908_121149.migrated.20250908_121221 3,com.docker.compose.service=redis,com.docker.compose.version=2.40.1,com.docker.compose.container-number=1,com.docker.compose.depends_on=",
+        "LocalVolumes": "1",
+        "Mounts": "quantumai-base…",
+        "Name": "redis",
+        "Names": "redis",
+        "Networks": "quantumai-base_default",
+        "Ports": "0.0.0.0:6381->6379/tcp, [::]:6381->6379/tcp",
+        "Project": "quantumai-base",
+        "Publishers": [
+          {
+            "URL": "0.0.0.0",
+            "TargetPort": 6379,
+            "PublishedPort": 6381,
+            "Protocol": "tcp"
+          },
+          {
+            "URL": "::",
+            "TargetPort": 6379,
+            "PublishedPort": 6381,
+            "Protocol": "tcp"
+          }
+        ],
+        "RunningFor": "5 minutes ago",
+        "Service": "redis",
+        "Size": "0B",
+        "State": "running",
+        "Status": "Up 5 minutes"
+      }
+    ]
+  },
+  "http": {
+    "gateway_health": {
+      "code": "200",
+      "body": "{\"ok\":true,\"block\":23230071}"
+    },
+    "gateway_root": {
+      "code": "200",
+      "body": "{\"endpoints\":[\"/health\",\"/pairs\",\"/quote\",\"/swap\"],\"execution_enabled\":false,\"ok\":true,\"price_source\":\"static\",\"ready\":true,\"service\":\"dex\",\"status\":\"ok\"}"
+    },
+    "gli_mainnet": {
+      "code": "200",
+      "body": "{\"ok\":true,\"rpc\":\"https://mainnet.infura.io/v3/a1308e9977764245b8d7b...\",\"sender\":\"0xda93812D7D1F3D326ef8156D94175238948Da04f\"}"
+    },
+    "gli_sepolia": {
+      "code": "200",
+      "body": "{\"ok\":true,\"rpc\":\"https://mainnet.infura.io/v3/a1308e9977764245b8d7b...\",\"sender\":\"0xda93812D7D1F3D326ef8156D94175238948Da04f\"}"
+    },
+    "gli_default": {
+      "code": "200",
+      "body": "{\"ok\":true,\"rpc\":\"https://mainnet.infura.io/v3/a1308e9977764245b8d7b...\",\"sender\":\"0xda93812D7D1F3D326ef8156D94175238948Da04f\"}"
+    },
+    "usdt_v2_health": {
+      "code": "200",
+      "body": "{\"ok\":true,\"ready\":true,\"service\":\"quantumai-usdt-v2\"}"
+    },
+    "usdt_v2_root": {
+      "code": "200",
+      "body": "{\"ok\":true,\"ready\":true,\"redis_url\":\"redis://redis:6379/0\",\"service\":\"quantumai-usdt-v2\"}"
+    }
+  },
+  "problems": []
+}

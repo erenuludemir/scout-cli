@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        "openai.chatgpt",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        "fabioz.vscode-pydev",
+        "docker.docker",
+        "xdebug.php-debug",
+        "ms-python.debugpy",
+        "ivan-osatchuk.python-launch-creator",
+        "debugpyattacher.debugpy-attacher",
+        "atariq11700.debugpy-old",
+        "ms-azuretools.vscode-containers",
+        "ms-vscode.makefile-tools"
+    ]
+}

@@ -1,9 +1,10 @@
-.venv
+._*
+.DS_Store
+node_modules
+venv
+.venv*
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.log
-.git
-.gitignore
-Dockerfile
+*.mp4
+*.mov
+Offloaded Videos/
+Volumes/

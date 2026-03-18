@@ -1,0 +1,151 @@
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+/Users/erenuludemir/QuantumAI-Dockerized-System/tools/health-check.sh: fork: Resource temporarily unavailable
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+unable to get image 'erenuludemir/gli-app:fixed': Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'erenuludemir/gli-app:fixed': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'willfarrell/autoheal:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+unable to get image 'containrrr/watchtower:latest': Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'containrrr/watchtower:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'willfarrell/autoheal:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'erenuludemir/gli-app:fixed': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'willfarrell/autoheal:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.docker/run/docker.sock. Is the docker daemon running?
+unable to get image 'erenuludemir/gli-app:fixed': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.docker/run/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.docker/run/docker.sock. Is the docker daemon running?
+unable to get image 'willfarrell/autoheal:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.docker/run/docker.sock. Is the docker daemon running?
+time="2025-08-27T00:12:34+03:00" level=warning msg="/Users/erenuludemir/QuantumAI-Dockerized-System/compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+time="2025-08-27T00:12:35+03:00" level=warning msg="/Users/erenuludemir/QuantumAI-Dockerized-System/compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+unable to get image 'willfarrell/autoheal': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+time="2025-08-27T01:44:12+03:00" level=warning msg="/Users/erenuludemir/QuantumAI-Dockerized-System/compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+time="2025-08-27T01:44:12+03:00" level=warning msg="/Users/erenuludemir/QuantumAI-Dockerized-System/compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+unable to get image 'quantumai-dockerized-system-dex': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'quantumai-dockerized-system-gateway:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'quantumai-dockerized-system-quantumai-usdt:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'quantumai-dockerized-system-quantumai-usdt:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'quantumai-dockerized-system-gateway:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+env file /Users/erenuludemir/QuantumAI-Dockerized-System/.env not found: stat /Users/erenuludemir/QuantumAI-Dockerized-System/.env: no such file or directory
+env file /Users/erenuludemir/QuantumAI-Dockerized-System/.env not found: stat /Users/erenuludemir/QuantumAI-Dockerized-System/.env: no such file or directory
+Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?
+unable to get image 'quantumai-dockerized-system-dex:latest': Cannot connect to the Docker daemon at unix:///Users/erenuludemir/.colima/default/docker.sock. Is the docker daemon running?

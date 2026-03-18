@@ -1,0 +1,17 @@
+QuantumAI
+QuantumTechnoAI
+Mechanics
+DecisionAI
+ElectronAI
+CommunicationAI
+SignalsAI
+SelfAgentTrainerAI
+ReleaseAI
+ProductionAI
+StockAI
+TransferAI
+DebugAI
+ManagerAI
+ModulesAI
+BootAI
+RossettaAI

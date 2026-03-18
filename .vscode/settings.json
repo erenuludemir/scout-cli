@@ -1,0 +1,9 @@
+{
+  "docker.dockerComposeCommand": "compose",
+  "docker.composeFile": [
+    "compose.master.yml",
+    "compose.override.yml"
+  ],
+  "docker.context": "colima"
+}
+

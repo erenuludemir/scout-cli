@@ -1,0 +1,113 @@
+bash <<'BASH'
+set -Eeuo pipefail;export LANG=C LC_ALL=C
+ROOT="${ROOT:-$HOME/QuantumAI-Dockerized-System}"
+mkdir -p "$ROOT/integrations/etherscan"
+REQ="$ROOT/requirements.txt"
+ENV_EX="$ROOT/.env.example"
+
+touch "$REQ"
+grep -qiE '^[[:space:]]*requests([[:space:]]*==|$)' "$REQ" || echo 'requests==2.32.3' >> "$REQ"
+grep -qiE '^[[:space:]]*python-dotenv([[:space:]]*==|$)' "$REQ" || echo 'python-dotenv==1.0.1' >> "$REQ"
+
+touch "$ENV_EX"
+add_env () { key="$1"; val="$2"; grep -q "^$key=" "$ENV_EX" || printf "%s=%s\n" "$key" "$val" >> "$ENV_EX"; }
+echo "" >> "$ENV_EX"
+echo "# ===== Etherscan family (doru adlandrma) =====" >> "$ENV_EX"
+add_env ETHERSCAN_API_URL "https://api.etherscan.io/api"
+add_env ARBISCAN_API_URL "https://api.arbiscan.io/api"
+add_env OPTIMISM_API_URL "https://api-optimistic.etherscan.io/api"
+add_env BSCSCAN_API_URL "https://api.bscscan.com/api"
+add_env SNOWSCAN_API_URL "https://api.snowscan.xyz/api"
+add_env ETHERSCAN_API_KEY "VZFDUWB3YGQ1YCDKTCU1D6DDSS"
+add_env ARBISCAN_API_KEY "B6SVGA7K3YBJEQ69AFKJF4YHVX"
+add_env OPTIMISM_API_KEY "66N5FRNV1ZD4I87S7MAHCJVXFJ"
+add_env BSCSCAN_API_KEY "ZM8ACMJB67C2IXKKBF8URFUNSY"
+add_env SNOWSCAN_API_KEY "B6SVGA7K3YBJEQ69AFKJF4YHVX"
+add_env ETH_ADDRESS "0xda93812D7D1F3D326ef8156D94175238948Da04f"
+
+cat > "$ROOT/integrations/etherscan/etherscan_client.py" <<'PY'
+from __future__ import annotations
+import os, typing as t, requests
+
+class EtherscanClient:
+    def __init__(self, api_key: str|None=None, base_url: str|None=None, timeout: int=20):
+        self.api_key  = api_key or os.getenv("ETHERSCAN_API_KEY","").strip()
+        self.base_url = (base_url or os.getenv("ETHERSCAN_API_URL","https://api.etherscan.io/api")).rstrip("/")
+        if not self.api_key:
+            raise RuntimeError("ETHERSCAN_API_KEY missing")
+        self.s = requests.Session()
+        self.timeout = timeout
+
+    def _get(self, **params) -> dict:
+        p = {**params, "apikey": self.api_key}
+        r = self.s.get(self.base_url, params=p, timeout=self.timeout)
+        r.raise_for_status()
+        data = r.json()
+        if isinstance(data, dict) and str(data.get("status","1")) == "0" and data.get("message","").lower().startswith("notok"):
+            raise RuntimeError(f"Etherscan NOTOK: {data.get('result')}")
+        return data
+
+    def get_balance_wei(self, address: str) -> int:
+        j = self._get(module="account", action="balance", address=address, tag="latest")
+        return int(j["result"])
+
+    def get_txlist(self, address: str, start_block: int=0, end_block: int=99999999,
+                   page: int=1, offset: int=100, sort: str="asc") -> list[dict]:
+        j = self._get(module="account", action="txlist", address=address,
+                      startblock=start_block, endblock=end_block, page=page, offset=offset, sort=sort)
+        res = j.get("result", [])
+        return res if isinstance(res, list) else []
+
+    def get_logs(self, address: str, from_block: int, to_block: int,
+                 topic0: str|None=None, topic1: str|None=None, topic2: str|None=None, topic3: str|None=None,
+                 page: int=1, offset: int=1000) -> list[dict]:
+        params: dict[str,t.Any] = dict(module="logs", action="getLogs",
+                                       address=address, fromBlock=from_block, toBlock=to_block,
+                                       page=page, offset=offset)
+        if topic0: params["topic0"]=topic0
+        if topic1: params["topic1"]=topic1
+        if topic2: params["topic2"]=topic2
+        if topic3: params["topic3"]=topic3
+        j = self._get(**params)
+        res = j.get("result", [])
+        return res if isinstance(res, list) else []
+PY
+
+cat > "$ROOT/integrations/etherscan/etherscan_demo.py" <<'PY'
+import os, json
+from decimal import Decimal
+from etherscan_client import EtherscanClient
+
+def wei_to_eth(wei: int) -> str:
+    return str(Decimal(wei) / Decimal(10**18))
+
+def main():
+    addr = os.getenv("ETH_ADDRESS", "").strip()
+    if not addr:
+        raise SystemExit("Set ETH_ADDRESS in environment/.env")
+    cli = EtherscanClient()
+    bal_wei = cli.get_balance_wei(addr)
+    txs = cli.get_txlist(addr, page=1, offset=5, sort="desc")
+    print(json.dumps({
+        "address": addr,
+        "balance_wei": bal_wei,
+        "balance_eth": wei_to_eth(bal_wei),
+        "last_5_txs": txs
+    }, indent=2))
+
+if __name__ == "__main__":
+    main()
+PY
+
+echo "[OK] Etherscan entegrasyonu eklendi:"
+echo " - $ROOT/integrations/etherscan/etherscan_client.py"
+echo " - $ROOT/integrations/etherscan/etherscan_demo.py"
+echo " - $ROOT/.env.example (API URL/KEY alanlar eklendi)"
+echo
+echo "Kullanm:"
+echo "  cp \"$ROOT/.env.example\" \"$ROOT/.env\""
+echo "  # .env iine kendi API KEY'inizi ve ETH_ADDRESS'i yazn"
+echo "  cd \"$ROOT\" && python3 -m venv .venv-host && source .venv-host/bin/activate"
+echo "  pip install --upgrade pip && pip install -r requirements.txt"
+echo "  python integrations/etherscan/etherscan_demo.py"
+BASH

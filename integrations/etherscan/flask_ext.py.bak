@@ -1,0 +1,265 @@
+try:n    from .etherscan_client_fixed import EtherscanClient as _QAI_EtherscanClientnexcept Exception:n    _QAI_EtherscanClient = Nonenfrom __future__ import annotations
+import os
+from flask import Blueprint, current_app, jsonify, request
+from .etherscan_client import EtherscanClient, EtherscanV2Client
+
+bp = Blueprint("qai_etherscan", __name__)
+
+# Basit explorer map (V1 tarzı çok-ağ: host değişimi)
+EXPLORER_URLS = {
+    "etherscan":  os.getenv("ETHERSCAN_API_URL",  "https://api.etherscan.io/api"),
+    "arbiscan":   os.getenv("ARBISCAN_API_URL",   "https://api.arbiscan.io/api"),
+    "optimism":   os.getenv("OPTIMISM_API_URL",   "https://api-optimistic.etherscan.io/api"),
+    "bscscan":    os.getenv("BSCSCAN_API_URL",    "https://api.bscscan.com/api"),
+    "snowscan":   os.getenv("SNOWSCAN_API_URL",   "https://api.snowscan.xyz/api"),
+}
+
+def _pick_v1_client():
+    which = request.args.get("explorer","etherscan").lower()
+    base = EXPLORER_URLS.get(which, EXPLORER_URLS["etherscan"])
+    return EtherscanClient(base_url=base)
+
+def _pick_v2_client():
+    chainid = request.args.get("chainid", type=int)  # örn: 1, 10, 42161...
+    return EtherscanV2Client(chain_id=chainid)
+
+@bp.get("/etherscan/balance")
+def etherscan_balance():
+    """?address=0x.. [&explorer=arbiscan|optimism|bscscan|snowscan]  V2 için: &v2=1&chainid=1"""
+    addr = request.args.get("address") or os.getenv("ETH_ADDRESS","").strip()
+    if not addr:
+        return jsonify(ok=False, error="address required"), 400
+    if request.args.get("v2") == "1":
+        cli = _pick_v2_client()
+        # V2 docs'ta modül/aksiyon desteği sürüyor; örnek olarak account/balance gösterimi:
+        data = cli._get(module="account", action="balance", address=addr, tag="latest")
+        return jsonify(ok=True, v="v2", result=data)
+    cli = _pick_v1_client()
+    bal = cli.get_balance_wei(addr)
+    return jsonify(ok=True, v="v1", address=addr, balance_wei=bal, balance_eth=str(bal/10**18))
+
+@bp.get("/etherscan/txlist")
+def etherscan_txlist():
+    addr = request.args.get("address") or os.getenv("ETH_ADDRESS","").strip()
+    if not addr:
+        return jsonify(ok=False, error="address required"), 400
+    page   = request.args.get("page",   default=1, type=int)
+    offset = request.args.get("offset", default=10, type=int)
+    sort   = request.args.get("sort",   default="asc")
+    if request.args.get("v2") == "1":
+        cli = _pick_v2_client()
+        data = cli._get(module="account", action="txlist", address=addr,
+                        startblock=0, endblock=99999999, page=page, offset=offset, sort=sort)
+        return jsonify(ok=True, v="v2", result=data)
+    cli = _pick_v1_client()
+    txs = cli.get_txlist(addr, page=page, offset=offset, sort=sort)
+    return jsonify(ok=True, v="v1", address=addr, count=len(txs), result=txs)
+
+@bp.get("/etherscan/logs")
+def etherscan_logs():
+    """?address=0x..&from=START&to=END[&topic0=0x...&topic1=0x...&opr=and|or]  V2: &v2=1&chainid=..."""
+    addr = request.args.get("address"); fb = request.args.get("from", type=int); tb = request.args.get("to", type=int)
+    topic0 = request.args.get("topic0"); topic1 = request.args.get("topic1"); topic2 = request.args.get("topic2"); topic3 = request.args.get("topic3")
+    opr = request.args.get("opr")  # 'and' | 'or' → topicX_Y_opr
+    if not addr or fb is None or tb is None:
+        return jsonify(ok=False, error="address, from, to required"), 400
+    if request.args.get("v2") == "1":
+        cli = _pick_v2_client()
+        params = dict(module="logs", action="getLogs", address=addr, fromBlock=fb, toBlock=tb)
+        if topic0: params["topic0"]=topic0
+        if topic1: params["topic1"]=topic1
+        if topic2: params["topic2"]=topic2
+        if topic3: params["topic3"]=topic3
+        # operator şablonu: topic0_1_opr=and/or vb. (doküman referanslı)
+        if topic0 and topic1 and opr in ("and","or"):
+            params["topic0_1_opr"]=opr
+        if topic1 and topic2 and opr in ("and","or"):
+            params["topic1_2_opr"]=opr
+        if topic2 and topic3 and opr in ("and","or"):
+            params["topic2_3_opr"]=opr
+        data = cli._get(**params)
+        return jsonify(ok=True, v="v2", result=data)
+    # V1
+    cli = _pick_v1_client()
+    logs = cli.get_logs(addr, fb, tb, topic0=topic0, topic1=topic1, topic2=topic2, topic3=topic3)
+    return jsonify(ok=True, v="v1", address=addr, count=len(logs), result=logs)
+
+def register_qai_etherscan(app):
+    app.register_blueprint(bp)
+    return app
+
+@bp.get("/etherscan/erc20-transfers")
+def etherscan_erc20_transfers():
+    """
+    V1: /etherscan/erc20-transfers?address=0x..[&contractaddress=0x..]&startblock=0&endblock=99999999&page=1&offset=100&sort=asc[&explorer=bscscan|arbiscan|optimism|snowscan]
+    V2: /etherscan/erc20-transfers?v2=1&chainid=1&address=0x..[&contractaddress=0x..]&startblock=..&endblock=..&page=..&offset=..&sort=..
+    """
+    address = request.args.get("address")
+    contractaddress = request.args.get("contractaddress")
+    startblock = request.args.get("startblock", default=0, type=int)
+    endblock   = request.args.get("endblock",   default=99999999, type=int)
+    page       = request.args.get("page",       default=1, type=int)
+    offset     = request.args.get("offset",     default=100, type=int)
+    sort       = request.args.get("sort",       default="asc")
+    if request.args.get("v2") == "1":
+        cli = _pick_v2_client()
+        data = cli._get(module="account", action="tokentx",
+                        address=address, contractaddress=contractaddress,
+                        startblock=startblock, endblock=endblock, page=page, offset=offset, sort=sort)
+        return jsonify(ok=True, v="v2", result=data)
+    cli = _pick_v1_client()
+    out = cli.get_erc20_transfers(address=address, contractaddress=contractaddress,
+                                  start_block=startblock, end_block=endblock, page=page, offset=offset, sort=sort)
+    return jsonify(ok=True, v="v1", count=len(out), result=out)
+
+@bp.post("/etherscan/verify")
+def etherscan_verify():
+    """
+    V1 (default host)  : POST form fields -> module=contract&action=verifysourcecode
+    V2 (çok-zincir)    : ?v2=1&chainid=... ile POST
+    Beklenen alanlar (örnek): contractaddress, sourceCode, contractname, compilerversion, optimizationUsed, runs, evmversion, constructorArguements, licenseType, (opsiyonel libraryname1/libraryaddress1 ...).
+    """
+    use_v2 = request.args.get("v2") == "1"
+    chainid = request.args.get("chainid", type=int)
+
+    data = request.form.to_dict() or (request.get_json(silent=True) or {})
+    if "contractaddress" not in data or "sourceCode" not in data or "compilerversion" not in data:
+        return jsonify(ok=False, error="Required: contractaddress, sourceCode, compilerversion"), 400
+
+    if use_v2:
+        cli = _pick_v2_client()
+        if chainid is None:
+            return jsonify(ok=False, error="chainid required for v2"), 400
+        resp = cli.verify_source_code(chainid=chainid, **data)
+        return jsonify(ok=True, v="v2", result=resp)
+    else:
+        cli = _pick_v1_client()
+        resp = cli.verify_source_code(**data)  # type: ignore
+        return jsonify(ok=True, v="v1", result=resp)
+
+@bp.get("/etherscan/verify/status")
+def etherscan_verify_status():
+    """
+    V1:  /etherscan/verify/status?guid=... 
+    V2:  /etherscan/verify/status?v2=1&chainid=1&guid=...
+    """
+    guid = request.args.get("guid")
+    if not guid:
+        return jsonify(ok=False, error="guid required"), 400
+    if request.args.get("v2") == "1":
+        chainid = request.args.get("chainid", type=int)
+        if chainid is None:
+            return jsonify(ok=False, error="chainid required for v2"), 400
+        cli = _pick_v2_client()
+        resp = cli.check_verify_status(guid=guid, chainid=chainid)
+        return jsonify(ok=True, v="v2", result=resp)
+    cli = _pick_v1_client()
+    resp = cli.check_verify_status(guid=guid)
+    return jsonify(ok=True, v="v1", result=resp)
+
+
+@bp.get("/etherscan/erc721-transfers")
+def etherscan_erc721_transfers():
+    """
+    V1: /etherscan/erc721-transfers?address=0x..[&contractaddress=0x..]&startblock=0&endblock=99999999&page=1&offset=100&sort=asc[&explorer=...]
+    V2: /etherscan/erc721-transfers?v2=1&chainid=1&address=0x..[&contractaddress=0x..]&startblock=..&endblock=..&page=..&offset=..&sort=..
+    """
+    address = request.args.get("address")
+    contractaddress = request.args.get("contractaddress")
+    startblock = request.args.get("startblock", default=0, type=int)
+    endblock   = request.args.get("endblock",   default=99999999, type=int)
+    page       = request.args.get("page",       default=1, type=int)
+    offset     = request.args.get("offset",     default=100, type=int)
+    sort       = request.args.get("sort",       default="asc")
+    if request.args.get("v2") == "1":
+        cli = _pick_v2_client()
+        data = cli._get(module="account", action="tokennfttx",
+                        address=address, contractaddress=contractaddress,
+                        startblock=startblock, endblock=endblock, page=page, offset=offset, sort=sort)
+        return jsonify(ok=True, v="v2", result=data)
+    cli = _pick_v1_client()
+    out = cli.get_erc721_transfers(address=address, contractaddress=contractaddress,
+                                   start_block=startblock, end_block=endblock, page=page, offset=offset, sort=sort)
+    return jsonify(ok=True, v="v1", count=len(out), result=out)
+
+
+
+@bp.get("/etherscan/erc1155-transfers")
+def etherscan_erc1155_transfers():
+    """
+    V1: /etherscan/erc1155-transfers?address=0x..[&contractaddress=0x..]&startblock=0&endblock=99999999&page=1&offset=100&sort=asc[&explorer=...]
+    V2: /etherscan/erc1155-transfers?v2=1&chainid=1&address=0x..[&contractaddress=0x..]&startblock=..&endblock=..&page=..&offset=..&sort=..
+    """
+    address = request.args.get("address")
+    contractaddress = request.args.get("contractaddress")
+    startblock = request.args.get("startblock", default=0, type=int)
+    endblock   = request.args.get("endblock",   default=99999999, type=int)
+    page       = request.args.get("page",       default=1, type=int)
+    offset     = request.args.get("offset",     default=100, type=int)
+    sort       = request.args.get("sort",       default="asc")
+    if request.args.get("v2") == "1":
+        cli = _pick_v2_client()
+        data = cli._get(module="account", action="token1155tx",
+                        address=address, contractaddress=contractaddress,
+                        startblock=startblock, endblock=endblock, page=page, offset=offset, sort=sort)
+        return jsonify(ok=True, v="v2", result=data)
+    cli = _pick_v1_client()
+    out = cli.get_erc1155_transfers(address=address, contractaddress=contractaddress,
+                                    start_block=startblock, end_block=endblock, page=page, offset=offset, sort=sort)
+    return jsonify(ok=True, v="v1", count=len(out), result=out)
+
+
+
+@bp.get("/etherscan/tokeninfo")
+def etherscan_tokeninfo():
+    """
+    V1: /etherscan/tokeninfo?contractaddress=0x..
+    V2: /etherscan/tokeninfo?v2=1&chainid=1&contractaddress=0x..
+    Not: Etherscan tokeninfo ucu 2 rps throttled.
+    """
+    caddr = request.args.get("contractaddress")
+    if not caddr:
+        return jsonify(ok=False, error="contractaddress required"), 400
+    if request.args.get("v2") == "1":
+        cli = _pick_v2_client()
+        data = cli._get(module="token", action="tokeninfo", contractaddress=caddr)
+        return jsonify(ok=True, v="v2", result=data)
+    cli = _pick_v1_client()
+    data = cli.token_info(caddr)
+    return jsonify(ok=True, v="v1", result=data)
+
+
+
+@bp.get("/etherscan/addresstokenbalance")
+def etherscan_addresstokenbalance():
+    """
+    V1: /etherscan/addresstokenbalance?contractaddress=0x..&address=0x..[&tag=latest]
+    V2: /etherscan/addresstokenbalance?v2=1&chainid=1&contractaddress=0x..&address=0x..[&tag=latest]
+    """
+    caddr = request.args.get("contractaddress")
+    addr  = request.args.get("address")
+    tag   = request.args.get("tag", default="latest")
+    if not caddr or not addr:
+        return jsonify(ok=False, error="contractaddress and address required"), 400
+    if request.args.get("v2") == "1":
+        cli = _pick_v2_client()
+        data = cli._get(module="account", action="tokenbalance",
+                        contractaddress=caddr, address=addr, tag=tag)
+        return jsonify(ok=True, v="v2", result=data)
+    cli = _pick_v1_client()
+    data = cli.address_token_balance(contractaddress=caddr, address=addr, tag=tag)
+    return jsonify(ok=True, v="v1", result=data)
+
+
+def _qai_build_client(**kw):
+    try:
+        if _QAI_EtherscanClient is not None:
+            return _QAI_EtherscanClient(**kw)
+    except Exception:
+        pass
+    try:
+        from .etherscan_client import EtherscanClient as _LegacyClient
+        return _LegacyClient(**kw)
+    except Exception as e:
+        raise
+

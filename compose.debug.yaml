@@ -1,0 +1,8 @@
+services:
+  quantumaidockerizedsystem:
+    image: quantumaidockerizedsystem
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5002:5002

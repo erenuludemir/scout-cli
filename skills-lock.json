@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "etherscan": {
+      "source": "docs.etherscan.io",
+      "sourceType": "well-known",
+      "computedHash": "8ecfb6251d689b5973f886398947e710ab4c3e8f2daa5eaf1850ac553b2ba05f"
+    }
+  }
+}

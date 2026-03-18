@@ -1,0 +1,198 @@
+bash -c '
+set -euo pipefail
+
+APP_DIR="${APP_DIR:-$HOME/QuantumAI-Dockerized-System}"
+COMPOSE_FILE="${COMPOSE_FILE:-$APP_DIR/compose.master.yml}"
+
+echo ">> QAI bootstrap başlıyor. APP_DIR=$APP_DIR"
+
+# ---------- 0) PATH & temel araçların sağlamlaştırılması ----------
+# GNU grep (gnubin) ve Homebrew’ü öne al
+if ! grep -q "grep/libexec/gnubin" "$HOME/.zshrc" 2>/dev/null; then
+  printf "%s\n" \
+  "export PATH=\"/opt/homebrew/opt/grep/libexec/gnubin:/opt/homebrew/bin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:\$PATH\"" \
+  >> "$HOME/.zshrc"
+fi
+
+# Fuel PATH
+if ! grep -q ".fuelup/bin" "$HOME/.zshrc" 2>/dev/null; then
+  echo "export PATH=\"\$HOME/.fuelup/bin:\$PATH\"" >> "$HOME/.zshrc"
+fi
+
+# Shell içine de yansıt
+export PATH="/opt/homebrew/opt/grep/libexec/gnubin:/opt/homebrew/bin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:$PATH"
+export PATH="$HOME/.fuelup/bin:$PATH"
+
+# ---------- 1) Agresif temizlik ----------
+echo ">> Agresif temizlik (log/cache/Xcode/Simulator/Trash)"
+osascript -e '\''tell application "Finder" to empty the trash'\'' || true
+
+sudo bash -c '\''for d in /var/log /private/var/log "$HOME/Library/Logs"; do
+  [ -d "$d" ] && find "$d" -type f -name "*.log*" -exec sh -c '"'"'
+: > "$1"
+'"'"' _ {} \; 2>/dev/null
+done'\''
+
+brew cleanup -s || true
+rm -rf "$HOME/Library/Caches/Homebrew" "$HOME/Library/Logs/Homebrew" 2>/dev/null || true
+python3 -m pip cache purge 2>/dev/null || true
+find "$HOME/Library/Caches" -maxdepth 3 -iname "pip" -exec rm -rf {} + 2>/dev/null || true
+rm -rf "$HOME/Library/Caches/"* 2>/dev/null || true
+
+rm -rf "$HOME/Library/Developer/Xcode/DerivedData" \
+       "$HOME/Library/Developer/Xcode/Archives" 2>/dev/null || true
+rm -rf "$HOME/Library/Developer/Xcode/iOS DeviceSupport/"* 2>/dev/null || true
+rm -rf "$HOME/Library/Developer/Xcode/watchOS DeviceSupport/"* 2>/dev/null || true
+rm -rf "$HOME/Library/Developer/Xcode/tvOS DeviceSupport/"* 2>/dev/null || true
+rm -rf "$HOME/Library/Developer/CoreSimulator/Caches" 2>/dev/null || true
+sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes/* 2>/dev/null || true
+xcrun simctl delete unavailable 2>/dev/null || true
+
+npm cache clean --force 2>/dev/null || true
+yarn cache clean 2>/dev/null || true
+find "$HOME" -type d -name "__pycache__" -prune -exec rm -rf {} + 2>/dev/null || true
+
+# Yer açmak için gereksiz Docker raw (Docker kapalıyken)
+osascript -e '\''tell application "Docker" to quit'\'' 2>/dev/null || true
+sleep 3
+pkill -f com.docker 2>/dev/null || true
+rm -f  "$HOME/Library/Containers/com.docker.docker/Data/vms/0/Docker.raw" 2>/dev/null || true
+
+# APFS snapshot inceltme (sessiz geç)
+sudo tmutil thinlocalsnapshots / 20000000000 4 2>/dev/null || true
+
+echo ">> Disk durumu:"
+df -h /System/Volumes/Data || true
+
+# ---------- 2) macOS hypervisor guard ----------
+OSVER="$(sw_vers -productVersion 2>/dev/null || echo unknown)"
+OSBUILD="$(sw_vers -buildVersion 2>/dev/null || echo unknown)"
+echo ">> macOS $OSVER ($OSBUILD)"
+
+# macOS 15.4 beta 1 özel bug: VM başlatma sorunlu
+if [[ "$OSVER" == 15.4* ]] && [[ "$OSBUILD" =~ (beta|Beta|A|B) ]]; then
+  echo "UYARI: macOS 15.4 beta tespit edildi. Hypervisor hatası oluşabilir. OS güncellemeniz önerilir."
+fi
+
+# ---------- 3) Docker sıfır kurulum adımı ----------
+echo ">> Docker Desktop açılıyor"
+open -a Docker || true
+
+# Docker Engine hazır hale gelene kadar bekle (maks 90 sn)
+echo -n ">> Docker bekleniyor"
+for i in {1..90}; do
+  if docker info >/dev/null 2>&1; then echo " [OK]"; break; fi
+  echo -n "."
+  sleep 1
+done
+docker info >/dev/null 2>&1 || { echo "\n!! Docker hazır değil. Devam edilmiyor."; exit 0; }
+
+# Tam temizlik (şu an boş ama idempotent)
+docker system prune -a --volumes -f || true
+
+# ---------- 4) QAI yönetim betiği ----------
+mkdir -p "$APP_DIR/.qai"
+cat > "$APP_DIR/.qai/qai-manage.sh" << "EOSH"
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP_DIR="${APP_DIR:-$HOME/QuantumAI-Dockerized-System}"
+COMPOSE_FILE="${COMPOSE_FILE:-$APP_DIR/compose.master.yml}"
+HOST_PORT="${HOST_PORT:-5003}"
+
+log(){ printf "[%s] %s\n" "$(date +%F" "%T)" "$*"; }
+
+# 1) Docker hazır mı?
+tries=60
+while ! docker info >/dev/null 2>&1; do
+  ((tries--)) || { log "Docker gelmedi, çıkıyorum"; exit 0; }
+  sleep 1
+done
+
+# 2) macOS hypervisor beta guard: sadece logla
+OSVER="$(sw_vers -productVersion 2>/dev/null || echo unknown)"
+OSBUILD="$(sw_vers -buildVersion 2>/dev/null || echo unknown)"
+if [[ "$OSVER" == 15.4* ]] && [[ "$OSBUILD" =~ (beta|Beta|A|B) ]]; then
+  log "Uyarı: macOS 15.4 beta üzerinde hypervisor sorunları görülebilir."
+fi
+
+# 3) Compose var mı?
+if [[ ! -f "$COMPOSE_FILE" ]]; then
+  log "compose dosyası yok: $COMPOSE_FILE"
+  exit 0
+fi
+
+# 4) Kademeli ayağa kaldır (önce ana servisler)
+docker compose -f "$COMPOSE_FILE" pull gli-mainnet || true
+docker compose -f "$COMPOSE_FILE" up -d gli-mainnet || true
+sleep 2
+docker compose -f "$COMPOSE_FILE" up -d gli gli-sepolia || true
+sleep 2
+docker compose -f "$COMPOSE_FILE" up -d quantumai-usdt autoheal watchtower || true
+
+# 5) Hızlı sağlık kontrolü
+curl -sf "http://127.0.0.1:${HOST_PORT}/" \
+ || curl -sf "http://127.0.0.1:5002/" \
+ || log "API henüz yanıt vermedi (başlangıç gecikmesi normal olabilir)"
+EOSH
+chmod +x "$APP_DIR/.qai/qai-manage.sh"
+
+# ---------- 5) launchd ajanı (login’de otomatik başlasın) ----------
+PLIST="$HOME/Library/LaunchAgents/com.qai.bootstrap.plist"
+mkdir -p "$(dirname "$PLIST")"
+cat > "$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+ <dict>
+  <key>Label</key><string>com.qai.bootstrap</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$APP_DIR/.qai/qai-manage.sh</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>APP_DIR</key><string>$APP_DIR</string>
+    <key>COMPOSE_FILE</key><string>$COMPOSE_FILE</string>
+    <key>HOST_PORT</key><string>${HOST_PORT:-5003}</string>
+    <key>PATH</key><string>$PATH</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key><false/>
+  </dict>
+  <key>StandardOutPath</key><string>$APP_DIR/.qai/agent.out.log</string>
+  <key>StandardErrorPath</key><string>$APP_DIR/.qai/agent.err.log</string>
+ </dict>
+</plist>
+EOF
+
+launchctl unload "$PLIST" 2>/dev/null || true
+launchctl load -w "$PLIST"
+
+# ---------- 6) Fuel toolchain (yer varsa kur) ----------
+# 5 GB’tan azsa indirilmeyi atla
+FREE_GB=$(df -g /System/Volumes/Data | awk "NR==2{print \$4}")
+if [[ "${FREE_GB:-0}" -ge 5 ]]; then
+  echo ">> Fuel toolchain kurulumu"
+  command -v fuelup >/dev/null 2>&1 || true  # fuelup varsa kullanacağız
+  # fuelup kurulu değilse kullanıcı zaten manuel başlatmıştı; sadece temizlik/kurulum deneriz
+  fuelup self update 2>/dev/null || true
+  fuelup toolchain uninstall latest 2>/dev/null || true
+  rm -rf "$HOME/.fuelup/store/forc-"* "$HOME/.fuelup/store/forc-wallet-"* "$HOME/.fuelup/store/fuel-core-"* 2>/dev/null || true
+  fuelup toolchain install latest || true
+else
+  echo ">> Fuel kurulumu atlandı (boş alan ${FREE_GB:-0} GB)."
+fi
+
+echo ">> Kurulum tamam. Ajan yüklendi: com.qai.bootstrap"
+echo ">> İlk çalıştırmayı tetikliyorum..."
+launchctl kickstart -k gui/$(id -u)/com.qai.bootstrap || true
+
+echo ">> Durum:"
+docker compose -f "$COMPOSE_FILE" ps || true
+
+echo ">> Bitti."
+'

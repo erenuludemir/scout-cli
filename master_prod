@@ -1,0 +1,466 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP_DIR="${APP_DIR:-$HOME/QuantumAI-Dockerized-System}"
+ENVFILE="${ENVFILE:-$HOME/QuantumAI-Dockerized-System/.env}"
+IMG="${IMG:-erenuludemir/gli-app:latest}"
+CTR="${CTR:-gli-container}"
+HOST_PORT="${HOST_PORT:-5003}"
+
+CHAIN="${CHAIN:-eth}"
+
+DB_ENABLE="${DB_ENABLE:-1}"
+DB_CTR="${DB_CTR:-quantumai-db}"
+DB_PORT="${DB_PORT:-5435}"
+DB_USER="${DB_USER:-qa}"
+DB_PASS="${DB_PASS:-qa}"
+DB_NAME="${DB_NAME:-quantumai}"
+
+GLI_DRY_RUN=1
+REBUILD=0
+AMOUNT_DEFAULT=100000
+RECIP_FALLBACK="0xc5C600c86E13e8c475BCEbC981966d47E171A18c"
+
+TRON_NODE="${TRON_NODE:-https://api.trongrid.io}"
+TRON_API_KEY="${TRON_API_KEY:-}"
+TRON_SENDER="${TRON_SENDER:-}"
+TRON_PRIVKEY="${TRON_PRIVKEY:-}"
+TRON_USDT="${TRON_USDT:-TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t}"
+
+usage() {
+  cat <<USG
+Kullanım:
+  ./master_prod [--dry-run|--live] [--rebuild] [--no-db] [--port=5007] [--env=/path/.env] [--amount=100000] [--chain=eth|tron]
+
+Seçenekler:
+  --dry-run           : (varsayılan) Ağa yayınlama. Raw tx & hash döndür.
+  --live              : Ağa yayınla (mainnet).
+  --rebuild           : GLI Docker imajını yeniden derle (app.py & Dockerfile yoksa oto-oluşturur).
+  --no-db             : PostgreSQL kurulumu/loglamayı atla.
+  --port=PORT         : GLI HTTP host portu (default: ${HOST_PORT}).
+  --env=FILE          : .env dosya yolu (INFURA ve ETH cüzdanı için).
+  --amount=NUM        : USDT miktarı (6 ondalık; 100000 => 100,000 USDT).
+  --chain=eth|tron    : Varsayılan eth. TRON için --chain=tron kullan.
+USG
+}
+
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) GLI_DRY_RUN=1 ;;
+    --live) GLI_DRY_RUN=0 ;;
+    --rebuild) REBUILD=1 ;;
+    --no-db) DB_ENABLE=0 ;;
+    --port=*) HOST_PORT="${arg#*=}" ;;
+    --env=*) ENVFILE="${arg#*=}" ;;
+    --amount=*) AMOUNT_DEFAULT="${arg#*=}" ;;
+    --chain=*) CHAIN="${arg#*=}" ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Bilinmeyen argüman: $arg"; usage; exit 1 ;;
+  esac
+done
+
+upper() { printf "%s" "$1" | tr '[:lower:]' '[:upper:]'; }
+
+need() { command -v "$1" >/dev/null 2>&1 || { echo "❌ Gerekli komut yok: $1"; exit 1; }; }
+
+need docker
+need curl
+need jq
+need awk
+
+mkdir -p "$APP_DIR/logs" "$APP_DIR/tmp"
+
+if [ "$(upper "$CHAIN")" = "ETH" ]; then
+  if [ ! -f "$ENVFILE" ]; then
+    echo "❌ .env bulunamadı: $ENVFILE"
+    exit 1
+  fi
+  required_vars=(INFURA_PROJECT_ID ETH_SENDER_ADDRESS ETH_PRIVATE_KEY)
+  missing=()
+  for v in "${required_vars[@]}"; do
+    if ! grep -Eq "^${v}=" "$ENVFILE"; then missing+=("$v"); fi
+  done
+  if [ "${#missing[@]}" -gt 0 ]; then
+    printf "❌ .env eksik: %s\n" "${missing[@]}"
+    exit 1
+  fi
+  RECIP="$(grep -E '^ETH_RECIPIENT_ADDRESS=' "$ENVFILE" | cut -d= -f2 || true)"
+  if [ -z "${RECIP:-}" ]; then RECIP="$RECIP_FALLBACK"; fi
+
+  echo "[master] ✅ .env OK -> $ENVFILE"
+  awk -F= '/^INFURA_PROJECT_ID=/{print "   INFURA_PROJECT_ID=" substr($2,1,6) "***" substr($2,length($2)-3)}' "$ENVFILE" || true
+  awk -F= '/^ETH_SENDER_ADDRESS=/{print "   ETH_SENDER_ADDRESS=" $2}' "$ENVFILE" || true
+  awk -F= '/^ETH_PRIVATE_KEY=/{print "   ETH_PRIVATE_KEY=" substr($2,1,6) "***" substr($2,length($2)-3)}' "$ENVFILE" || true
+  [ -n "$RECIP" ] && echo "   ETH_RECIPIENT_ADDRESS=$RECIP"
+else
+  :
+fi
+
+if [ "$DB_ENABLE" -eq 1 ]; then
+  echo "[master] ➜ PostgreSQL başlatılıyor (container: $DB_CTR, port: $DB_PORT)…"
+  docker rm -f "$DB_CTR" >/dev/null 2>&1 || true
+  docker run -d --name "$DB_CTR" \
+    -e POSTGRES_USER="$DB_USER" \
+    -e POSTGRES_PASSWORD="$DB_PASS" \
+    -e POSTGRES_DB="$DB_NAME" \
+    -p "${DB_PORT}:5432" \
+    --health-cmd='pg_isready -U $POSTGRES_USER -d $POSTGRES_DB' \
+    --health-interval=5s --health-timeout=3s --health-retries=30 \
+    postgres:16-alpine >/dev/null
+
+  echo -n "[master]    ▹ DB sağlığı bekleniyor"
+  for i in $(seq 1 90); do
+    if docker inspect --format='{{json .State.Health.Status}}' "$DB_CTR" 2>/dev/null | grep -q healthy; then
+      echo " ✓"
+      break
+    fi
+    echo -n "."
+    sleep 2
+  done
+
+  echo "[master] ➜ tx_logs (jsonb) oluşturuluyor…"
+  docker exec -i "$DB_CTR" psql -U "$DB_USER" -d "$DB_NAME" <<'SQL' >/dev/null
+CREATE TABLE IF NOT EXISTS tx_logs (
+  id BIGSERIAL PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  chain TEXT,
+  network TEXT,
+  status TEXT,
+  tx_hash TEXT,
+  payload JSONB
+);
+SQL
+fi
+
+APP_PY="${APP_DIR}/app.py"
+DOCKERFILE="${APP_DIR}/Dockerfile"
+ensure_gli_files() {
+  if [ ! -f "$APP_PY" ] || [ ! -f "$DOCKERFILE" ]; then
+    echo "[master] ℹ️  app.py / Dockerfile bulunamadı; minimal GLI servisi oluşturuluyor: $APP_DIR"
+    mkdir -p "$APP_DIR"
+    cat >"$APP_PY" <<'PY'
+from flask import Flask, request, jsonify
+from web3 import Web3
+from dotenv import load_dotenv
+import os, time, json
+
+load_dotenv()
+INFURA_PROJECT_ID = os.getenv("INFURA_PROJECT_ID")
+if not INFURA_PROJECT_ID: raise RuntimeError("INFURA_PROJECT_ID missing")
+w3 = Web3(Web3.HTTPProvider(f"https://mainnet.infura.io/v3/{INFURA_PROJECT_ID}"))
+
+SENDER = os.getenv("ETH_SENDER_ADDRESS")
+PRIV   = os.getenv("ETH_PRIVATE_KEY")
+if not SENDER or not PRIV: raise RuntimeError("ETH_SENDER_ADDRESS / ETH_PRIVATE_KEY missing")
+
+SENDER = Web3.to_checksum_address(SENDER)
+USDT   = Web3.to_checksum_address("0xdAC17F958D2ee523a2206206994597C13D831ec7")
+
+ERC20_ABI = [
+  {"constant":False,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"type":"function"},
+  {"constant":True,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},
+]
+erc20 = w3.eth.contract(address=USDT, abi=ERC20_ABI)
+app = Flask(__name__)
+
+def _tok6(n): return w3.from_wei(n, "mwei")  # USDT 6 decimals
+
+@app.get("/")
+def root():
+  return {"ok": True, "network":"ethereum-mainnet", "sender": SENDER}
+
+@app.post("/transfer")
+def transfer():
+  try:
+    data = request.get_json(force=True) or {}
+    recipient_raw = data.get("recipient")
+    amount = int(data.get("amount", 0))  # in 10^6
+    if not recipient_raw or amount <= 0:
+      return jsonify({"status":"error","message":"recipient/amount required"}), 400
+    recipient = Web3.to_checksum_address(recipient_raw)
+    value_usdt = w3.to_wei(amount, "mwei")
+
+    nonce = w3.eth.get_transaction_count(SENDER)
+    gas_price = w3.eth.gas_price
+    built = erc20.functions.transfer(recipient, value_usdt).build_transaction({
+      "chainId": 1, "from": SENDER, "nonce": nonce, "gas": 120000, "gasPrice": gas_price
+    })
+    signed = w3.eth.account.sign_transaction(built, private_key=PRIV)
+    raw_hex = signed.rawTransaction.hex()
+    hash_hex = w3.to_hex(w3.keccak(signed.rawTransaction))
+
+    if os.getenv("GLI_DRY_RUN", "1") == "1":
+      return jsonify({
+        "status":"preview",
+        "tx_hash_computed": hash_hex,
+        "raw_tx": raw_hex,
+        "gas_price_wei": int(gas_price),
+        "gas_limit": int(built.get("gas", 0)),
+        "fee_estimate_eth": float(w3.from_wei(gas_price * built.get("gas", 0), "ether"))
+      })
+
+    tx_hash = w3.eth.send_raw_transaction(signed.rawTransaction)
+    th = w3.to_hex(tx_hash)
+    receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=180)
+    block = w3.eth.get_block(receipt.blockNumber)
+    eff = getattr(receipt, "effectiveGasPrice", gas_price)
+    burnt = 0
+    base = getattr(block, "baseFeePerGas", None)
+    if base is not None and eff is not None:
+      burnt = base * receipt.gasUsed
+
+    sender_eth = w3.from_wei(w3.eth.get_balance(SENDER), "ether")
+    usdt_sender = _tok6(erc20.functions.balanceOf(SENDER).call())
+    usdt_rec   = _tok6(erc20.functions.balanceOf(recipient).call())
+
+    details = {
+      "network":"ethereum-mainnet",
+      "status":"success" if receipt.status==1 else "reverted",
+      "tx_hash": th,
+      "block_number": receipt.blockNumber,
+      "timestamp": block.timestamp,
+      "from": SENDER,
+      "to": recipient,
+      "contract": USDT,
+      "value_usdt_6dec": amount,
+      "value_usdt_human": float(amount)/1_000_000.0,
+      "transaction_fee_eth": float(w3.from_wei(eff * receipt.gasUsed, "ether")),
+      "gas_price_wei": int(eff),
+      "gas_limit": int(built.get("gas", 0)),
+      "gas_used": int(receipt.gasUsed),
+      "burnt_fees_wei": int(burnt),
+      "other_attributes": { "type": "ERC20.transfer", "input_data": built.get("data") }
+    }
+    try:
+      os.makedirs("/app/logs", exist_ok=True)
+      with open(f"/app/logs/tx_{int(time.time())}.json","w") as f:
+        json.dump(details, f, indent=2)
+    except Exception:
+      pass
+    return jsonify(details)
+  except Exception as e:
+    return jsonify({"status":"error","message":str(e)}), 500
+
+if __name__ == "__main__":
+  app.run(host="0.0.0.0", port=5002)
+PY
+
+    cat >"$DOCKERFILE" <<'DOCK'
+FROM python:3.10-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir flask==3.0.3 web3==6.20.1 python-dotenv==1.0.1
+EXPOSE 5002
+CMD ["python","app.py"]
+DOCK
+  fi
+}
+
+run_eth() {
+  ensure_gli_files
+  if [ "$REBUILD" -eq 1 ]; then
+    echo "[master] 🔨 GLI imajı yeniden derleniyor (no-cache)…"
+    docker build --no-cache -t "$IMG" "$APP_DIR" >/dev/null
+  fi
+
+  echo "[master] ➜ Container restart: $CTR (GLI_DRY_RUN=$GLI_DRY_RUN, port $HOST_PORT)"
+  docker rm -f "$CTR" >/dev/null 2>&1 || true
+  docker run -d --name "$CTR" \
+    --env-file "$ENVFILE" \
+    -e GLI_DRY_RUN="$GLI_DRY_RUN" \
+    -p "${HOST_PORT}:5002" \
+    "$IMG" >/dev/null
+
+  echo -n "[master]    ▹ Sağlık kontrolü"
+  for i in $(seq 1 30); do
+    if curl -sf "http://127.0.0.1:${HOST_PORT}/" >/dev/null 2>&1; then
+      echo " ✓"; break
+    fi
+    echo -n "."; sleep 1
+  done
+
+  echo "[master] Health => http://127.0.0.1:${HOST_PORT}/"
+  curl -s "http://127.0.0.1:${HOST_PORT}/" | jq .
+
+  local AMOUNT="${AMOUNT_DEFAULT}"
+  echo "[master] ➜ Transfer isteği (ETH/USDT 6d): amount=${AMOUNT}, recipient=${RECIP}"
+  local RESP
+  RESP="$(curl -s -X POST "http://127.0.0.1:${HOST_PORT}/transfer" \
+    -H 'Content-Type: application/json' \
+    -d "{\"recipient\":\"${RECIP}\",\"amount\":${AMOUNT}}")" || RESP='{"status":"error","message":"request failed"}'
+  echo "$RESP" | jq . || echo "$RESP"
+
+  local TS OUT_JSON
+  TS="$(date -u +%Y%m%dT%H%M%SZ)"
+  OUT_JSON="$APP_DIR/logs/tx_report_${TS}.json"
+  echo "$RESP" | jq . > "$OUT_JSON" 2>/dev/null || echo "$RESP" > "$OUT_JSON"
+  echo "[master] 📝 Rapor yazıldı: $OUT_JSON"
+
+  if [ "$DB_ENABLE" -eq 1 ]; then
+    echo "[master] ➜ Rapor DB'ye kaydediliyor…"
+    docker run --rm -i --network host \
+      -e PGPASSWORD="$DB_PASS" \
+      postgres:16-alpine psql -h 127.0.0.1 -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" <<SQL >/dev/null
+INSERT INTO tx_logs (chain, network, status, tx_hash, payload)
+VALUES (
+  'eth',
+  'ethereum-mainnet',
+  COALESCE((SELECT json_extract_path_text(j,'status') FROM (SELECT '$RESP'::json j) t),'unknown'),
+  COALESCE((SELECT COALESCE(
+              json_extract_path_text(j,'tx_hash'),
+              json_extract_path_text(j,'transaction_hash'),
+              json_extract_path_text(j,'tx_hash_computed')
+            ) FROM (SELECT '$RESP'::json j) t),''),
+  '$RESP'::jsonb
+);
+SQL
+    echo "[master]    ✓ DB kayıt tamam"
+  fi
+
+  cat <<'INFO'
+[INFO] QuantumAI ERC20 USDT — PROD meta:
+  Contract: 0xdAC17F958D2ee523a2206206994597C13D831ec7 (6 decimals)
+  Stated Market PRICE: $1.00 @ 0.000209 ETH (+0.04%)
+  Onchain Market Cap: $79,786,068,572.19
+  Circulating Market Cap: $165,064,537,571.00
+  Max Total Supply: 79,786,068,572.190357 USDT
+  Holders: 8,355,409 ( -0.011% )
+  Total Transfers: > 326,668,398
+INFO
+}
+
+run_tron() {
+  # DRY-RUN & LIVE (opsiyonel) — ephemeral container ile tronpy kullan
+  local RECIP_TRON="${RECIP_TRON:-$RECIP_FALLBACK}"  # 'T...' adres bekler
+  local AMOUNT="${AMOUNT_DEFAULT}"                    # 6 decimals
+
+  echo "[master] ➜ TRON/TRC20 USDT transfer (amount=${AMOUNT}, recipient=${RECIP_TRON})"
+  local MODE
+  MODE="$( [ "$GLI_DRY_RUN" -eq 1 ] && echo "DRY-RUN" || echo "LIVE" )"
+
+  local PYCODE; read -r -d '' PYCODE <<'PY'
+import os, json, sys, time
+from decimal import Decimal
+import requests
+
+DRY = os.getenv("DRY","1") == "1"
+NODE = os.getenv("TRON_NODE","https://api.trongrid.io")
+APIKEY = os.getenv("TRON_API_KEY","")
+SENDER = os.getenv("TRON_SENDER","")
+PRIV   = os.getenv("TRON_PRIVKEY","")
+RECIP  = os.getenv("RECIP_TRON","T...")
+AMOUNT6= int(os.getenv("AMOUNT6","0"))   # 6 decimals
+USDT   = os.getenv("TRON_USDT","TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t")
+
+def tron_hex_address_to_32(addr):
+    # addr Base58; /v1/accounts ile hex al
+    hdr = {"Accept":"application/json"}
+    if APIKEY: hdr["TRON-PRO-API-KEY"]=APIKEY
+    r = requests.get(f"{NODE}/v1/accounts/{addr}", headers=hdr, timeout=30)
+    r.raise_for_status()
+    j = r.json()
+    if not j.get("data"): raise RuntimeError("address lookup failed")
+    return j["data"][0]["address"].lower().replace("41","",1) if j["data"][0]["address"].startswith("41") else j["data"][0]["address"].lower()
+
+try:
+    to_hex = tron_hex_address_to_32(RECIP)
+    value_hex = hex(AMOUNT6)[2:].rjust(64,"0")
+    data = "a9059cbb" + to_hex.rjust(64,"0") + value_hex
+    payload = {
+        "contract": USDT,
+        "function": "transfer(address,uint256)",
+        "to": RECIP,
+        "amount_6dec": AMOUNT6,
+        "input_data": "0x"+data
+    }
+    if DRY or not (SENDER and PRIV):
+        out = {
+            "status":"preview",
+            "network":"tron-mainnet",
+            "tx_model":"TRC20.transfer",
+            "payload": payload,
+            "note":"Provide TRON_SENDER/TRON_PRIVKEY and set DRY=0 for LIVE broadcast."
+        }
+        print(json.dumps(out))
+        sys.exit(0)
+
+    out = {
+        "status":"error",
+        "message":"LIVE publish stub: install tronpy in a long-lived container for full signing/broadcast."
+    }
+    print(json.dumps(out))
+except Exception as e:
+    print(json.dumps({"status":"error","message":str(e)}))
+    sys.exit(0)
+PY
+
+  local RESP
+  RESP="$(docker run --rm -e DRY="$([ "$GLI_DRY_RUN" -eq 1 ] && echo 1 || echo 0)" \
+      -e TRON_NODE="$TRON_NODE" -e TRON_API_KEY="$TRON_API_KEY" \
+      -e TRON_SENDER="$TRON_SENDER" -e TRON_PRIVKEY="$TRON_PRIVKEY" \
+      -e RECIP_TRON="$RECIP_TRON" -e AMOUNT6="$AMOUNT" -e TRON_USDT="$TRON_USDT" \
+      python:3.10-slim bash -lc "pip install --no-cache-dir requests >/dev/null && python - <<'PY'
+$PYCODE
+PY
+")" || RESP='{"status":"error","message":"tron runner failed"}'
+
+  echo "$RESP" | jq . || echo "$RESP"
+
+  local TS OUT_JSON
+  TS="$(date -u +%Y%m%dT%H%M%SZ)"
+  OUT_JSON="$APP_DIR/logs/tx_report_tron_${TS}.json"
+  echo "$RESP" | jq . > "$OUT_JSON" 2>/dev/null || echo "$RESP" > "$OUT_JSON"
+  echo "[master] 📝 TRON raporu yazıldı: $OUT_JSON"
+
+  if [ "$DB_ENABLE" -eq 1 ]; then
+    echo "[master] ➜ TRON raporu DB'ye kaydediliyor…"
+    docker run --rm -i --network host \
+      -e PGPASSWORD="$DB_PASS" \
+      postgres:16-alpine psql -h 127.0.0.1 -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" <<SQL >/dev/null
+INSERT INTO tx_logs (chain, network, status, tx_hash, payload)
+VALUES (
+  'tron',
+  'tron-mainnet',
+  COALESCE((SELECT json_extract_path_text(j,'status') FROM (SELECT '$RESP'::json j) t),'unknown'),
+  COALESCE((SELECT COALESCE(
+              json_extract_path_text(j,'tx_hash'),
+              json_extract_path_text(j,'transaction_hash'),
+              json_extract_path_text(j,'tx_hash_computed')
+            ) FROM (SELECT '$RESP'::json j) t),''),
+  '$RESP'::jsonb
+);
+SQL
+    echo "[master]    ✓ DB kayıt tamam"
+  fi
+
+  cat <<'INFO'
+[INFO] QuantumAI TRC20 USDT — PROD meta:
+  Contract : TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t
+  Issuer   : THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC
+  Issued   : 2019-04-16 07:43:48 (UTC)
+  Decimals : 6
+  Hedef Üretim: 25,000,000 ADET
+INFO
+}
+
+main() {
+  local mode; mode="$( [ "$GLI_DRY_RUN" -eq 1 ] && echo DRY-RUN || echo LIVE )"
+  echo "[master] MODE: $mode | CHAIN: $(upper "$CHAIN") | PORT: $HOST_PORT"
+
+  case "$(upper "$CHAIN")" in
+    ETH)  run_eth ;;
+    TRON) run_tron ;;
+    *) echo "❌ Geçersiz --chain: $CHAIN (eth|tron)"; exit 1 ;;
+  esac
+
+  echo
+  echo "✅ Tamamlandı."
+  echo "   Mod         : $mode"
+  echo "   Chain       : $(upper "$CHAIN")"
+  echo "   Port        : $HOST_PORT"
+  [ "$DB_ENABLE" -eq 1 ] && echo "   DB          : postgresql://$DB_USER:*****@127.0.0.1:$DB_PORT/$DB_NAME (tx_logs)"
+}
+main "$@"

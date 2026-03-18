@@ -1,0 +1,20 @@
+services:
+  quantumai-usdt:
+    build:
+      context: ..
+      dockerfile: .deploy/Dockerfile
+    container_name: quantumai-usdt
+    image: deploy-quantumai-usdt:latest
+    ports:
+      - "5003:8080"
+    env_file:
+      - ../quantumai-usdt/.env
+    environment:
+      - APP_ENTRY=
+    healthcheck:
+      test: ["CMD-SHELL","curl -fsS http://127.0.0.1:8080/health || exit 1"]
+      interval: 3s
+      timeout: 2s
+      retries: 60
+      start_period: 5s
+    restart: unless-stopped

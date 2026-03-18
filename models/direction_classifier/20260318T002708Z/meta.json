@@ -1,0 +1,39 @@
+{
+  "symbol": "BTCUSDT",
+  "interval": "1h",
+  "trained_at": "2026-03-18T00:27:08.569570+00:00",
+  "features": [
+    "ret_1",
+    "ret_4",
+    "ret_12",
+    "ret_24",
+    "vol_chg_1",
+    "volatility_12",
+    "volatility_24",
+    "rsi_14",
+    "ema_cross",
+    "macd_line",
+    "macd_signal",
+    "macd_hist",
+    "bb_width",
+    "atr_14",
+    "distance_to_fib_382",
+    "distance_to_fib_618",
+    "price_position_55",
+    "active_addresses_proxy",
+    "transfer_value_proxy",
+    "miner_sell_pressure_proxy",
+    "staking_ratio_proxy",
+    "sentiment_index",
+    "headline_score",
+    "macro_risk_index",
+    "dxy_proxy"
+  ],
+  "metrics": {
+    "accuracy": 0.4797979797979798,
+    "roc_auc": 0.44852337981952417
+  },
+  "notes": {
+    "target": "label_up"
+  }
+}
