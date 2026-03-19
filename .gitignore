@@ -1,24 +1,90 @@
-.env.secrets
-.envrc
-.envrc.disabled
 
+# ===== Secrets & Environment (CRITICAL - never commit) =====
 .env
-.venv/
-.env.*
+.env.secrets
 .env.local
 .env.runtime
 .env.export
+.env.backup*
+.env.bak*
+.env.*.bak
+.env.auto
+.venv-safe.env
+
+# ===== Environment & Shell Config =====
+.envrc
+.envrc.disabled
+.envrc.bak*
+
+# ===== Virtual Environments =====
 .venv/
 .venv-host/
-__pycache__/
-logs/
-*.log
+venv/
+ENV/
+env/
 
-.early.coverage
-*.bak.*
+# ===== Python =====
+__pycache__/
 *.pyc
+*.pyo
+*.egg
+*.egg-info/
 dist/
 build/
-*.egg-info/
-_wheels/.env.secrets
-.env.secrets
+.pytest_cache/
+.ruff_cache/
+
+# ===== Logs & Runtime =====
+*.log
+logs/
+_logs/
+_backups/
+_runtime_backups/
+*.txt.save
+nohup.out
+
+# ===== Docker & Compose Backups =====
+compose.*.bak.*
+compose.*.broken*
+docker-compose.*.bak.*
+docker-compose.*.broken*
+
+# ===== IDE & Editor =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ===== Build & Coverage =====
+.early.coverage
+coverage/
+htmlcov/
+
+# ===== Docker & Container Data =====
+pgdata/
+redis_data/
+db/
+
+# ===== Node & Package Management =====
+node_modules/
+package-lock.json
+.npm
+
+# ===== Runtime State (volatile) =====
+_state/
+_reports/
+cache/
+tmp/
+.runmode
+
+# ===== Wheel & Binary Files =====
+_wheels/
+
+# ===== Misc Files =====
+.DS_Store
+history_*.json
+response_*.json
+terminal-out.txt
+docker_logs.txt.save
