@@ -1,10 +1,83 @@
-._*
+# ===== Git & Version Control =====
+.git
+.gitignore
+.gitattributes
+.github
+
+# ===== IDE & Editor =====
+.vscode
+.idea
+*.swp
+*.swo
+*~
 .DS_Store
-node_modules
+
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.tox/
+
+# ===== Virtual Environments =====
 venv
 .venv*
-__pycache__/
+.env*
+env/
+
+# ===== Node/JavaScript =====
+node_modules
+npm-debug.log
+yarn-error.log
+
+# ===== Docker & Compose =====
+docker-compose.*.yml
+compose.*.yml
+.docker
+
+# ===== Dependencies & Caches =====
+*.cache
+*.pip
+.cache/
+
+# ===== Data & Logs =====
+*.log
+logs/
+_logs/
+_backups/
+_state/
+_reports/
+_runtime_backups/
+
+# ===== Development/Test Files =====
+*.md
+README*
+LICENSE
+CONTRIBUTING.md
+.editorconfig
+.pre-commit-config.yaml
+pytest.ini
+Makefile
+
+# ===== Media Files =====
 *.mp4
 *.mov
+*.avi
+*.mkv
 Offloaded Videos/
 Volumes/
+
+# ===== Misc =====
+.DS_Store
+._*
+.env.local
+.env.*.bak
+*.bak*
+*.sqlite
+*.db
+tmp/
+temp/

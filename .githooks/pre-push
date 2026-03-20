@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+REPO_DIR="$(git rev-parse --show-toplevel)"
+cd "$REPO_DIR"
+printf '%s\n' "PRE_PUSH_AUDIT_START"
+make audit
+printf '%s\n' "PRE_PUSH_AUDIT_OK"
