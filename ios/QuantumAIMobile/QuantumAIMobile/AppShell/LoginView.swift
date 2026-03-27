@@ -21,7 +21,9 @@ public struct LoginView: View {
             VStack(spacing: 12) {
                 TextField("E-posta", text: $email)
                     .textFieldStyle(.roundedBorder)
+#if os(iOS)
                     .textInputAutocapitalization(.never)
+#endif
                     .autocorrectionDisabled()
                 SecureField("Şifre", text: $password)
                     .textFieldStyle(.roundedBorder)

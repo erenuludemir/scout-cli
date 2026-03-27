@@ -19,8 +19,8 @@ public struct BinanceMasterPanel: View {
                         // 2. Canlı İzleme Listesi (Watchlist)
                         VStack(alignment: .leading) {
                             Text("PİYASA TAKİBİ").font(.system(.caption, design: .monospaced)).foregroundColor(.gray)
-                            ForEach(Array(env.watchlist.prices.values)) { item in
-                                MarketRow(symbol: item.id, price: item.price, change: "+2.4%")
+                            ForEach(env.watchlist.items, id: \.self) { symbol in
+                                MarketRow(symbol: symbol, price: previewPrice(for: symbol), change: "+2.4%")
                             }
                         }
                         .padding()
@@ -45,6 +45,41 @@ public struct BinanceMasterPanel: View {
             }
             .navigationTitle("BINANCE KONTROL")
         }
+    }
+}
+
+private func previewPrice(for symbol: String) -> Double {
+    switch symbol {
+    case "ETHUSDT":
+        return 3_200
+    case "BNBUSDT":
+        return 620
+    default:
+        return 68_450
+    }
+}
+
+private struct SummaryStatCard: View {
+    let title: String
+    let value: String
+    let icon: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Image(systemName: icon)
+                .font(.headline)
+                .foregroundColor(QAITheme.accent)
+            Text(title)
+                .font(.system(size: 10, design: .monospaced))
+                .foregroundColor(.gray)
+            Text(value)
+                .font(.title3.bold())
+                .foregroundColor(QAITheme.textPrimary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(QAITheme.cardBg)
+        .cornerRadius(8)
     }
 }
 

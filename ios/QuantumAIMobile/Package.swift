@@ -16,10 +16,6 @@ let package = Package(
             path: "QuantumAIMobile",
             exclude: [
                 "Runbook",
-                "AppShell/LoginView.swift",
-                "AppShell/BinanceMasterPanel.swift",
-                "AppShell/BursaOpsPanelView.swift",
-                "AppShell/HedgeFundDashboardView.swift",
                 "DesignSystem/PerformanceChart.swift",
                 "StorageKit/AuditReportGenerator.swift",
                 "StorageKit/IntegrityChecker.swift",
