@@ -26,8 +26,7 @@ let package = Package(
                 "StorageKit/AuditReportGenerator.swift",
                 "StorageKit/IntegrityChecker.swift",
                 "SyncKit/SyncClient.legacy.disabled",
-                "SyncKit/SyncClient.legacy.disabled.SyncKit",
-                "AlertKit/NotificationManager.swift"
+                "SyncKit/SyncClient.legacy.disabled.SyncKit"
             ],
             sources: [
                 "AlertKit",

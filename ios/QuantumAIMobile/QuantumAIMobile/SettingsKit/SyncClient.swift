@@ -49,4 +49,25 @@ public final class SyncClient {
         guard attempts > 0 else { return 0 }
         return Double(retries) / Double(attempts)
     }
+
+    public func flushOutbox() async {
+        guard !storage.outbox.isEmpty else { return }
+        NotificationManager.notifyPendingOutbox(count: storage.outbox.count)
+        for order in storage.outbox {
+            let payload: [String: Any] = [
+                "id": order.id,
+                "symbol": order.symbol,
+                "side": order.side,
+                "price": order.price,
+                "amount": order.amount,
+                "timestamp": order.timestamp.timeIntervalSince1970
+            ]
+            guard let data = try? JSONSerialization.data(withJSONObject: payload) else { continue }
+            let url = URL(string: "https://example.invalid/api/orders")!
+            let ok = await post(url, body: data, key: order.id, retries: 1)
+            if ok {
+                storage.removeFromOutbox(order.id)
+            }
+        }
+    }
 }
