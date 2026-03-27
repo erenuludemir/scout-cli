@@ -28,7 +28,8 @@ public struct PanelView: View {
             .padding(.top, QAITokens.Spacing.s)
             .padding(.bottom, QAITokens.Layout.dockedBottomClearance)
         }
-        .panelNavigationChromeHidden()
+        .background(AppBackground())
+        .screenNavigationChromeHidden()
     }
 }
 
@@ -291,16 +292,5 @@ private struct StatusPill: View {
     NavigationStack {
         PanelView()
             .environmentObject(AppEnvironment.liveInSim())
-    }
-}
-
-private extension View {
-    @ViewBuilder
-    func panelNavigationChromeHidden() -> some View {
-#if os(iOS)
-        self.toolbar(.hidden, for: .navigationBar)
-#else
-        self
-#endif
     }
 }

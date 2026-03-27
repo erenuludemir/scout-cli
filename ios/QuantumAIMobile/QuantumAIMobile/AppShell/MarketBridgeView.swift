@@ -11,14 +11,20 @@ import AppKit
 
 public struct MarketBridgeView: View {
     @EnvironmentObject private var env: AppEnvironment
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
     @State private var selectedSection: BridgeSection = .snapshot
+    private let showsBackButton: Bool
 
-    public init() {}
+    public init(showsBackButton: Bool = false) {
+        self.showsBackButton = showsBackButton
+    }
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: QAITokens.Spacing.l) {
+                ScreenHeader(title: "Market Bridge", showsBackButton: showsBackButton, onBack: { dismiss() })
+
                 MarketBridgeHeroCard(
                     snapshot: env.marketBridge.snapshot,
                     selectedSymbol: env.settings.selectedSymbol,
@@ -64,8 +70,7 @@ public struct MarketBridgeView: View {
             .padding(.bottom, QAITokens.Layout.dockedBottomClearance)
         }
         .background(AppBackground())
-        .navigationTitle("Market Bridge")
-        .qaiNavigationTitleDisplayMode(.inline)
+        .screenNavigationChromeHidden()
         .task {
             env.training.loadIfNeeded()
             env.applyRuntimeSettings()
@@ -455,12 +460,12 @@ private struct BridgeConsoleRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             Text(label)
-                .font(.caption.bold())
-                .foregroundStyle(QAITheme.textSecondary)
+                .font(QAITokens.Typography.caption)
+                .foregroundStyle(QAITokens.Palette.textSecondary)
                 .frame(width: 64, alignment: .leading)
             Text(value)
-                .font(.subheadline)
-                .foregroundStyle(QAITheme.textPrimary)
+                .font(QAITokens.Typography.body)
+                .foregroundStyle(QAITokens.Palette.textPrimary)
                 .textSelection(.enabled)
         }
     }
@@ -510,7 +515,8 @@ private struct PlatformPDFView: View {
     var body: some View {
         Link(destination: url) {
             Label("PDF dosyasını dışarıda aç", systemImage: "doc")
-                .foregroundStyle(QAITheme.accent)
+                .font(QAITokens.Typography.bodyStrong)
+                .foregroundStyle(QAITokens.Palette.gold)
         }
     }
 }

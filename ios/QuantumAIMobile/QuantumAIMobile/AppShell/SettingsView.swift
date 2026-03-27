@@ -73,7 +73,7 @@ public struct SettingsView: View {
                         .buttonStyle(.plain)
 
                         NavigationLink {
-                            MarketBridgeView()
+                            MarketBridgeView(showsBackButton: true)
                         } label: {
                             SettingsMenuRow(
                                 title: "Market Bridge",
@@ -338,7 +338,7 @@ private struct MarketPreferencesView: View {
                             .foregroundStyle(QAITheme.textSecondary)
 
                         NavigationLink {
-                            MarketBridgeView()
+                            MarketBridgeView(showsBackButton: true)
                         } label: {
                             SettingsMenuRow(
                                 title: "CoinMarketCap Köprüsünü Aç",

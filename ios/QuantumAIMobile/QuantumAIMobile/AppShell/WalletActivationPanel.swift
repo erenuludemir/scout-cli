@@ -23,32 +23,32 @@ public struct WalletActivationPanel: View {
     }
 
     public var body: some View {
-        CardView {
-            VStack(alignment: .leading, spacing: 16) {
+        GlassCard {
+            VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
                 Label(headline, systemImage: "link.badge.plus")
-                    .font(QAITheme.sectionTitleFont)
-                    .foregroundStyle(QAITheme.textPrimary)
+                    .font(QAITokens.Typography.cardTitle)
+                    .foregroundStyle(QAITokens.Palette.textPrimary)
 
                 Text(subtitle)
-                    .font(QAITheme.bodyFont)
-                    .foregroundStyle(QAITheme.textSecondary)
+                    .font(QAITokens.Typography.body)
+                    .foregroundStyle(QAITokens.Palette.textSecondary)
 
-                HStack(spacing: 10) {
+                HStack(spacing: QAITokens.Spacing.s) {
                     ActivationSummaryTile(
                         title: "Doğrulanan",
                         value: "\(env.walletActivation.verifiedProviders.count)/\(WalletConnectorProvider.allCases.count)",
-                        tint: QAITheme.success
+                        tint: QAITokens.Palette.teal
                     )
                     ActivationSummaryTile(
                         title: "Güvenlik",
                         value: "Face ID / Parola",
-                        tint: QAITheme.accent
+                        tint: QAITokens.Palette.gold
                     )
                 }
 
                 Text(statusMessage)
-                    .font(QAITheme.bodyFont)
-                    .foregroundStyle(QAITheme.textSecondary)
+                    .font(QAITokens.Typography.body)
+                    .foregroundStyle(QAITokens.Palette.textSecondary)
 
                 ForEach(WalletConnectorProvider.allCases) { provider in
                     WalletConnectorRow(
@@ -112,39 +112,39 @@ private struct WalletConnectorRow: View {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(provider.title)
-                        .font(QAITheme.sectionTitleFont)
-                        .foregroundStyle(QAITheme.textPrimary)
+                        .font(QAITokens.Typography.cardTitle)
+                        .foregroundStyle(QAITokens.Palette.textPrimary)
                     Text(provider.summary)
-                        .font(QAITheme.bodyFont)
-                        .foregroundStyle(QAITheme.textSecondary)
+                        .font(QAITokens.Typography.body)
+                        .foregroundStyle(QAITokens.Palette.textSecondary)
                 }
 
                 Spacer()
 
                 Text(statusLabel)
-                    .font(QAITheme.captionFont.weight(.semibold))
+                    .font(QAITokens.Typography.caption)
                     .foregroundStyle(statusColor)
-                    .padding(.horizontal, QAITheme.compactChipHorizontalPadding)
-                    .padding(.vertical, QAITheme.compactChipVerticalPadding)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
                     .background(statusColor.opacity(0.16))
                     .clipShape(Capsule())
             }
 
             if let verifiedAt, status == .verified {
                 Text("Son doğrulama: \(verifiedAt.formatted(date: .abbreviated, time: .shortened))")
-                    .font(QAITheme.captionFont)
-                    .foregroundStyle(QAITheme.textSecondary)
+                    .font(QAITokens.Typography.caption)
+                    .foregroundStyle(QAITokens.Palette.textSecondary)
             }
 
-            HStack(spacing: 10) {
+            HStack(spacing: QAITokens.Spacing.s) {
                 ActivationButton(
                     title: "Aktive Et",
-                    tint: QAITheme.panelBlue,
+                    tint: QAITokens.Palette.chipBlue,
                     action: onActivate
                 )
                 ActivationButton(
                     title: status == .verified ? "Doğrulandı" : "Doğrula",
-                    tint: QAITheme.success,
+                    tint: QAITokens.Palette.teal,
                     action: onVerify
                 )
                 .disabled(status == .idle || status == .verified)
@@ -155,14 +155,14 @@ private struct WalletConnectorRow: View {
                 Button(action: onReset) {
                     Text("Sıfırla")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(QAITheme.textSecondary)
+                        .foregroundStyle(QAITokens.Palette.textSecondary)
                 }
                 .buttonStyle(.plain)
             }
         }
-        .padding(12)
-        .background(QAITheme.surfaceMuted.opacity(0.42))
-        .clipShape(RoundedRectangle(cornerRadius: QAITheme.compactInnerCornerRadius, style: .continuous))
+        .padding(QAITokens.Spacing.m)
+        .background(QAITokens.Palette.cardElevated)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 
     private var statusLabel: String {
@@ -179,11 +179,11 @@ private struct WalletConnectorRow: View {
     private var statusColor: Color {
         switch status {
         case .idle:
-            return QAITheme.warning
+            return QAITokens.Palette.warning
         case .activationStarted:
-            return QAITheme.accent
+            return QAITokens.Palette.gold
         case .verified:
-            return QAITheme.success
+            return QAITokens.Palette.teal
         }
     }
 }
@@ -197,16 +197,16 @@ private struct ActivationSummaryTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
-                .font(QAITheme.captionFont)
-                .foregroundStyle(QAITheme.textSecondary)
+                .font(QAITokens.Typography.caption)
+                .foregroundStyle(QAITokens.Palette.textSecondary)
             Text(value)
-                .font(QAITheme.metricFont)
-                .foregroundStyle(QAITheme.textPrimary)
+                .font(QAITokens.Typography.cardTitle)
+                .foregroundStyle(QAITokens.Palette.textPrimary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
+        .padding(QAITokens.Spacing.m)
         .background(tint.opacity(0.18))
-        .clipShape(RoundedRectangle(cornerRadius: QAITheme.compactInnerCornerRadius, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }
 
@@ -219,12 +219,12 @@ private struct ActivationButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(QAITheme.buttonFont)
-                .foregroundStyle(QAITheme.textPrimary)
+                .font(QAITokens.Typography.bodyStrong)
+                .foregroundStyle(QAITokens.Palette.textPrimary)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 9)
+                .frame(height: 52)
                 .background(tint.opacity(0.22))
-                .clipShape(RoundedRectangle(cornerRadius: QAITheme.compactInnerCornerRadius, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: QAITokens.Radius.button, style: .continuous))
         }
         .buttonStyle(.plain)
     }

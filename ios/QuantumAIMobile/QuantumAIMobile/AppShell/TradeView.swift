@@ -89,7 +89,7 @@ public struct TradeView: View {
 
                         HStack(spacing: QAITokens.Spacing.s) {
                             NavigationLink {
-                                MarketBridgeView()
+                                MarketBridgeView(showsBackButton: true)
                             } label: {
                                 TradeUtilityTile(
                                     title: "Market Bridge",

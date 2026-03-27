@@ -98,7 +98,7 @@ public struct WalletView: View {
 
                         HStack(spacing: 10) {
                             NavigationLink {
-                                MarketBridgeView()
+                                MarketBridgeView(showsBackButton: true)
                             } label: {
                                 WalletLinkTile(title: "Market Bridge", tint: QAITheme.panelBlue)
                             }

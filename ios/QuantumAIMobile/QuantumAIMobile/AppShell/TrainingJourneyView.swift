@@ -60,7 +60,7 @@ public struct TrainingJourneyView: View {
             case .wallet:
                 WalletView(showsBackButton: true)
             case .marketBridge:
-                MarketBridgeView()
+                MarketBridgeView(showsBackButton: true)
             }
         }
     }
