@@ -88,3 +88,6 @@ history_*.json
 response_*.json
 terminal-out.txt
 docker_logs.txt.save
+# ===== QuantumAIMobile local package artifacts =====
+ios/QuantumAIMobile/.build/
+ios/QuantumAIMobile/.swiftpm/
