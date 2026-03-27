@@ -9,12 +9,13 @@ public struct OutboxListView: View {
     public var body: some View {
         NavigationStack {
             List {
-                ForEach(env.storage.outbox) { order in
+                ForEach(Array(env.storage.outbox), id: \.id) { order in
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(order.desc).font(.headline)
-                        Text("Tutar: \(String(format: "$%.2f", order.usd))")
+                        Text("\(order.side.uppercased()) \(order.amount) \(order.symbol)")
+                            .font(.headline)
+                        Text("Tutar: \(String(format: "$%.2f", order.price * order.amount))")
                             .font(.subheadline)
-                        Text("ID: \(order.idempotencyKey.prefix(12))...")
+                        Text("ID: \(order.id.prefix(12))...")
                             .font(.caption)
                             .monospaced()
                     }

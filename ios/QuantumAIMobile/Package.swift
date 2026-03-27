@@ -20,8 +20,6 @@ let package = Package(
                 "AppShell/BinanceMasterPanel.swift",
                 "AppShell/BursaOpsPanelView.swift",
                 "AppShell/HedgeFundDashboardView.swift",
-                "AppShell/OutboxListView.swift",
-                "DesignSystem/OutboxAlertView.swift",
                 "DesignSystem/PerformanceChart.swift",
                 "StorageKit/AuditReportGenerator.swift",
                 "StorageKit/IntegrityChecker.swift",
