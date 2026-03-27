@@ -1,0 +1,36 @@
+name: QuantumAIMobileHost
+options:
+  minimumXcodeGenVersion: 2.38.0
+packages:
+  QuantumAIMobile:
+    path: .
+settings:
+  base:
+    ENABLE_DEBUG_DYLIB: NO
+    SWIFT_VERSION: 5.10
+    DEVELOPMENT_TEAM: YH698TG69K
+    CODE_SIGN_STYLE: Automatic
+    CODE_SIGN_IDENTITY: Apple Development
+    CODE_SIGNING_ALLOWED: YES
+    PRODUCT_BUNDLE_IDENTIFIER: com.erenuludemir.quantumaimobile
+targets:
+  QuantumAIMobileHost:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: QuantumAIMobileAppHost
+    info:
+      path: QuantumAIMobileAppHost/Info.plist
+    dependencies:
+      - package: QuantumAIMobile
+        product: QuantumAIMobile
+schemes:
+  QuantumAIMobileHost:
+    build:
+      targets:
+        QuantumAIMobileHost: all
+    run:
+      config: Debug
+    archive:
+      config: Release

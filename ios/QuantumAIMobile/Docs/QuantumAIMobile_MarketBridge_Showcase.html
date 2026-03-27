@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QuantumAI Mobile Market Bridge Showcase</title>
+  <style>
+    :root {
+      --bg0: #060b15;
+      --bg1: #0e1730;
+      --panel: #14203a;
+      --panel-strong: #1b2a49;
+      --panel-soft: #22355c;
+      --line: rgba(166, 184, 219, 0.16);
+      --text: #f4f7ff;
+      --muted: #b5bfd7;
+      --accent: #ffab2b;
+      --accent-soft: #e8c366;
+      --success: #34c976;
+      --warning: #ff7c43;
+      --blue: #3260b8;
+      --pink: #ef476f;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "SF Pro Display", "Avenir Next", Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(50, 96, 184, 0.34), transparent 32%),
+        linear-gradient(140deg, var(--bg1), var(--bg0) 72%);
+    }
+
+    .page {
+      width: 1240px;
+      margin: 0 auto;
+      padding: 48px 44px 56px;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, rgba(27, 42, 73, 0.96), rgba(16, 25, 45, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      padding: 34px 36px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.26em;
+      font-size: 12px;
+      color: #9cb0d9;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: 56px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 860px;
+      font-size: 20px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .chip {
+      padding: 11px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .alerts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .alert {
+      border-radius: 18px;
+      padding: 18px 20px;
+      font-size: 16px;
+      line-height: 1.55;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .alert.info { border-left: 4px solid #4d91ff; }
+    .alert.warn { border-left: 4px solid var(--accent); }
+
+    .section {
+      margin-top: 24px;
+      background: linear-gradient(180deg, rgba(20, 32, 58, 0.96), rgba(13, 20, 38, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .section h2 {
+      margin: 0 0 18px;
+      font-size: 30px;
+      letter-spacing: -0.03em;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(31, 48, 83, 0.75), rgba(20, 32, 58, 0.75));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      min-height: 160px;
+    }
+
+    .metric {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9bb0db;
+      margin-bottom: 10px;
+    }
+
+    .value {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .value.small {
+      font-size: 26px;
+    }
+
+    .desc {
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .menu-board {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    .menu-tile {
+      min-height: 128px;
+      border-radius: 22px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
+    }
+
+    .menu-tile .icon {
+      font-size: 28px;
+    }
+
+    .menu-tile strong {
+      font-size: 17px;
+      line-height: 1.2;
+    }
+
+    .menu-tile span {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .accent { background: linear-gradient(180deg, rgba(255, 171, 43, 0.24), rgba(20, 32, 58, 0.4)); }
+    .blue { background: linear-gradient(180deg, rgba(50, 96, 184, 0.24), rgba(20, 32, 58, 0.4)); }
+    .green { background: linear-gradient(180deg, rgba(52, 201, 118, 0.2), rgba(20, 32, 58, 0.4)); }
+    .orange { background: linear-gradient(180deg, rgba(255, 124, 67, 0.18), rgba(20, 32, 58, 0.4)); }
+    .pink { background: linear-gradient(180deg, rgba(239, 71, 111, 0.18), rgba(20, 32, 58, 0.4)); }
+
+    .bridge-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .browser {
+      background: #091020;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      min-height: 420px;
+    }
+
+    .browser-bar {
+      height: 46px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .url {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-size: 13px;
+      margin-left: 8px;
+    }
+
+    .browser-content {
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+    }
+
+    .browser-card {
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(20, 32, 58, 0.94), rgba(9, 16, 32, 0.9));
+    }
+
+    .browser-card h3 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .browser-card ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #9cb0d9;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">QuantumAI • Mobile Mission Control</div>
+      <h1>QuantumAI Mobile App<br />Market Bridge & Menu Showcase</h1>
+      <p>
+        CoinMarketCap bridge, operasyon menüleri, PDF training rehberi ve canlı bot etkileşimleri
+        tek bir profesyonel mobil operasyon yüzeyinde birleştirildi.
+      </p>
+      <div class="chips">
+        <div class="chip">Durum Aktif</div>
+        <div class="chip">Bridge CoinMarketCap</div>
+        <div class="chip">Çift BTCUSDT</div>
+        <div class="chip">DCA $25 / 30s</div>
+        <div class="chip">Grid 5 kademe</div>
+        <div class="chip">Training PDF 47 sayfa</div>
+        <div class="chip">Tema Lacivert Operasyon</div>
+      </div>
+      <div class="alerts">
+        <div class="alert info">
+          Canlı özet veriler CoinMarketCap köprüsünden alınıyor; seçili sembol Dashboard, Botlar,
+          Ayarlar ve Cüzdan akışlarında ortak kullanılıyor.
+        </div>
+        <div class="alert warn">
+          Resmi destekli entegrasyon yolu CoinMarketCap Pro API anahtarıdır; anahtarsız modda ekran,
+          website bridge ve sayfa içi özet parsing mantığı ile çalışır.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Ana Menü ve Alt Menü Mimarisi</h2>
+      <div class="menu-board">
+        <div class="menu-tile blue">
+          <div class="icon">◎</div>
+          <strong>Panel</strong>
+          <span>Canlı piyasa, bridge snapshot, operasyon menüsü, aktif emirler</span>
+        </div>
+        <div class="menu-tile accent">
+          <div class="icon">▣</div>
+          <strong>Cüzdan</strong>
+          <span>Adres, imza, güvenli gönderim, Market Bridge ve PDF rehber hızlı geçişi</span>
+        </div>
+        <div class="menu-tile green">
+          <div class="icon">⚙</div>
+          <strong>Botlar</strong>
+          <span>DCA, Grid, CopyTrade, preset merkezi, panik stop, köprü ekranı</span>
+        </div>
+        <div class="menu-tile orange">
+          <div class="icon">☰</div>
+          <strong>Ayarlar</strong>
+          <span>Paper Trading, Live Adapters, CoinMarketCap Bridge, lisans, sembol</span>
+        </div>
+        <div class="menu-tile pink">
+          <div class="icon">🧠</div>
+          <strong>Beyin Merkezi</strong>
+          <span>TrainingV140721 + Training_v2.pdf tabanlı bilgi ve strateji katmanı</span>
+        </div>
+        <div class="menu-tile blue">
+          <div class="icon">🌐</div>
+          <strong>Market Bridge</strong>
+          <span>CoinMarketCap snapshot, gömülü site köprüsü ve rehber modu</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Canlı Operasyon Kartları</h2>
+      <div class="grid-3">
+        <div class="card">
+          <div class="metric">CoinMarketCap Snapshot</div>
+          <div class="value">$70,2K</div>
+          <div class="desc">BTC fiyatı, rank, market cap, 24s hacim ve FDV aynı kart yapısında.</div>
+        </div>
+        <div class="card">
+          <div class="metric">Tahmini Kar / Zarar</div>
+          <div class="value small" style="color: var(--success);">+$184.40</div>
+          <div class="desc">PnL, maruziyet, retry ve outbox metriği Dashboard ve Botlar'da eş zamanlı.</div>
+        </div>
+        <div class="card">
+          <div class="metric">Lisans ve Rehber</div>
+          <div class="value small">Enterprise</div>
+          <div class="desc">TRC20 aktivasyonu sonrası lisans kalıcı, PDF ve HTML rehber menüye bağlı.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>CoinMarketCap Köprüsü</h2>
+      <div class="bridge-layout">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="url">https://coinmarketcap.com/currencies/bitcoin/</div>
+          </div>
+          <div class="browser-content">
+            <div class="browser-card">
+              <h3>Snapshot</h3>
+              <ul>
+                <li>BTC price, rank, market cap, 24s volume</li>
+                <li>FDV, circulating supply, max supply</li>
+                <li>Watchlist count ve son güncelleme zamanı</li>
+                <li>Seçili sembole göre otomatik yeniden yapılandırma</li>
+              </ul>
+            </div>
+            <div class="browser-card">
+              <h3>Guide</h3>
+              <ul>
+                <li>Training_v2.pdf tam sayfa viewer</li>
+                <li>TrainingV140721 HTML beyin merkezi</li>
+                <li>Preset, runbook ve alt menü geçişleri</li>
+                <li>Tek sembol, tek tema, tek operasyon dili</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="grid-template-columns: 1fr; gap: 14px;">
+          <div class="card">
+            <div class="metric">Ayarlar</div>
+            <div class="value small">Bridge Açık</div>
+            <div class="desc">CoinMarketCap Bridge toggle'u ile canlı özet ekranı yönetilir.</div>
+          </div>
+          <div class="card">
+            <div class="metric">Botlar</div>
+            <div class="value small">Preset + Stop</div>
+            <div class="desc">DCA, Grid ve CopyTrade artık bridge sembolü ile senkron çalışır.</div>
+          </div>
+          <div class="card">
+            <div class="metric">Cüzdan</div>
+            <div class="value small">PDF + Bridge</div>
+            <div class="desc">Cüzdan ekranında rehber ve market köprüsüne doğrudan erişim bulunur.</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-note">Generated for QuantumAIMobileApp • 2026-03-24</div>
+    </section>
+  </main>
+</body>
+</html>
