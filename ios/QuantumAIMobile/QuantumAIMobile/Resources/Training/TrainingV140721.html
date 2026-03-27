@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantumAI • Demo, Test ve Kullanıcı Rehberi</title>
+  <meta name="description" content="QuantumAI uygulaması için kullanıcı odaklı demo, test, wallet doğrulama ve güvenli işlem adımlarını gösteren sadeleştirilmiş eğitim rehberi.">
+  <style>
+    :root {
+      --bg: #08111d;
+      --panel: rgba(18, 27, 44, 0.92);
+      --panel-soft: rgba(28, 40, 63, 0.76);
+      --ink: #eef4ff;
+      --muted: #a6b5d2;
+      --accent: #e5b86f;
+      --accent-soft: #f4d297;
+      --ok: #3ddc97;
+      --warn: #ffb66d;
+      --line: rgba(255,255,255,0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(71,102,166,0.24), transparent 34%),
+        linear-gradient(180deg, #10192b, var(--bg));
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    a { color: var(--accent-soft); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 1.2rem; }
+    .hero {
+      padding: 3.3rem 0 2.4rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      margin: 0 0 0.85rem;
+      color: var(--muted);
+      letter-spacing: 0.18rem;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+    }
+    .subtitle {
+      max-width: 760px;
+      margin: 0.95rem 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 1.5rem 0 0;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.38rem 0.82rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+    .badge strong { color: var(--ink); font-weight: 600; }
+    .callout {
+      margin-top: 1.15rem;
+      padding: 0.95rem 1.05rem;
+      border-radius: 14px;
+      border-left: 4px solid var(--accent);
+      background: rgba(229,184,111,0.09);
+      color: var(--ink);
+    }
+    .callout.ok {
+      border-left-color: var(--ok);
+      background: rgba(61,220,151,0.1);
+    }
+    .toc {
+      border-bottom: 1px solid var(--line);
+      background: rgba(9, 15, 27, 0.72);
+      backdrop-filter: blur(12px);
+    }
+    .toc-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.2rem;
+      margin: 0;
+      padding: 1rem 0;
+      list-style: none;
+      font-size: 0.9rem;
+    }
+    .toc-list a {
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .toc-list a::before {
+      content: "•";
+      color: var(--accent-soft);
+    }
+    main { padding: 2rem 0 4rem; }
+    .panel {
+      margin-bottom: 1.5rem;
+      padding: 1.5rem;
+      border-radius: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.22);
+    }
+    .panel h2 {
+      margin: 0 0 0.8rem;
+      font-size: 1.45rem;
+      letter-spacing: -0.02em;
+    }
+    .panel h3 {
+      margin: 1.2rem 0 0.45rem;
+      font-size: 1rem;
+    }
+    p { margin: 0.45rem 0 0.9rem; color: var(--muted); }
+    ul, ol { margin: 0.4rem 0 1rem 1.2rem; padding: 0; }
+    li { margin: 0.35rem 0; }
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+    .cols-2 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .stat-card, .step-card {
+      padding: 1rem;
+      border-radius: 16px;
+      background: var(--panel-soft);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat-card strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 1.05rem;
+      color: var(--ink);
+    }
+    .step-card .kicker {
+      font-size: 0.78rem;
+      color: var(--accent-soft);
+      letter-spacing: 0.08rem;
+      text-transform: uppercase;
+    }
+    .step-card h3 { margin-top: 0.35rem; }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.9rem 0 0;
+    }
+    .pill {
+      padding: 0.32rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--ink);
+    }
+    .footer {
+      padding: 2rem 1.2rem 3rem;
+      border-top: 1px solid var(--line);
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    @media (max-width: 720px) {
+      .hero { padding-top: 2.5rem; }
+      h1 { font-size: 2rem; }
+      .panel { padding: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <p class="eyebrow">QuantumAI • Demo, Test ve Rehber</p>
+      <h1>QuantumAI Uygulaması Kullanıcı Rehberi</h1>
+      <p class="subtitle">Bu sürüm, yüklediğin eğitim dosyasından türetilmiş sadeleştirilmiş kullanıcı rehberidir. İç sistem süreçleri, servis runbook'ları ve uygulama içi teknik boru hatları burada özellikle gösterilmez; yalnızca kullanıcının göreceği Demo ve Test akışı bulunur.</p>
+      <div class="badge-row">
+        <span class="badge">Mod <strong>Demo + Test</strong></span>
+        <span class="badge">Doğrulama <strong>Face ID / Parola</strong></span>
+        <span class="badge">Wallet <strong>Binance, Coinbase, Trust, MetaMask</strong></span>
+        <span class="badge">Risk <strong>Önce Sandbox</strong></span>
+        <span class="badge">Belge <strong>2026-03-25 revize</strong></span>
+      </div>
+      <div class="callout">Kullanıcı akışı sırası: ekrana bak, güvenli doğrulamayı tamamla, demo akışı gör, test adımlarını uygula, sonra gerçek işleme geç.</div>
+      <div class="callout ok">Not: Bu rehberde gerçek servis, deployment, operasyon, runbook ve sistem içi süreçler çıkarılmıştır. Amaç, kişinin uygulamayı hızlı anlamasıdır.</div>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <div class="container">
+      <ol class="toc-list">
+        <li><a href="#system-overview">1. Genel Bakış</a></li>
+        <li><a href="#configuration">2. Hızlı Başlangıç</a></li>
+        <li><a href="#quantum-bot-suite">3. Demo Menüsü</a></li>
+        <li><a href="#operations">4. Test Menüsü</a></li>
+        <li><a href="#security">5. Wallet ve Doğrulama</a></li>
+        <li><a href="#api-reference">6. İşlem Adımları</a></li>
+        <li><a href="#support">7. Yardım</a></li>
+      </ol>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section id="system-overview" class="panel">
+      <h2>1. Genel Bakış</h2>
+      <p>QuantumAI uygulaması, kullanıcıya panel, wallet, training ve bot yüzeylerini tek uygulama içinde gösterir. Bu kullanıcı rehberi, kişinin uygulamayı anlaması ve işlem öncesi güvenli sırayı görmesi için hazırlanmıştır.</p>
+      <div class="grid cols-2">
+        <div class="stat-card">
+          <strong>Neyi görürsün?</strong>
+          <p>Panel, cüzdan, test/demo merkezi ve güvenli işlem adımları.</p>
+        </div>
+        <div class="stat-card">
+          <strong>Neyi görmezsin?</strong>
+          <p>İç servis akışları, deployment detayları, teknik runbook ve sistem süreçleri.</p>
+        </div>
+        <div class="stat-card">
+          <strong>İlk hedef</strong>
+          <p>Kişi veya ekip, uygulama içinde hangi sırayla ilerleyeceğini kısa sürede anlar.</p>
+        </div>
+        <div class="stat-card">
+          <strong>Güvenlik ilkesi</strong>
+          <p>Önce demo ve test, sonra biyometrik doğrulama, en son gerçek işlem.</p>
+        </div>
+      </div>
+      <h3>Temel kazanımlar</h3>
+      <ul>
+        <li>İlk kez kullanan kişi ekranların ne işe yaradığını net görür.</li>
+        <li>Wallet doğrulaması sonrası işlemin yine uygulama içinde devam ettiğini anlar.</li>
+        <li>Gerçek riske girmeden önce sandbox ve demo akışıyla prova yapar.</li>
+      </ul>
+    </section>
+
+    <section id="configuration" class="panel">
+      <h2>2. Hızlı Başlangıç</h2>
+      <p>Başlangıç için yalnızca kullanıcı tarafındaki hazırlıklar gösterilir. Teknik yapılandırma ve arka plan süreçleri bu sürüme alınmamıştır.</p>
+      <ol>
+        <li>Uygulamayı aç ve panel kartlarını gözden geçir.</li>
+        <li>Test ve Demo Merkezi'ni aç.</li>
+        <li>Wallet doğrulama adımına geçmeden önce demo akışını incele.</li>
+        <li>Face ID veya cihaz parolası ile güvenli doğrulamayı tamamla.</li>
+        <li>Önce sandbox, sonra gerçek işlem sırasını izle.</li>
+      </ol>
+      <div class="pill-row">
+        <span class="pill">Kısa tur</span>
+        <span class="pill">Demo merkezli</span>
+        <span class="pill">İşlem öncesi hazırlık</span>
+      </div>
+    </section>
+
+    <section id="quantum-bot-suite" class="panel">
+      <h2>3. Demo Menüsü</h2>
+      <p>Demo menüsü, kişiye uygulamanın temel ekranlarını güvenli sırayla tanıtır. Burada amaç işlem yapmak değil, akışı anlamaktır.</p>
+      <div class="grid cols-2">
+        <div class="step-card">
+          <div class="kicker">Demo 01</div>
+          <h3>Paneli tara</h3>
+          <p>Çalışma modu, sembol ve durum kartları hızlıca okunur.</p>
+        </div>
+        <div class="step-card">
+          <div class="kicker">Demo 02</div>
+          <h3>Wallet yüzeyini gör</h3>
+          <p>Adres gösterimi, ağ seçimi ve güvenli gönderim mantığı tanıtılır.</p>
+        </div>
+        <div class="step-card">
+          <div class="kicker">Demo 03</div>
+          <h3>Training akışını aç</h3>
+          <p>Karşılama, önkoşul, sandbox ve mini test sırası görülür.</p>
+        </div>
+        <div class="step-card">
+          <div class="kicker">Demo 04</div>
+          <h3>İşlem öncesi dur</h3>
+          <p>Kullanıcıya önce prova sonra gerçek işlem kuralı gösterilir.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="operations" class="panel">
+      <h2>4. Test Menüsü</h2>
+      <p>Test menüsü, kullanıcı veya ekip için kontrol adımlarını listeler. Bunlar kullanıcı düzeyinde doğrulamalardır; sistem içi operasyon testleri değildir.</p>
+      <h3>Kontrol listesi</h3>
+      <ul>
+        <li>Panel ekranı açılıyor ve temel durum kartları görünüyor mu?</li>
+        <li>Wallet ekranında adres okunuyor ve ağ seçimi çalışıyor mu?</li>
+        <li>Harici wallet aktivasyonu sonrası uygulamaya geri dönüş anlaşılır mı?</li>
+        <li>Face ID veya cihaz parolası doğru anda tetikleniyor mu?</li>
+        <li>Sandbox akışı gerçek işlemden önce açıkça gösteriliyor mu?</li>
+        <li>Kaldığın yerden devam bilgisi training içinde korunuyor mu?</li>
+      </ul>
+      <h3>Geçiş kriteri</h3>
+      <p>Demo akışı anlaşılmış, güvenli doğrulama görülmüş ve kullanıcı işlem sırasını net okuyabiliyorsa Test menüsü başarılı sayılır.</p>
+    </section>
+
+    <section id="security" class="panel">
+      <h2>5. Wallet ve Doğrulama</h2>
+      <p>Wallet akışında amaç, harici doğrulamayı başlatıp işlemi uygulama içinde sürdürmektir.</p>
+      <ul>
+        <li>Binance, Coinbase Wallet, Trust Wallet veya MetaMask aktivasyonu başlatılabilir.</li>
+        <li>Doğrulama sonrası Face ID, Touch ID veya cihaz parolası istenir.</li>
+        <li>Onay bittikten sonra kullanıcı tekrar uygulamaya döner ve işlem burada devam eder.</li>
+        <li>Canlı işlemden önce sandbox veya demo adımı önerilir.</li>
+      </ul>
+      <div class="pill-row">
+        <span class="pill">Harici wallet başlangıcı</span>
+        <span class="pill">Uygulama içi devam</span>
+        <span class="pill">Biyometrik doğrulama</span>
+      </div>
+    </section>
+
+    <section id="api-reference" class="panel">
+      <h2>6. İşlem Adımları</h2>
+      <p>Bu bölüm teknik API referansı yerine kullanıcının izleyeceği işlem sırasını anlatır.</p>
+      <ol>
+        <li>Uygun ekranı aç: Panel, Wallet veya Training.</li>
+        <li>Demo merkezinden sırayı gözden geçir.</li>
+        <li>Gerekirse wallet aktivasyonunu başlat.</li>
+        <li>Face ID / parola ile doğrulamayı tamamla.</li>
+        <li>Sandbox veya test akışını uygula.</li>
+        <li>Gerçek işlem gerekiyorsa ancak bundan sonra ilerle.</li>
+      </ol>
+      <h3>Önemli not</h3>
+      <p>İşlem sırası kullanıcı için görünür olmalı; hiçbir adım gizli teknik süreç olarak bırakılmamalıdır.</p>
+    </section>
+
+    <section id="support" class="panel">
+      <h2>7. Yardım</h2>
+      <p>Sık sorular ve yönlendirmeler kısa tutulur; kullanıcıyı teknik terimlerle yormaz.</p>
+      <h3>Sık sorulanlar</h3>
+      <ul>
+        <li><strong>Demo ile Test farkı nedir?</strong> Demo anlatır, Test kontrol ettirir.</li>
+        <li><strong>İşlem nerede devam eder?</strong> Wallet doğrulaması sonrası yine uygulama içinde.</li>
+        <li><strong>Önce gerçek işlem yapmalı mıyım?</strong> Hayır, önce sandbox ve test önerilir.</li>
+        <li><strong>Teknik süreçleri nerede göreceğim?</strong> Bu sürümde gösterilmez; kullanıcı rehberinden bilinçli olarak çıkarılmıştır.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    QuantumAI kullanıcı rehberi • Demo ve Test odaklı revize sürüm • İç sistem süreçleri bu sürümde gizlenmiştir.
+  </footer>
+</body>
+</html>

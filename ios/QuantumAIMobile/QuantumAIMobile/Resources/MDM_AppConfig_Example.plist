@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>qai.sim_mode</key>
+    <true/>
+    <key>qai.live_endpoints</key>
+    <array>
+        <string>https://api.example.com</string>
+    </array>
+    <key>qai.tls_pins</key>
+    <array>
+        <string>sha256/EXAMPLEPIN</string>
+    </array>
+    <key>qai.telemetry_level</key>
+    <string>none</string>
+</dict>
+</plist>

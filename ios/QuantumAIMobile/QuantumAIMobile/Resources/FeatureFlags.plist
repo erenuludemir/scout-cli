@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>SimMode</key>
+    <false/>
+    <key>LiveAdapters</key>
+    <true/>
+    <key>Telemetry</key>
+    <true/>
+    <key>MetricsEnabled</key>
+    <true/>
+    <key>LaunchTracingEnabled</key>
+    <true/>
+    <key>SimulationVisibleVersions</key>
+    <array>
+        <string>v3</string>
+        <string>v4</string>
+        <string>v5</string>
+        <string>v6</string>
+        <string>v7</string>
+        <string>v8</string>
+        <string>vFinal</string>
+        <string>vOmega</string>
+    </array>
+</dict>
+</plist>

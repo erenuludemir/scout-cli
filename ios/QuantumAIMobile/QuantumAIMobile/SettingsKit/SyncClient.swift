@@ -1,0 +1,52 @@
+import Foundation
+
+public final class SyncClient {
+    private let storage: StorageService
+    private let metrics: MetricsCenter
+    private let audit: AuditService
+    private var attempts = 0
+    private var retries = 0
+
+    public init(storage: StorageService, metrics: MetricsCenter, audit: AuditService) {
+        self.storage = storage
+        self.metrics = metrics
+        self.audit = audit
+    }
+
+    public func post(_ url: URL, body: Data, key: String, retries maxRetries: Int = 5) async -> Bool {
+        var attempt = 0
+        while attempt <= maxRetries {
+            attempts += 1
+            do {
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.httpBody = body
+                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.addValue(key, forHTTPHeaderField: "Idempotency-Key")
+                let (_, response) = try await URLSession.shared.data(for: request)
+                if let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) {
+                    audit.append(action: "sync.success", payload: ["url": url.absoluteString])
+                    return true
+                }
+            } catch {
+                metrics.recordError("sync.failed")
+            }
+
+            attempt += 1
+            if attempt <= maxRetries {
+                retries += 1
+                metrics.recordRetry()
+                let backoff = min(pow(2.0, Double(attempt)), 32.0) + Double.random(in: 0...0.5)
+                try? await Task.sleep(nanoseconds: UInt64(backoff * 1_000_000_000))
+            }
+        }
+
+        audit.append(action: "sync.exhausted", payload: ["url": url.absoluteString, "key": key])
+        return false
+    }
+
+    public func retryRate() -> Double {
+        guard attempts > 0 else { return 0 }
+        return Double(retries) / Double(attempts)
+    }
+}

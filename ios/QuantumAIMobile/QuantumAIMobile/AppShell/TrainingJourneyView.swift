@@ -56,7 +56,7 @@ public struct TrainingJourneyView: View {
         .navigationDestination(item: $contextualDestination) { destination in
             switch destination {
             case .dashboard:
-                DashboardView()
+                PanelView()
             case .wallet:
                 WalletView(showsBackButton: true)
             case .marketBridge:
