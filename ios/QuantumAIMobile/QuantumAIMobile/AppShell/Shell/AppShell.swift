@@ -6,6 +6,7 @@ public struct AppShell: View {
     @State private var selectedTab: ShellTab = .panel
     @State private var showTraining = false
     @State private var hasEvaluatedTrainingPresentation = false
+    private let launchArguments = ProcessInfo.processInfo.arguments
 
     public init() {}
 
@@ -28,7 +29,7 @@ public struct AppShell: View {
         .task {
             guard !hasEvaluatedTrainingPresentation else { return }
             hasEvaluatedTrainingPresentation = true
-            showTraining = env.trainingJourney.shouldPresentOnLaunch
+            showTraining = !launchArguments.contains("-disable-training-on-launch") && env.trainingJourney.shouldPresentOnLaunch
         }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active else { return }

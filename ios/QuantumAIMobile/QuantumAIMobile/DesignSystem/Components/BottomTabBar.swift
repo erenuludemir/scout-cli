@@ -51,9 +51,7 @@ public struct BottomTabBar: View {
         HStack(spacing: QAITokens.Spacing.xs) {
             ForEach(ShellTab.allCases) { tab in
                 Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.82)) {
-                        selectedTab = tab
-                    }
+                    selectedTab = tab
                 } label: {
                     VStack(spacing: 6) {
                         Image(systemName: tab.icon)
@@ -71,6 +69,7 @@ public struct BottomTabBar: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(tab.title)
+                .accessibilityIdentifier("bottom-tab-\(tab.rawValue)")
             }
         }
         .padding(8)

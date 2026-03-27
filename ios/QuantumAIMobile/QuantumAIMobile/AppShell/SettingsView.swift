@@ -80,6 +80,7 @@ public struct SettingsView: View {
                                 subtitle: "CoinMarketCap köprüsü, canlı özet ve native bridge paneli"
                             )
                         }
+                        .accessibilityIdentifier("settings-link-market-bridge")
                         .buttonStyle(.plain)
 
                         NavigationLink {
@@ -345,6 +346,7 @@ private struct MarketPreferencesView: View {
                                 subtitle: "Seçili sembol için canlı piyasa özetini görüntüle"
                             )
                         }
+                        .accessibilityIdentifier("market-preferences-link-market-bridge")
                     }
                 }
             }

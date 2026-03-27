@@ -31,6 +31,7 @@ public struct ScreenHeader: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Geri")
+                    .accessibilityIdentifier("screen-header-back")
                 } else {
                     Color.clear
                         .frame(width: 44, height: 44)
