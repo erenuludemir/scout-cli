@@ -69,6 +69,7 @@ public struct MarketBridgeView: View {
             .padding(.top, QAITokens.Spacing.s)
             .padding(.bottom, QAITokens.Layout.dockedBottomClearance)
         }
+        .accessibilityIdentifier("market-bridge-screen")
         .background(AppBackground())
         .screenNavigationChromeHidden()
         .task {

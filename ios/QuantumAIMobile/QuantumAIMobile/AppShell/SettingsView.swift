@@ -2,14 +2,18 @@ import SwiftUI
 
 public struct SettingsView: View {
     @EnvironmentObject private var env: AppEnvironment
+    @Environment(\.dismiss) private var dismiss
     @State private var showInvoice = false
+    private let showsBackButton: Bool
 
-    public init() {}
+    public init(showsBackButton: Bool = false) {
+        self.showsBackButton = showsBackButton
+    }
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: QAITokens.Spacing.l) {
-                ScreenHeader(title: "Ayarlar")
+                ScreenHeader(title: "Ayarlar", showsBackButton: showsBackButton, onBack: { dismiss() })
 
                 SettingsHeroCard(
                     effectiveMode: env.runtimeUsesSimulation ? "Simülasyon" : "Canlı",
@@ -77,10 +81,10 @@ public struct SettingsView: View {
                         } label: {
                             SettingsMenuRow(
                                 title: "Market Bridge",
-                                subtitle: "CoinMarketCap köprüsü, canlı özet ve native bridge paneli"
+                                subtitle: "CoinMarketCap köprüsü, canlı özet ve native bridge paneli",
+                                accessibilityIdentifier: "settings-link-market-bridge"
                             )
                         }
-                        .accessibilityIdentifier("settings-link-market-bridge")
                         .buttonStyle(.plain)
 
                         NavigationLink {
@@ -185,6 +189,7 @@ public struct SettingsView: View {
             .padding(.top, QAITokens.Spacing.s)
             .padding(.bottom, QAITokens.Layout.dockedBottomClearance)
         }
+        .accessibilityIdentifier("settings-screen")
         .background(AppBackground())
         .screenNavigationChromeHidden()
         .sheet(isPresented: $showInvoice) {
@@ -343,10 +348,10 @@ private struct MarketPreferencesView: View {
                         } label: {
                             SettingsMenuRow(
                                 title: "CoinMarketCap Köprüsünü Aç",
-                                subtitle: "Seçili sembol için canlı piyasa özetini görüntüle"
+                                subtitle: "Seçili sembol için canlı piyasa özetini görüntüle",
+                                accessibilityIdentifier: "market-preferences-link-market-bridge"
                             )
                         }
-                        .accessibilityIdentifier("market-preferences-link-market-bridge")
                     }
                 }
             }
@@ -473,6 +478,13 @@ private struct SettingsToggleRow: View {
 private struct SettingsMenuRow: View {
     let title: String
     let subtitle: String
+    let accessibilityIdentifier: String?
+
+    init(title: String, subtitle: String, accessibilityIdentifier: String? = nil) {
+        self.title = title
+        self.subtitle = subtitle
+        self.accessibilityIdentifier = accessibilityIdentifier
+    }
 
     var body: some View {
         HStack(spacing: 14) {
@@ -493,6 +505,22 @@ private struct SettingsMenuRow: View {
         .background(QAITokens.Palette.cardElevated)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .modifier(AccessibilityIdentifierModifier(identifier: accessibilityIdentifier))
+    }
+}
+
+private struct AccessibilityIdentifierModifier: ViewModifier {
+    let identifier: String?
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if let identifier, !identifier.isEmpty {
+            content.accessibilityIdentifier(identifier)
+        } else {
+            content
+        }
     }
 }
 

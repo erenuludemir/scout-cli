@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct PanelView: View {
     @EnvironmentObject private var env: AppEnvironment
+    private static let operationsMenuAnchor = "panel-operations-menu"
 
     public init() {}
 
@@ -10,26 +11,51 @@ public struct PanelView: View {
     }
 
     public var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: QAITokens.Spacing.l) {
-                ScreenHeader(title: "Panel")
+        ScrollViewReader { proxy in
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: QAITokens.Spacing.l) {
+                    ScreenHeader(title: "Panel")
 
-                PanelHeroCard(state: viewState)
+                    PanelHeroCard(
+                        state: viewState,
+                        refreshAction: refreshOperationalState,
+                        operationsAction: {
+                            withAnimation(.spring(response: 0.32, dampingFraction: 0.84)) {
+                                proxy.scrollTo(Self.operationsMenuAnchor, anchor: .top)
+                            }
+                        }
+                    )
 
-                PanelQuickStatsGrid(state: viewState)
+                    PanelOperationsMenuCard()
+                        .id(Self.operationsMenuAnchor)
 
-                PanelMarketSnapshotCard(state: viewState)
+                    PanelQuickStatsGrid(state: viewState)
 
-                PanelOrdersCard(state: viewState)
+                    PanelMarketSnapshotCard(state: viewState)
 
-                PanelRecommendationCard(message: viewState.aiSummary)
+                    PanelOrdersCard(state: viewState)
+
+                    PanelRecommendationCard(message: viewState.aiSummary)
+                }
+                .padding(.horizontal, QAITokens.Layout.screenPadding)
+                .padding(.top, QAITokens.Spacing.s)
+                .padding(.bottom, QAITokens.Layout.dockedBottomClearance)
             }
-            .padding(.horizontal, QAITokens.Layout.screenPadding)
-            .padding(.top, QAITokens.Spacing.s)
-            .padding(.bottom, QAITokens.Layout.dockedBottomClearance)
+            .accessibilityIdentifier("panel-screen")
+            .background(AppBackground())
+            .screenNavigationChromeHidden()
         }
-        .background(AppBackground())
-        .screenNavigationChromeHidden()
+    }
+
+    private func refreshOperationalState() {
+        env.applyRuntimeSettings()
+        env.market.refreshForActiveScene()
+
+        if env.settings.marketBridgeEnabled {
+            Task {
+                await env.marketBridge.refreshNow()
+            }
+        }
     }
 }
 
@@ -93,6 +119,8 @@ private struct PanelViewState {
 
 private struct PanelHeroCard: View {
     let state: PanelViewState
+    let refreshAction: () -> Void
+    let operationsAction: () -> Void
 
     var body: some View {
         GlassCard {
@@ -120,8 +148,88 @@ private struct PanelHeroCard: View {
                     .lineLimit(nil)
 
                 HStack(spacing: QAITokens.Spacing.m) {
-                    PrimaryActionButton(title: "Sistem Sagligini Yenile") {}
-                    PrimaryActionButton(title: "Operasyonlara Git", style: .secondary) {}
+                    PrimaryActionButton(title: "Sistem Sagligini Yenile", action: refreshAction)
+                    PrimaryActionButton(title: "Operasyonlara Git", style: .secondary, action: operationsAction)
+                }
+            }
+        }
+    }
+}
+
+private struct PanelOperationsMenuCard: View {
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: QAITokens.Spacing.s), count: 3)
+
+    var body: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
+                Label("Operasyon Menüsü", systemImage: "square.grid.2x2")
+                    .font(QAITokens.Typography.cardTitle)
+                    .foregroundStyle(QAITokens.Palette.textPrimary)
+
+                LazyVGrid(columns: columns, spacing: QAITokens.Spacing.s) {
+                    NavigationLink {
+                        MarketBridgeView(showsBackButton: true)
+                    } label: {
+                        PanelOperationTile(title: "Market Bridge", icon: "globe", tint: QAITokens.Palette.chipBlue)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("panel-op-market-bridge")
+
+                    NavigationLink {
+                        IntelligenceCenterView()
+                    } label: {
+                        PanelOperationTile(title: "Beyin", icon: "brain.head.profile", tint: QAITokens.Palette.chipTeal)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("panel-op-intelligence")
+
+                    NavigationLink {
+                        StrategyLibraryView()
+                    } label: {
+                        PanelOperationTile(title: "Preset", icon: "bolt.horizontal.circle", tint: Color.white.opacity(0.18))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("panel-op-preset")
+
+                    NavigationLink {
+                        RunbookCenterView()
+                    } label: {
+                        PanelOperationTile(title: "Runbook", icon: "list.bullet.clipboard", tint: QAITokens.Palette.chipAmber)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("panel-op-runbook")
+
+                    NavigationLink {
+                        PanelTrainingDemoScreen()
+                    } label: {
+                        PanelOperationTile(title: "Test & Demo", icon: "play.rectangle", tint: QAITokens.Palette.cardElevated)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("panel-op-test-demo")
+
+                    NavigationLink {
+                        SettingsView(showsBackButton: true)
+                    } label: {
+                        PanelOperationTile(title: "Ayarlar", icon: "slider.horizontal.3", tint: Color.white.opacity(0.18))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("panel-op-settings")
+
+                    NavigationLink {
+                        SimulationsHubView()
+                    } label: {
+                        PanelOperationTile(title: "Sim Stack", icon: "square.stack.3d.up", tint: Color(red: 41.0 / 255.0, green: 95.0 / 255.0, blue: 134.0 / 255.0))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("panel-op-sim-stack")
+
+                    NavigationLink {
+                        HQAdminView()
+                    } label: {
+                        PanelOperationTile(title: "HQ Admin", icon: "shield.lefthalf.filled", tint: Color(red: 83.0 / 255.0, green: 46.0 / 255.0, blue: 88.0 / 255.0))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("panel-op-hq-admin")
                 }
             }
         }
@@ -249,6 +357,36 @@ private struct PanelRecommendationCard: View {
     }
 }
 
+private struct PanelOperationTile: View {
+    let title: String
+    let icon: String
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: QAITokens.Spacing.s) {
+            Image(systemName: icon)
+                .font(.system(size: 26, weight: .medium))
+                .foregroundStyle(QAITokens.Palette.textPrimary)
+
+            Spacer(minLength: 0)
+
+            Text(title)
+                .font(.system(size: 18, weight: .medium, design: .rounded))
+                .foregroundStyle(QAITokens.Palette.textPrimary)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+        }
+        .frame(maxWidth: .infinity, minHeight: 132, alignment: .leading)
+        .padding(18)
+        .background(tint)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(QAITokens.Palette.stroke, lineWidth: 1)
+        )
+    }
+}
+
 private struct PanelStatCard: View {
     let title: String
     let value: String
@@ -285,6 +423,25 @@ private struct StatusPill: View {
             .padding(.vertical, 8)
             .background(tint)
             .clipShape(Capsule())
+    }
+}
+
+private struct PanelTrainingDemoScreen: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: QAITokens.Spacing.l) {
+                ScreenHeader(title: "Test & Demo", showsBackButton: true, onBack: { dismiss() })
+                TrainingDocumentViewer()
+            }
+            .padding(.horizontal, QAITokens.Layout.screenPadding)
+            .padding(.top, QAITokens.Spacing.s)
+            .padding(.bottom, QAITokens.Layout.dockedBottomClearance)
+        }
+        .accessibilityIdentifier("test-demo-screen")
+        .background(AppBackground())
+        .screenNavigationChromeHidden()
     }
 }
 
