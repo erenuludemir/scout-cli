@@ -1,0 +1,337 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4F2A49B50463903A5E95FB2E /* QuantumAIMobileHostApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15C9C6173F1C4A4B0B76CB8 /* QuantumAIMobileHostApp.swift */; };
+		7727B5E28B0E16806F033DEF /* QuantumAIMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 785E71437F5011F039A7CBE1 /* QuantumAIMobile */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		7A066BFECE69D5F74AE93EEF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A15C9C6173F1C4A4B0B76CB8 /* QuantumAIMobileHostApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantumAIMobileHostApp.swift; sourceTree = "<group>"; };
+		AB29AFA97F063BF9B1E8E6B1 /* QuantumAIMobileHost.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = QuantumAIMobileHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1291264E964D6C6662ED646 /* QuantumAIMobile */ = {isa = PBXFileReference; lastKnownFileType = folder; name = QuantumAIMobile; path = .; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		68AE677403F9D2A9FDD8EB28 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7727B5E28B0E16806F033DEF /* QuantumAIMobile in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		71CC8242B5BFEBD3DA967F87 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				C1291264E964D6C6662ED646 /* QuantumAIMobile */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		B5894A1BE1F062F9A5112EB7 /* QuantumAIMobileAppHost */ = {
+			isa = PBXGroup;
+			children = (
+				7A066BFECE69D5F74AE93EEF /* Info.plist */,
+				A15C9C6173F1C4A4B0B76CB8 /* QuantumAIMobileHostApp.swift */,
+			);
+			path = QuantumAIMobileAppHost;
+			sourceTree = "<group>";
+		};
+		CD9298E32294AF610DD03BF1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AB29AFA97F063BF9B1E8E6B1 /* QuantumAIMobileHost.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E3CE94A01CCE3A09875BFF68 = {
+			isa = PBXGroup;
+			children = (
+				71CC8242B5BFEBD3DA967F87 /* Packages */,
+				B5894A1BE1F062F9A5112EB7 /* QuantumAIMobileAppHost */,
+				CD9298E32294AF610DD03BF1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0BDAE4D809EF000F45555C9E /* QuantumAIMobileHost */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10C9AA7E21F992FB6D10F75A /* Build configuration list for PBXNativeTarget "QuantumAIMobileHost" */;
+			buildPhases = (
+				1CAA6696F20286A8B95889A5 /* Sources */,
+				68AE677403F9D2A9FDD8EB28 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuantumAIMobileHost;
+			packageProductDependencies = (
+				785E71437F5011F039A7CBE1 /* QuantumAIMobile */,
+			);
+			productName = QuantumAIMobileHost;
+			productReference = AB29AFA97F063BF9B1E8E6B1 /* QuantumAIMobileHost.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7F930750D5CD3FF2EAF5E464 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					0BDAE4D809EF000F45555C9E = {
+						DevelopmentTeam = YH698TG69K;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 5ACD150230A558BD9A4A2DFE /* Build configuration list for PBXProject "QuantumAIMobileHost" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = E3CE94A01CCE3A09875BFF68;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9B628498A4A041D7AABAC84F /* XCLocalSwiftPackageReference "." */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CD9298E32294AF610DD03BF1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0BDAE4D809EF000F45555C9E /* QuantumAIMobileHost */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1CAA6696F20286A8B95889A5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F2A49B50463903A5E95FB2E /* QuantumAIMobileHostApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1ADAB745634A1C3A32DECBE3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = YH698TG69K;
+				ENABLE_DEBUG_DYLIB = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.erenuludemir.quantumaimobile;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.1;
+			};
+			name = Debug;
+		};
+		83A1A071F544AE552073DCBB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = QuantumAIMobileAppHost/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C948E777603C928DD55E9320 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = YH698TG69K;
+				ENABLE_DEBUG_DYLIB = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.erenuludemir.quantumaimobile;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.1;
+			};
+			name = Release;
+		};
+		DD052D86F0561577E8D02F69 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = QuantumAIMobileAppHost/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		10C9AA7E21F992FB6D10F75A /* Build configuration list for PBXNativeTarget "QuantumAIMobileHost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83A1A071F544AE552073DCBB /* Debug */,
+				DD052D86F0561577E8D02F69 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5ACD150230A558BD9A4A2DFE /* Build configuration list for PBXProject "QuantumAIMobileHost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1ADAB745634A1C3A32DECBE3 /* Debug */,
+				C948E777603C928DD55E9320 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		9B628498A4A041D7AABAC84F /* XCLocalSwiftPackageReference "." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = .;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		785E71437F5011F039A7CBE1 /* QuantumAIMobile */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = QuantumAIMobile;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 7F930750D5CD3FF2EAF5E464 /* Project object */;
+}
