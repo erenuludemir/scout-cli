@@ -91,3 +91,4 @@ docker_logs.txt.save
 # ===== QuantumAIMobile local package artifacts =====
 ios/QuantumAIMobile/.build/
 ios/QuantumAIMobile/.swiftpm/
+ios/QuantumAIMobile/QuantumAIMobileHost.xcodeproj/project.xcworkspace/xcuserdata/
