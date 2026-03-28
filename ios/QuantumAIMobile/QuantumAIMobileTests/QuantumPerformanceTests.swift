@@ -80,7 +80,14 @@ final class QuantumPerformanceTests: XCTestCase {
                 retainedLogCount: 24,
                 branchFactor: 3,
                 searchDepth: 5,
-                precision: 4
+                precision: 4,
+                trainingProgress: 0.2,
+                trainingStepIndex: TrainingJourneyStep.interactive.rawValue,
+                trainingCurrentStepTitle: TrainingJourneyStep.interactive.title,
+                trainingCanAdvance: false,
+                trainingBlockingReason: "En az üç interaktif görevi tamamla.",
+                trainingSelectedModuleCount: 2,
+                trainingCompletionCount: 0
             )
         )
 
@@ -88,5 +95,51 @@ final class QuantumPerformanceTests: XCTestCase {
         XCTAssertEqual(plan.hierarchy.priorities.first?.level, .critical)
         XCTAssertEqual(plan.hierarchy.priorities.first?.id, "noise-stabilize")
         XCTAssertEqual(plan.evaluation.symbolicComplexity, "O(sqrt(T) n^(3/2) log n)")
+        XCTAssertTrue(plan.hierarchy.priorities.contains(where: { $0.route == "HQ Admin/Citadel" }))
+        XCTAssertTrue(plan.hierarchy.priorities.contains(where: { $0.route == "Quantum Ops/Training Sync" }))
+    }
+
+    @MainActor
+    func testQuantumTrainingSnapshotReflectsBlockingState() {
+        let defaults = UserDefaults(suiteName: "QuantumPerformanceTests.training")!
+        defaults.removePersistentDomain(forName: "QuantumPerformanceTests.training")
+        let journey = TrainingJourneyStore(defaults: defaults)
+
+        journey.currentStep = .modules
+        journey.selectedModules = []
+
+        let snapshot = QuantumTrainingProgressSnapshot.reduce(journey: journey)
+
+        XCTAssertEqual(snapshot.currentStep, .modules)
+        XCTAssertEqual(snapshot.currentStepTitle, TrainingJourneyStep.modules.title)
+        XCTAssertEqual(snapshot.progressValue, journey.progressValue, accuracy: 0.0001)
+        XCTAssertFalse(snapshot.canAdvance)
+        XCTAssertEqual(snapshot.blockingReason, "En az bir training modülü seç.")
+    }
+
+    @MainActor
+    func testCognitiveTwinRegistryMentorProgressesState() {
+        let registry = CognitiveTwinRegistry()
+        let before = registry.syncProgress
+
+        registry.mentorHeir(currentHeirAgeMonths: 54)
+
+        XCTAssertEqual(registry.mentorMode, "FOUNDATION")
+        XCTAssertGreaterThan(registry.syncProgress, before)
+    }
+
+    @MainActor
+    func testTelepathyGatewayStoresLatestIntent() {
+        let gateway = TelepathyGateway()
+
+        gateway.processBrainwaveCommand(intentCode: "INTENT_ABSOLUTE_ZERO")
+
+        XCTAssertEqual(gateway.lastIntentCode, "INTENT_ABSOLUTE_ZERO")
+        XCTAssertGreaterThanOrEqual(gateway.lastLatencyMs, 0.012)
+        XCTAssertEqual(gateway.activeThoughts.first, "SISTEMI KILITLE")
+    }
+
+    func testSimulationCatalogRetainsThirtyTwoRuntimeModules() {
+        XCTAssertEqual(SimulationCatalog.totalModuleCount, 32)
     }
 }

@@ -147,6 +147,58 @@ struct QuantumMetricsSnapshot: Equatable {
 }
 
 @MainActor
+public struct QuantumTrainingProgressSnapshot: Equatable {
+    let progressValue: Double
+    let currentStep: TrainingJourneyStep
+    let currentStepTitle: String
+    let estimatedMinutesRemaining: Int
+    let selectedRoleTitle: String
+    let selectedModeTitle: String
+    let selectedModuleTitles: [String]
+    let canAdvance: Bool
+    let blockingReason: String?
+    let quizScore: Int
+    let quizTotal: Int
+    let completionCount: Int
+    let hasCompletedJourney: Bool
+    private static let quizQuestionCount = 3
+
+    static let idle = QuantumTrainingProgressSnapshot(
+        progressValue: 0,
+        currentStep: .welcome,
+        currentStepTitle: TrainingJourneyStep.welcome.title,
+        estimatedMinutesRemaining: TrainingJourneyStep.allCases.count * 2,
+        selectedRoleTitle: TrainingRole.technical.title,
+        selectedModeTitle: TrainingMode.quickTour.title,
+        selectedModuleTitles: [],
+        canAdvance: true,
+        blockingReason: nil,
+        quizScore: 0,
+        quizTotal: quizQuestionCount,
+        completionCount: 0,
+        hasCompletedJourney: false
+    )
+
+    static func reduce(journey: TrainingJourneyStore) -> QuantumTrainingProgressSnapshot {
+        QuantumTrainingProgressSnapshot(
+            progressValue: journey.progressValue,
+            currentStep: journey.currentStep,
+            currentStepTitle: journey.currentStep.title,
+            estimatedMinutesRemaining: journey.estimatedMinutesRemaining,
+            selectedRoleTitle: journey.selectedRole.title,
+            selectedModeTitle: journey.selectedMode.title,
+            selectedModuleTitles: journey.selectedModuleTitles,
+            canAdvance: journey.canAdvance,
+            blockingReason: journey.blockingReason,
+            quizScore: journey.quizScore,
+            quizTotal: quizQuestionCount,
+            completionCount: journey.analytics.completionCount,
+            hasCompletedJourney: journey.hasCompletedJourney
+        )
+    }
+}
+
+@MainActor
 public final class PQCLogService {
     public static let shared = PQCLogService()
 
@@ -240,6 +292,7 @@ public final class QuantumCryptoEngine: ObservableObject {
     @Published public private(set) var multiplierText = "1x"
     @Published public private(set) var backtrackingEvaluation: QuantumBacktrackingEvaluation = .idle
     @Published public private(set) var hierarchySnapshot: QuantumHierarchySnapshot = .idle
+    @Published public private(set) var trainingSnapshot: QuantumTrainingProgressSnapshot = .idle
 
     private let logService: PQCLogService
     private let securityProvider: QuantumSecurityProvider
@@ -247,8 +300,10 @@ public final class QuantumCryptoEngine: ObservableObject {
     private var syncTask: Task<Void, Never>?
     private var optimizationTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
+    private var trainingCancellable: AnyCancellable?
     private let maxRetainedLogs = 24
     private var lastOptimizationSignature: QuantumWorkloadMetrics.Signature?
+    private var boundTrainingJourneyID: ObjectIdentifier?
 
     public init(
         logService: PQCLogService,
@@ -272,6 +327,25 @@ public final class QuantumCryptoEngine: ObservableObject {
     deinit {
         syncTask?.cancel()
         optimizationTask?.cancel()
+        trainingCancellable?.cancel()
+    }
+
+    public func bindTrainingJourney(_ journey: TrainingJourneyStore) {
+        let journeyID = ObjectIdentifier(journey)
+        guard boundTrainingJourneyID != journeyID else { return }
+
+        boundTrainingJourneyID = journeyID
+        trainingCancellable?.cancel()
+        updateTrainingSnapshot(from: journey)
+
+        trainingCancellable = journey.objectWillChange
+            .sink { [weak self, weak journey] _ in
+                guard let self, let journey else { return }
+                Task { @MainActor [weak self, weak journey] in
+                    guard let self, let journey else { return }
+                    self.updateTrainingSnapshot(from: journey)
+                }
+            }
     }
 
     public func toggleAIOptimization() {
@@ -289,6 +363,13 @@ public final class QuantumCryptoEngine: ObservableObject {
             self.qkdStatus = qkdExchange.status
             self.isAIOptimized = nextState
             self.logService.startReadingLogs(aiEnabled: nextState)
+            if nextState {
+                CognitiveTwinRegistry.shared.mentorHeir(currentHeirAgeMonths: 54)
+                BarakfakihCitadel.shared.fortifyPhysicalAnchor()
+                TelepathyGateway.shared.processBrainwaveCommand(intentCode: "INTENT_QKD_MONITOR")
+            } else {
+                TelepathyGateway.shared.processBrainwaveCommand(intentCode: "INTENT_MONITOR")
+            }
             self.rebuildMetrics()
             self.isSyncing = false
         }
@@ -319,6 +400,11 @@ public final class QuantumCryptoEngine: ObservableObject {
         scheduleOptimizationPass()
     }
 
+    private func updateTrainingSnapshot(from journey: TrainingJourneyStore) {
+        trainingSnapshot = QuantumTrainingProgressSnapshot.reduce(journey: journey)
+        scheduleOptimizationPass()
+    }
+
     private func scheduleOptimizationPass() {
         let workload = QuantumWorkloadMetrics(
             averageLatency: averageLatency,
@@ -328,7 +414,14 @@ public final class QuantumCryptoEngine: ObservableObject {
             retainedLogCount: recentLogs.count,
             branchFactor: averageNoise > 65 ? 3 : 2,
             searchDepth: isAIOptimized ? 4 : 5,
-            precision: isAIOptimized ? 6 : 4
+            precision: isAIOptimized ? 6 : 4,
+            trainingProgress: trainingSnapshot.progressValue,
+            trainingStepIndex: trainingSnapshot.currentStep.rawValue,
+            trainingCurrentStepTitle: trainingSnapshot.currentStepTitle,
+            trainingCanAdvance: trainingSnapshot.canAdvance,
+            trainingBlockingReason: trainingSnapshot.blockingReason,
+            trainingSelectedModuleCount: trainingSnapshot.selectedModuleTitles.count,
+            trainingCompletionCount: trainingSnapshot.completionCount
         )
 
         let signature = workload.signature
@@ -349,8 +442,12 @@ public final class QuantumCryptoEngine: ObservableObject {
 }
 
 public struct QuantumPerformanceDashboard: View {
+    @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
     @StateObject private var engine: QuantumCryptoEngine
+    @ObservedObject private var twin = CognitiveTwinRegistry.shared
+    @ObservedObject private var citadel = BarakfakihCitadel.shared
+    @ObservedObject private var telepathy = TelepathyGateway.shared
     private let showsBackButton: Bool
 
     @MainActor
@@ -371,7 +468,9 @@ public struct QuantumPerformanceDashboard: View {
                 QuantumThreatCard(engine: engine)
                 QuantumMetricsGrid(engine: engine)
                 QuantumBacktrackingCard(engine: engine)
+                QuantumTrainingCard(engine: engine)
                 QuantumHierarchyCard(engine: engine)
+                QuantumAutonomyCard(twin: twin, citadel: citadel, telepathy: telepathy)
                 QuantumControlCard(engine: engine)
                 BursaHQTerminalView(bindToMetrics: true)
             }
@@ -382,6 +481,66 @@ public struct QuantumPerformanceDashboard: View {
         .accessibilityIdentifier("quantum-ops-screen")
         .background(AppBackground())
         .screenNavigationChromeHidden()
+        .task {
+            engine.bindTrainingJourney(env.trainingJourney)
+        }
+    }
+}
+
+private struct QuantumAutonomyCard: View {
+    @ObservedObject var twin: CognitiveTwinRegistry
+    @ObservedObject var citadel: BarakfakihCitadel
+    @ObservedObject var telepathy: TelepathyGateway
+
+    var body: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
+                Text("Autonomy Overlays")
+                    .font(QAITokens.Typography.cardTitle)
+                    .foregroundStyle(QAITokens.Palette.textPrimary)
+
+                Text("Digital twin, smart citadel ve neural command raili ayni quantum workload ustunde aggregate state ile beslenir.")
+                    .font(QAITokens.Typography.body)
+                    .foregroundStyle(QAITokens.Palette.textSecondary)
+                    .lineLimit(nil)
+
+                NavigationLink {
+                    DigitalTwinView(showsBackButton: true)
+                } label: {
+                    QuantumAutonomyRow(
+                        title: "Digital Twin",
+                        subtitle: twin.statusText,
+                        value: "%\(Int(twin.syncProgress * 100))",
+                        tint: QAITokens.Palette.chipBlue
+                    )
+                }
+                .buttonStyle(.plain)
+
+                NavigationLink {
+                    CitadelStatusView(showsBackButton: true)
+                } label: {
+                    QuantumAutonomyRow(
+                        title: "Smart Citadel",
+                        subtitle: citadel.uplinkStatus,
+                        value: citadel.isSealed ? "LOCKED" : "STANDBY",
+                        tint: QAITokens.Palette.chipAmber
+                    )
+                }
+                .buttonStyle(.plain)
+
+                NavigationLink {
+                    NeuralCommandView(showsBackButton: true)
+                } label: {
+                    QuantumAutonomyRow(
+                        title: "Neural Command",
+                        subtitle: telepathy.lastIntentCode,
+                        value: String(format: "%.3f ms", telepathy.lastLatencyMs),
+                        tint: QAITokens.Palette.chipTeal
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
     }
 }
 
@@ -553,6 +712,91 @@ private struct QuantumBacktrackingCard: View {
     }
 }
 
+private struct QuantumTrainingCard: View {
+    @ObservedObject var engine: QuantumCryptoEngine
+
+    var body: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Trading Blockchain Training")
+                            .font(QAITokens.Typography.cardTitle)
+                            .foregroundStyle(QAITokens.Palette.textPrimary)
+                        Text(engine.trainingSnapshot.currentStepTitle)
+                            .font(QAITokens.Typography.bodyStrong)
+                            .foregroundStyle(QAITokens.Palette.textPrimary)
+                    }
+
+                    Spacer()
+
+                    Text("%\(Int(engine.trainingSnapshot.progressValue * 100))")
+                        .font(.system(size: 18, weight: .bold, design: .monospaced))
+                        .foregroundStyle(QAITokens.Palette.gold)
+                }
+
+                ProgressView(value: engine.trainingSnapshot.progressValue)
+                    .tint(QAITokens.Palette.gold)
+
+                HStack(spacing: QAITokens.Spacing.s) {
+                    QuantumInlineStat(title: "Rol", value: engine.trainingSnapshot.selectedRoleTitle)
+                    QuantumInlineStat(title: "Mod", value: engine.trainingSnapshot.selectedModeTitle)
+                    QuantumInlineStat(title: "Kalan", value: "\(engine.trainingSnapshot.estimatedMinutesRemaining) dk")
+                }
+
+                if !engine.trainingSnapshot.selectedModuleTitles.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Secili moduller")
+                            .font(QAITokens.Typography.caption)
+                            .foregroundStyle(QAITokens.Palette.textSecondary)
+
+                        FlexibleChipWrap(items: engine.trainingSnapshot.selectedModuleTitles)
+                    }
+                }
+
+                if let blockingReason = engine.trainingSnapshot.blockingReason {
+                    Text(blockingReason)
+                        .font(QAITokens.Typography.caption)
+                        .foregroundStyle(QAITokens.Palette.warning)
+                        .lineLimit(nil)
+                } else {
+                    Text(engine.trainingSnapshot.hasCompletedJourney
+                        ? "Journey tamamlandi. Quantum hierarchy artik tamamlanmis egitim profilini kullaniyor."
+                        : "Journey ilerlemeye hazir. Quantum hierarchy gercek progress verisi ile yeniden agirliklandirildi.")
+                        .font(QAITokens.Typography.caption)
+                        .foregroundStyle(QAITokens.Palette.textSecondary)
+                        .lineLimit(nil)
+                }
+
+                HStack(spacing: QAITokens.Spacing.s) {
+                    QuantumInlineStat(title: "Quiz", value: "\(engine.trainingSnapshot.quizScore)/\(engine.trainingSnapshot.quizTotal)")
+                    QuantumInlineStat(title: "Secim", value: "\(engine.trainingSnapshot.selectedModuleTitles.count)")
+                    QuantumInlineStat(title: "Tamam", value: "\(engine.trainingSnapshot.completionCount)")
+                }
+
+                if #available(iOS 17.0, macOS 14.0, *) {
+                    NavigationLink {
+                        TrainingJourneyView(showsCloseButton: false)
+                    } label: {
+                        HStack {
+                            Text("Training journey'e git")
+                                .font(QAITokens.Typography.bodyStrong)
+                                .foregroundStyle(QAITokens.Palette.textPrimary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .foregroundStyle(QAITokens.Palette.gold)
+                        }
+                        .padding(QAITokens.Spacing.m)
+                        .background(Color.white.opacity(0.04))
+                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+}
+
 private struct QuantumHierarchyCard: View {
     @ObservedObject var engine: QuantumCryptoEngine
 
@@ -609,6 +853,38 @@ private struct QuantumHierarchyCard: View {
         case .high: QAITokens.Palette.warning
         case .medium: QAITokens.Palette.chipBlue
         case .low: QAITokens.Palette.chipTeal
+        }
+    }
+}
+
+private struct FlexibleChipWrap: View {
+    let items: [String]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(chunked(items, size: 2), id: \.self) { row in
+                HStack(spacing: QAITokens.Spacing.s) {
+                    ForEach(row, id: \.self) { item in
+                        Text(item)
+                            .font(.system(size: 11, weight: .bold, design: .monospaced))
+                            .foregroundStyle(QAITokens.Palette.textPrimary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(QAITokens.Palette.cardElevated)
+                            .clipShape(Capsule())
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    if row.count == 1 {
+                        Spacer()
+                    }
+                }
+            }
+        }
+    }
+
+    private func chunked(_ items: [String], size: Int) -> [[String]] {
+        stride(from: 0, to: items.count, by: size).map { index in
+            Array(items[index ..< min(index + size, items.count)])
         }
     }
 }
@@ -680,6 +956,40 @@ private struct QuantumMetricCard: View {
     }
 }
 
+private struct QuantumAutonomyRow: View {
+    let title: String
+    let subtitle: String
+    let value: String
+    let tint: Color
+
+    var body: some View {
+        HStack(spacing: QAITokens.Spacing.s) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(QAITokens.Typography.bodyStrong)
+                    .foregroundStyle(QAITokens.Palette.textPrimary)
+                Text(subtitle)
+                    .font(QAITokens.Typography.caption)
+                    .foregroundStyle(QAITokens.Palette.textSecondary)
+                    .lineLimit(2)
+            }
+
+            Spacer()
+
+            Text(value)
+                .font(.system(size: 12, weight: .bold, design: .monospaced))
+                .foregroundStyle(QAITokens.Palette.textPrimary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(tint)
+                .clipShape(Capsule())
+        }
+        .padding(QAITokens.Spacing.s)
+        .background(Color.white.opacity(0.04))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+    }
+}
+
 private struct TerminalBadge: View {
     let title: String
     let tint: Color
@@ -698,5 +1008,6 @@ private struct TerminalBadge: View {
 #Preview {
     NavigationStack {
         QuantumPerformanceDashboard(showsBackButton: true)
+            .environmentObject(AppEnvironment.liveInSim())
     }
 }

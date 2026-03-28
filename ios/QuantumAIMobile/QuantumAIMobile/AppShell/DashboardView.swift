@@ -348,10 +348,14 @@ private struct DashboardHeroCard: View {
 
     private func relativeSyncText(_ date: Date?) -> String {
         guard let date else { return "henüz yok" }
+        return Self.relativeTimeFormatter.localizedString(for: date, relativeTo: .now)
+    }
+
+    private static let relativeTimeFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .short
-        return formatter.localizedString(for: date, relativeTo: .now)
-    }
+        return formatter
+    }()
 }
 
 private struct MarketPulseCard: View {
@@ -474,7 +478,7 @@ private struct OperationsMenuCard: View {
                         OperationsMenuTile(title: "Sim Stack", icon: "square.stack.3d.up", tint: Color.cyan)
                     }
                     .buttonStyle(.plain)
-                    NavigationLink { HQAdminView() } label: {
+                    NavigationLink { HQAdminView(showsBackButton: true) } label: {
                         OperationsMenuTile(title: "HQ Admin", icon: "shield.lefthalf.filled", tint: QAITheme.error)
                     }
                     .buttonStyle(.plain)

@@ -434,7 +434,7 @@ private struct StatusPill: View {
 
 private struct HQAdminBridgeView: View {
     var body: some View {
-        QuantumPerformanceDashboard(showsBackButton: true)
+        HQAdminView(showsBackButton: true)
     }
 }
 

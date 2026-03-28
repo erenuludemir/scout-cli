@@ -137,6 +137,10 @@ public struct QuantumWorkloadMetrics: Equatable, Sendable {
         public let branchFactor: Int
         public let searchDepth: Int
         public let precision: Int
+        public let trainingProgressBucket: Int
+        public let trainingStepIndex: Int
+        public let trainingBlocked: Bool
+        public let trainingSelectedModuleCount: Int
     }
 
     public let averageLatency: Double
@@ -147,6 +151,13 @@ public struct QuantumWorkloadMetrics: Equatable, Sendable {
     public let branchFactor: Int
     public let searchDepth: Int
     public let precision: Int
+    public let trainingProgress: Double
+    public let trainingStepIndex: Int
+    public let trainingCurrentStepTitle: String
+    public let trainingCanAdvance: Bool
+    public let trainingBlockingReason: String?
+    public let trainingSelectedModuleCount: Int
+    public let trainingCompletionCount: Int
 
     public init(
         averageLatency: Double,
@@ -156,7 +167,14 @@ public struct QuantumWorkloadMetrics: Equatable, Sendable {
         retainedLogCount: Int,
         branchFactor: Int,
         searchDepth: Int,
-        precision: Int
+        precision: Int,
+        trainingProgress: Double,
+        trainingStepIndex: Int,
+        trainingCurrentStepTitle: String,
+        trainingCanAdvance: Bool,
+        trainingBlockingReason: String?,
+        trainingSelectedModuleCount: Int,
+        trainingCompletionCount: Int
     ) {
         self.averageLatency = averageLatency
         self.averageNoise = averageNoise
@@ -166,6 +184,13 @@ public struct QuantumWorkloadMetrics: Equatable, Sendable {
         self.branchFactor = max(2, branchFactor)
         self.searchDepth = max(1, searchDepth)
         self.precision = max(1, precision)
+        self.trainingProgress = max(0, min(1, trainingProgress))
+        self.trainingStepIndex = max(0, trainingStepIndex)
+        self.trainingCurrentStepTitle = trainingCurrentStepTitle
+        self.trainingCanAdvance = trainingCanAdvance
+        self.trainingBlockingReason = trainingBlockingReason
+        self.trainingSelectedModuleCount = max(0, trainingSelectedModuleCount)
+        self.trainingCompletionCount = max(0, trainingCompletionCount)
     }
 
     public var signature: Signature {
@@ -177,7 +202,11 @@ public struct QuantumWorkloadMetrics: Equatable, Sendable {
             retainedLogBucket: retainedLogCount / 4,
             branchFactor: branchFactor,
             searchDepth: searchDepth,
-            precision: precision
+            precision: precision,
+            trainingProgressBucket: Int((trainingProgress * 10).rounded()),
+            trainingStepIndex: trainingStepIndex,
+            trainingBlocked: !trainingCanAdvance,
+            trainingSelectedModuleCount: trainingSelectedModuleCount
         )
     }
 }
@@ -518,6 +547,63 @@ public actor QuantumBacktrackingPlanner {
                     route: "Quantum Ops/Control"
                 )
             )
+        } else {
+            priorities.append(
+                QuantumProjectPriority(
+                    id: "digital-twin-sync",
+                    title: "Digital twin senkronunu ilerlet",
+                    detail: "Mentor protokolu aktif. Bilissel ikiz overlay'i quantum komut raili ile hizalaniyor.",
+                    level: .medium,
+                    route: "HQ Admin/Digital Twin"
+                )
+            )
+        }
+
+        if !workload.trainingCanAdvance {
+            priorities.append(
+                QuantumProjectPriority(
+                    id: "training-unblock",
+                    title: "Training akisini blokajdan cikar",
+                    detail: workload.trainingBlockingReason
+                        ?? "Gercek progress \(Int(workload.trainingProgress * 100))%. Mevcut adim: \(workload.trainingCurrentStepTitle).",
+                    level: workload.trainingStepIndex >= 7 ? .critical : .high,
+                    route: "Quantum Ops/Training Sync"
+                )
+            )
+        } else if workload.trainingProgress < 1.0 {
+            priorities.append(
+                QuantumProjectPriority(
+                    id: "training-progress",
+                    title: "Trading blockchain training katmanini ilerlet",
+                    detail: "Gercek journey progress \(Int(workload.trainingProgress * 100))%. Secili modul: \(workload.trainingSelectedModuleCount). Adim: \(workload.trainingCurrentStepTitle).",
+                    level: workload.trainingProgress < 0.45 ? .high : .medium,
+                    route: "Quantum Ops/Training Sync"
+                )
+            )
+        }
+
+        if workload.qkdStatus == "COMPROMISED" || workload.averageNoise > 65 {
+            priorities.append(
+                QuantumProjectPriority(
+                    id: "citadel-seal",
+                    title: "Citadel anchor katmanini muhurlu tut",
+                    detail: "Fiziksel anchor ve uplink statusu komut akisi ile birlikte korunmali.",
+                    level: workload.qkdStatus == "COMPROMISED" ? .high : .medium,
+                    route: "HQ Admin/Citadel"
+                )
+            )
+        }
+
+        if evaluation.solutionPath != nil {
+            priorities.append(
+                QuantumProjectPriority(
+                    id: "neural-rail",
+                    title: "Neural command raili tazele",
+                    detail: "Secilen yurutme yolu dusuk-yuk komut ozetine aktarilmaya hazir.",
+                    level: .medium,
+                    route: "HQ Admin/Neural Command"
+                )
+            )
         }
 
         priorities.append(
@@ -547,13 +633,13 @@ public actor QuantumBacktrackingPlanner {
         }
 
         let dispatchMode = workload.isAIOptimized
-            ? "Quantum walk + async utility dispatch"
-            : "Classical fallback + kernel-driven telemetry"
+            ? "Quantum walk + async utility dispatch + real training sync"
+            : "Classical fallback + kernel-driven telemetry + training sync"
 
         return QuantumHierarchySnapshot(
             headline: headline,
             dispatchMode: dispatchMode,
-            priorities: Array(ordered.prefix(4))
+            priorities: Array(ordered.prefix(6))
         )
     }
 

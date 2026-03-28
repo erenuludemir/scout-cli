@@ -220,9 +220,7 @@ public struct BursaHQTerminalView: View {
                     .background(Color.black)
                     .onChange(of: watcher.logLines.count) { _, count in
                         guard count > 0 else { return }
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            proxy.scrollTo(count - 1, anchor: .bottom)
-                        }
+                        proxy.scrollTo(count - 1, anchor: .bottom)
                     }
                 }
 

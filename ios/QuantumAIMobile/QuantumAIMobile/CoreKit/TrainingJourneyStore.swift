@@ -309,6 +309,31 @@ public final class TrainingJourneyStore: ObservableObject {
         }
     }
 
+    public var selectedModuleTitles: [String] {
+        selectedModules
+            .map(\.title)
+            .sorted()
+    }
+
+    public var blockingReason: String? {
+        guard !canAdvance && currentStep != .completion else { return nil }
+
+        switch currentStep {
+        case .prerequisites:
+            return "Devam etmek için bildirim hazırlığını ve güvenlik doğrulamasını tamamla."
+        case .modules:
+            return "En az bir training modülü seç."
+        case .interactive:
+            return "En az üç interaktif görevi tamamla."
+        case .sandbox:
+            return "En az bir sandbox işlemi yap."
+        case .quiz:
+            return "Tüm mini test sorularını yanıtla."
+        default:
+            return "Bu adımı tamamla."
+        }
+    }
+
     public func refreshPrerequisites(accountReady: Bool, networkReady: Bool, deviceReady: Bool) {
         let updated = TrainingPrerequisites(
             notificationsReady: prerequisites.notificationsReady,

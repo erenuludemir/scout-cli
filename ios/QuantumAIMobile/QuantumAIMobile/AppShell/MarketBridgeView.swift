@@ -195,10 +195,14 @@ private struct MarketBridgeHeroCard: View {
 
     private func relativeText(_ date: Date?) -> String {
         guard let date else { return "henüz yok" }
+        return Self.relativeTimeFormatter.localizedString(for: date, relativeTo: .now)
+    }
+
+    private static let relativeTimeFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .short
-        return formatter.localizedString(for: date, relativeTo: .now)
-    }
+        return formatter
+    }()
 }
 
 private struct CoinMarketSnapshotCard: View {
