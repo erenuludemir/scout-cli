@@ -8,6 +8,12 @@ public final class PQCFileWatcher: ObservableObject {
     @Published public private(set) var logLines: [String] = []
 
     public static var defaultLogFilePath: String {
+        if let override = ProcessInfo.processInfo.environment["QAI_PQC_LOG_PATH"], !override.isEmpty {
+            return override
+        }
+        if let persisted = UserDefaults.standard.string(forKey: "qai.pqc.logPath"), !persisted.isEmpty {
+            return persisted
+        }
         let baseURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
         return baseURL.appendingPathComponent("pqc_engine.log").path
@@ -36,6 +42,8 @@ public final class PQCFileWatcher: ObservableObject {
         stopWatching()
 
         let fileURL = URL(fileURLWithPath: filePath)
+        let parentURL = fileURL.deletingLastPathComponent()
+        try? FileManager.default.createDirectory(at: parentURL, withIntermediateDirectories: true)
         if !FileManager.default.fileExists(atPath: fileURL.path) {
             FileManager.default.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
         }
@@ -107,6 +115,7 @@ public final class PQCFileWatcher: ObservableObject {
 
     private func appendDemoLine(_ line: String, filePath: String) {
         let url = URL(fileURLWithPath: filePath)
+        try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
         if !FileManager.default.fileExists(atPath: url.path) {
             FileManager.default.createFile(atPath: url.path, contents: nil, attributes: nil)
         }

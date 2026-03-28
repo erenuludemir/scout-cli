@@ -238,12 +238,17 @@ public final class QuantumCryptoEngine: ObservableObject {
     @Published public private(set) var isAIOptimized = false
     @Published public private(set) var isSyncing = false
     @Published public private(set) var multiplierText = "1x"
+    @Published public private(set) var backtrackingEvaluation: QuantumBacktrackingEvaluation = .idle
+    @Published public private(set) var hierarchySnapshot: QuantumHierarchySnapshot = .idle
 
     private let logService: PQCLogService
     private let securityProvider: QuantumSecurityProvider
+    private let planner = QuantumBacktrackingPlanner()
     private var syncTask: Task<Void, Never>?
+    private var optimizationTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
     private let maxRetainedLogs = 24
+    private var lastOptimizationSignature: QuantumWorkloadMetrics.Signature?
 
     public init(
         logService: PQCLogService,
@@ -266,6 +271,7 @@ public final class QuantumCryptoEngine: ObservableObject {
 
     deinit {
         syncTask?.cancel()
+        optimizationTask?.cancel()
     }
 
     public func toggleAIOptimization() {
@@ -310,6 +316,35 @@ public final class QuantumCryptoEngine: ObservableObject {
         nisqNoiseLevel = snapshot.nisqNoiseLevel
         multiplierText = snapshot.multiplierText
         threatLevel = snapshot.threatLevel
+        scheduleOptimizationPass()
+    }
+
+    private func scheduleOptimizationPass() {
+        let workload = QuantumWorkloadMetrics(
+            averageLatency: averageLatency,
+            averageNoise: averageNoise,
+            qkdStatus: qkdStatus,
+            isAIOptimized: isAIOptimized,
+            retainedLogCount: recentLogs.count,
+            branchFactor: averageNoise > 65 ? 3 : 2,
+            searchDepth: isAIOptimized ? 4 : 5,
+            precision: isAIOptimized ? 6 : 4
+        )
+
+        let signature = workload.signature
+        guard signature != lastOptimizationSignature else { return }
+        lastOptimizationSignature = signature
+        optimizationTask?.cancel()
+
+        optimizationTask = Task.detached(priority: .utility) { [planner] in
+            let plan = await planner.optimize(workload: workload)
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                guard self.lastOptimizationSignature == signature else { return }
+                self.backtrackingEvaluation = plan.evaluation
+                self.hierarchySnapshot = plan.hierarchy
+            }
+        }
     }
 }
 
@@ -335,6 +370,8 @@ public struct QuantumPerformanceDashboard: View {
 
                 QuantumThreatCard(engine: engine)
                 QuantumMetricsGrid(engine: engine)
+                QuantumBacktrackingCard(engine: engine)
+                QuantumHierarchyCard(engine: engine)
                 QuantumControlCard(engine: engine)
                 BursaHQTerminalView(bindToMetrics: true)
             }
@@ -446,12 +483,153 @@ private struct QuantumControlCard: View {
                 }
                 .disabled(engine.isSyncing)
 
-                Text("PQC, QKD ve terminal akisi sabit maliyetli bir utility task uzerinden beslenir; UI tarafinda sadece son 24 log tutulur.")
+                Text("PQC, QKD, kuantum yurumesi ve hierarchy optimizer sabit maliyetli utility task uzerinden beslenir; UI tarafinda log ve tree sonucu sinirli buffer ile tutulur.")
                     .font(.system(size: 12, weight: .medium, design: .monospaced))
                     .foregroundStyle(QAITokens.Palette.textSecondary)
                     .lineLimit(nil)
             }
         }
+    }
+}
+
+private struct QuantumBacktrackingCard: View {
+    @ObservedObject var engine: QuantumCryptoEngine
+
+    var body: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Tree Quantum Operations")
+                            .font(.system(size: 13, weight: .bold, design: .monospaced))
+                            .foregroundStyle(QAITokens.Palette.textSecondary)
+                        Text("Backtracking Quantum Walk")
+                            .font(QAITokens.Typography.cardTitle)
+                            .foregroundStyle(QAITokens.Palette.textPrimary)
+                    }
+                    Spacer()
+                    TerminalBadge(
+                        title: engine.backtrackingEvaluation.activeOperators.isEmpty
+                            ? "IDLE"
+                            : engine.backtrackingEvaluation.activeOperators.map(\.rawValue).joined(separator: " "),
+                        tint: QAITokens.Palette.chipBlue
+                    )
+                }
+
+                HStack(spacing: QAITokens.Spacing.s) {
+                    QuantumInlineStat(title: "Phase", value: String(format: "%.4f", engine.backtrackingEvaluation.estimatedPhase))
+                    QuantumInlineStat(title: "Nodes", value: "\(engine.backtrackingEvaluation.evaluatedNodes)")
+                    QuantumInlineStat(title: "Rejected", value: "\(engine.backtrackingEvaluation.rejectedNodes)")
+                }
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Cozum yolu")
+                        .font(QAITokens.Typography.caption)
+                        .foregroundStyle(QAITokens.Palette.textSecondary)
+                    Text(solutionText)
+                        .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(QAITokens.Palette.textPrimary)
+                        .lineLimit(nil)
+                }
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(engine.backtrackingEvaluation.symbolicComplexity)
+                        .font(.system(size: 12, weight: .bold, design: .monospaced))
+                        .foregroundStyle(QAITokens.Palette.gold)
+                    Text("\(engine.backtrackingEvaluation.graphSummary) | work≈\(Int(engine.backtrackingEvaluation.workEstimate.rounded()))")
+                        .font(QAITokens.Typography.caption)
+                        .foregroundStyle(QAITokens.Palette.textSecondary)
+                        .lineLimit(nil)
+                }
+            }
+        }
+    }
+
+    private var solutionText: String {
+        guard let path = engine.backtrackingEvaluation.solutionPath, !path.isEmpty else {
+            return "Quantum walk simdilik kararsiz; hierarchy fallback aktif."
+        }
+        return path.map(String.init).joined(separator: " -> ")
+    }
+}
+
+private struct QuantumHierarchyCard: View {
+    @ObservedObject var engine: QuantumCryptoEngine
+
+    var body: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
+                Text("Project Priorities")
+                    .font(QAITokens.Typography.cardTitle)
+                    .foregroundStyle(QAITokens.Palette.textPrimary)
+
+                Text(engine.hierarchySnapshot.headline)
+                    .font(QAITokens.Typography.bodyStrong)
+                    .foregroundStyle(QAITokens.Palette.textPrimary)
+                    .lineLimit(nil)
+
+                Text(engine.hierarchySnapshot.dispatchMode)
+                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .foregroundStyle(QAITokens.Palette.textSecondary)
+                    .lineLimit(nil)
+
+                ForEach(engine.hierarchySnapshot.priorities) { priority in
+                    HStack(alignment: .top, spacing: QAITokens.Spacing.s) {
+                        TerminalBadge(title: badgeText(for: priority.level), tint: badgeTint(for: priority.level))
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(priority.title)
+                                .font(QAITokens.Typography.bodyStrong)
+                                .foregroundStyle(QAITokens.Palette.textPrimary)
+                            Text(priority.detail)
+                                .font(QAITokens.Typography.caption)
+                                .foregroundStyle(QAITokens.Palette.textSecondary)
+                                .lineLimit(nil)
+                            Text(priority.route)
+                                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                .foregroundStyle(QAITokens.Palette.gold)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func badgeText(for level: QuantumProjectPriorityLevel) -> String {
+        switch level {
+        case .critical: "CRITICAL"
+        case .high: "HIGH"
+        case .medium: "MEDIUM"
+        case .low: "LOW"
+        }
+    }
+
+    private func badgeTint(for level: QuantumProjectPriorityLevel) -> Color {
+        switch level {
+        case .critical: Color.red.opacity(0.85)
+        case .high: QAITokens.Palette.warning
+        case .medium: QAITokens.Palette.chipBlue
+        case .low: QAITokens.Palette.chipTeal
+        }
+    }
+}
+
+private struct QuantumInlineStat: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(QAITokens.Typography.caption)
+                .foregroundStyle(QAITokens.Palette.textSecondary)
+            Text(value)
+                .font(.system(size: 14, weight: .bold, design: .monospaced))
+                .foregroundStyle(QAITokens.Palette.textPrimary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(QAITokens.Spacing.s)
+        .background(Color.white.opacity(0.04))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 

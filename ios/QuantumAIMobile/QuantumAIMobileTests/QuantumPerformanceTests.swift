@@ -49,4 +49,44 @@ final class QuantumPerformanceTests: XCTestCase {
         XCTAssertEqual(entry.noiseLevel, 7.5, accuracy: 0.001)
         XCTAssertEqual(entry.isAIOptimized, true)
     }
+
+    func testQuantumBacktrackingTreeFindsAcceptedPath() async {
+        let tree = QuantumBacktrackingTree(
+            maxDepth: 3,
+            branchQA: QuantumArray(size: 2),
+            accept: { node in QuantumBool(state: node.path == [1, 0, 1]) },
+            reject: { node in QuantumBool(state: node.path == [0, 0]) }
+        )
+
+        await tree.initPhi(path: [])
+        await tree.quantumStep(controls: [QuantumBool(state: true)])
+        let solution = await tree.findSolution(precision: 4)
+        let evaluation = await tree.evaluation()
+
+        XCTAssertEqual(solution, [1, 0, 1])
+        XCTAssertEqual(evaluation.solutionPath, [1, 0, 1])
+        XCTAssertGreaterThan(evaluation.evaluatedNodes, 0)
+        XCTAssertTrue(evaluation.graphSummary.contains("Graph("))
+    }
+
+    func testQuantumBacktrackingPlannerEscalatesCompromisedHierarchy() async {
+        let planner = QuantumBacktrackingPlanner()
+        let plan = await planner.optimize(
+            workload: QuantumWorkloadMetrics(
+                averageLatency: 148,
+                averageNoise: 81,
+                qkdStatus: "COMPROMISED",
+                isAIOptimized: false,
+                retainedLogCount: 24,
+                branchFactor: 3,
+                searchDepth: 5,
+                precision: 4
+            )
+        )
+
+        XCTAssertFalse(plan.hierarchy.priorities.isEmpty)
+        XCTAssertEqual(plan.hierarchy.priorities.first?.level, .critical)
+        XCTAssertEqual(plan.hierarchy.priorities.first?.id, "noise-stabilize")
+        XCTAssertEqual(plan.evaluation.symbolicComplexity, "O(sqrt(T) n^(3/2) log n)")
+    }
 }
