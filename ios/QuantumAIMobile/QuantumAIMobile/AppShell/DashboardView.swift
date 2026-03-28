@@ -19,7 +19,7 @@ public struct DashboardView: View {
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 18) {
+            LazyVStack(spacing: 18) {
                 DashboardHeroCard(
                     partnerName: branding.partnerName,
                     brandLogo: branding.brandLogo,

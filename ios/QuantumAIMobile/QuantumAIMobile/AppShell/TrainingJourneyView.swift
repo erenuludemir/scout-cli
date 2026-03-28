@@ -24,7 +24,7 @@ public struct TrainingJourneyView: View {
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 18) {
+            LazyVStack(spacing: 18) {
                 ScreenHeader(title: "Training Journey", showsBackButton: true, onBack: { dismiss() })
                 progressCard
                 stepContent

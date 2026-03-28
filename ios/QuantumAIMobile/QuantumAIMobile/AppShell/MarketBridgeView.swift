@@ -22,7 +22,7 @@ public struct MarketBridgeView: View {
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: QAITokens.Spacing.l) {
+            LazyVStack(spacing: QAITokens.Spacing.l) {
                 ScreenHeader(title: "Market Bridge", showsBackButton: showsBackButton, onBack: { dismiss() })
 
                 MarketBridgeHeroCard(

@@ -14,7 +14,7 @@ public struct TradeView: View {
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: QAITokens.Spacing.l) {
+            LazyVStack(spacing: QAITokens.Spacing.l) {
                 ScreenHeader(title: "Botlar", showsBackButton: showsBackButton, onBack: { dismiss() })
 
                 TradeHeroCard(

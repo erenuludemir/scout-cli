@@ -19,7 +19,7 @@ public struct WalletView: View {
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: QAITokens.Spacing.l) {
+            LazyVStack(spacing: QAITokens.Spacing.l) {
                 ScreenHeader(title: "Cüzdan", showsBackButton: showsBackButton, onBack: { dismiss() })
 
                 WalletHeroCard(

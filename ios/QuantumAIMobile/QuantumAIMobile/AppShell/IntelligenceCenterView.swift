@@ -8,7 +8,7 @@ public struct IntelligenceCenterView: View {
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 18) {
+            LazyVStack(spacing: 18) {
                 CardView {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Beyin Merkezi")

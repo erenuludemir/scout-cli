@@ -33,6 +33,7 @@ public final class MarketDataService: ObservableObject {
     private var currentSymbol = MarketDataDefaults.symbol
 
     private var lastWebSocketTickAt: Date?
+    private var lastPublishedLiveTickAt: Date?
     private var websocketFailureCount = 0
     private var websocketCooldownUntil: Date?
 
@@ -99,6 +100,7 @@ public final class MarketDataService: ObservableObject {
 
         lastError = nil
         lastWebSocketTickAt = nil
+        lastPublishedLiveTickAt = nil
         websocketFailureCount = 0
         websocketCooldownUntil = nil
         liveState = .idle
@@ -239,6 +241,7 @@ public final class MarketDataService: ObservableObject {
 
         activeLiveConnectionID = nil
         lastWebSocketTickAt = nil
+        lastPublishedLiveTickAt = nil
         websocketFailureCount = 0
         websocketCooldownUntil = nil
         liveState = .idle
@@ -332,14 +335,23 @@ public final class MarketDataService: ObservableObject {
         guard activeLiveConnectionID == connectionID else { return }
         guard started, !currentModeIsSim else { return }
 
+        let now = Date()
         lastWebSocketTickAt = tick.ts
         websocketFailureCount = 0
         websocketCooldownUntil = nil
         liveState = .live(symbol: currentSymbol)
-
-        last = tick
         metrics.recordTick()
         runtimeMetrics?.recordLiveTick()
+
+        // Websocket feeds can publish far faster than the UI can usefully render.
+        // Downsampling the published tick stream keeps long debug sessions from
+        // retaining excessive view-debugging state on device.
+        if let lastPublishedLiveTickAt, now.timeIntervalSince(lastPublishedLiveTickAt) < 0.5 {
+            return
+        }
+
+        lastPublishedLiveTickAt = now
+        last = tick
 
         sourceText = "Binance WS"
         statusText = "Canlı"

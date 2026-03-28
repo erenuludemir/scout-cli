@@ -12,7 +12,7 @@ public struct SettingsView: View {
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: QAITokens.Spacing.l) {
+            LazyVStack(spacing: QAITokens.Spacing.l) {
                 ScreenHeader(title: "Ayarlar", showsBackButton: showsBackButton, onBack: { dismiss() })
 
                 SettingsHeroCard(

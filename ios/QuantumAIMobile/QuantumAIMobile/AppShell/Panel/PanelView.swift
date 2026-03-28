@@ -13,7 +13,7 @@ public struct PanelView: View {
     public var body: some View {
         ScrollViewReader { proxy in
             ScrollView(showsIndicators: false) {
-                VStack(spacing: QAITokens.Spacing.l) {
+                LazyVStack(spacing: QAITokens.Spacing.l) {
                     ScreenHeader(title: "Panel")
 
                     PanelHeroCard(
