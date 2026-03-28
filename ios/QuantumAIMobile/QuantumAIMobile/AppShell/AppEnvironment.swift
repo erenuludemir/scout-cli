@@ -36,6 +36,7 @@ public final class AppEnvironment: ObservableObject {
     private var runtimeSettingsApplyPending = false
     private var appliedRuntimeSettings: RuntimeSettingsSnapshot?
     private var forwardedObjectChangeCancellables = Set<AnyCancellable>()
+    private var forwardedObjectChangePending = false
     private static var hasConfiguredTipKit = false
 
     public static func liveInSim() -> AppEnvironment {
@@ -221,6 +222,7 @@ public final class AppEnvironment: ObservableObject {
 
     private func bindChildObjectChanges() {
         forwardedObjectChangeCancellables.removeAll()
+        forwardedObjectChangePending = false
 
         forwardObjectChanges(from: settings)
         forwardObjectChanges(from: storage)
@@ -240,9 +242,22 @@ public final class AppEnvironment: ObservableObject {
 
     private func forwardObjectChanges<Object: ObservableObject>(from object: Object) {
         object.objectWillChange
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.objectWillChange.send()
+                self?.scheduleForwardedObjectChange()
             }
             .store(in: &forwardedObjectChangeCancellables)
+    }
+
+    private func scheduleForwardedObjectChange() {
+        guard !forwardedObjectChangePending else { return }
+        forwardedObjectChangePending = true
+
+        Task { @MainActor [weak self] in
+            await Task.yield()
+            guard let self else { return }
+            self.forwardedObjectChangePending = false
+            self.objectWillChange.send()
+        }
     }
 }

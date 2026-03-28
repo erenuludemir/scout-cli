@@ -69,6 +69,8 @@ public final class CoinMarketCapBridgeService: ObservableObject {
     }
 
     public func refreshNow() async {
+        guard !isLoading else { return }
+
         let interval: Any? = {
             if #available(iOS 15.0, macOS 12.0, *) {
                 return QAISignpost.begin("CMC Refresh")
@@ -186,9 +188,7 @@ public final class CoinMarketCapBridgeService: ObservableObject {
     }
 
     private static func firstMatch(in text: String, pattern: String) -> String? {
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: [.dotMatchesLineSeparators, .caseInsensitive]) else {
-            return nil
-        }
+        guard let regex = regex(for: pattern) else { return nil }
         let range = NSRange(text.startIndex..., in: text)
         guard let match = regex.firstMatch(in: text, range: range), let group = Range(match.range(at: 1), in: text) else {
             return nil
@@ -208,7 +208,7 @@ public final class CoinMarketCapBridgeService: ObservableObject {
 
     private static func firstDate(in text: String, pattern: String) -> Date? {
         guard let value = firstMatch(in: text, pattern: pattern) else { return nil }
-        return ISO8601DateFormatter().date(from: value)
+        return iso8601Formatter.date(from: value)
     }
 
     private static func decodeEntities(_ text: String) -> String {
@@ -217,4 +217,20 @@ public final class CoinMarketCapBridgeService: ObservableObject {
             .replacingOccurrences(of: "&quot;", with: "\"")
             .replacingOccurrences(of: "&#39;", with: "'")
     }
+
+    private static func regex(for pattern: String) -> NSRegularExpression? {
+        if let cached = regexCache[pattern] {
+            return cached
+        }
+
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: [.dotMatchesLineSeparators, .caseInsensitive]) else {
+            return nil
+        }
+
+        regexCache[pattern] = regex
+        return regex
+    }
+
+    private static let iso8601Formatter = ISO8601DateFormatter()
+    private static var regexCache: [String: NSRegularExpression] = [:]
 }

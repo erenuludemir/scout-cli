@@ -6,18 +6,16 @@ public struct PanelView: View {
 
     public init() {}
 
-    private var viewState: PanelViewState {
-        PanelViewState.from(environment: env)
-    }
-
     public var body: some View {
+        let state = PanelViewState.from(environment: env)
+
         ScrollViewReader { proxy in
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: QAITokens.Spacing.l) {
                     ScreenHeader(title: "Panel")
 
                     PanelHeroCard(
-                        state: viewState,
+                        state: state,
                         refreshAction: refreshOperationalState,
                         operationsAction: {
                             withAnimation(.spring(response: 0.32, dampingFraction: 0.84)) {
@@ -29,13 +27,13 @@ public struct PanelView: View {
                     PanelOperationsMenuCard()
                         .id(Self.operationsMenuAnchor)
 
-                    PanelQuickStatsGrid(state: viewState)
+                    PanelQuickStatsGrid(state: state)
 
-                    PanelMarketSnapshotCard(state: viewState)
+                    PanelMarketSnapshotCard(state: state)
 
-                    PanelOrdersCard(state: viewState)
+                    PanelOrdersCard(state: state)
 
-                    PanelRecommendationCard(message: viewState.aiSummary)
+                    PanelRecommendationCard(message: state.aiSummary)
                 }
                 .padding(.horizontal, QAITokens.Layout.screenPadding)
                 .padding(.top, QAITokens.Spacing.s)
@@ -61,6 +59,9 @@ public struct PanelView: View {
 
 @MainActor
 private struct PanelViewState {
+    private static let integerCurrencyFormatter = makeCurrencyFormatter(maximumFractionDigits: 0)
+    private static let decimalCurrencyFormatter = makeCurrencyFormatter(maximumFractionDigits: 2)
+
     let symbol: String
     let lastPriceText: String
     let sourceText: String
@@ -108,12 +109,17 @@ private struct PanelViewState {
     }
 
     private static func currency(_ value: Double) -> String {
+        let formatter = value >= 1000 ? integerCurrencyFormatter : decimalCurrencyFormatter
+        return formatter.string(from: NSNumber(value: value)) ?? "$0"
+    }
+
+    private static func makeCurrencyFormatter(maximumFractionDigits: Int) -> NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = "USD"
-        formatter.maximumFractionDigits = value >= 1000 ? 0 : 2
+        formatter.maximumFractionDigits = maximumFractionDigits
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.string(from: NSNumber(value: value)) ?? "$0"
+        return formatter
     }
 }
 
