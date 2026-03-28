@@ -434,28 +434,7 @@ private struct StatusPill: View {
 
 private struct HQAdminBridgeView: View {
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: QAITokens.Spacing.l) {
-                ScreenHeader(title: "HQ Admin", showsBackButton: true)
-
-                GlassCard {
-                    VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
-                        Text("Bu alan sonraki UI import diliminde tam HQ yuzeyi ile degistirilecek.")
-                            .font(QAITokens.Typography.body)
-                            .foregroundStyle(QAITokens.Palette.textSecondary)
-
-                        Text("Bu bridge ekran, panel akisini kesmeden kontrollu import yapabilmek icin gecici olarak tutuluyor.")
-                            .font(QAITokens.Typography.caption)
-                            .foregroundStyle(QAITokens.Palette.textSecondary)
-                    }
-                }
-            }
-            .padding(.horizontal, QAITokens.Layout.screenPadding)
-            .padding(.top, QAITokens.Spacing.s)
-            .padding(.bottom, QAITokens.Layout.dockedBottomClearance)
-        }
-        .background(AppBackground())
-        .screenNavigationChromeHidden()
+        QuantumPerformanceDashboard(showsBackButton: true)
     }
 }
 

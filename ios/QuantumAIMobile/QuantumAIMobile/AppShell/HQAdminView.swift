@@ -77,6 +77,10 @@ public struct HQAdminView: View {
                 Section("QUANTUM INTELLIGENCE") {
                     QuantumIntelView()
                         .listRowInsets(EdgeInsets())
+                    NavigationLink("Quantum Ops Terminal") {
+                        QuantumPerformanceDashboard(showsBackButton: true)
+                            .navigationTitle("Quantum Ops")
+                    }
                     NavigationLink("Quantum Comparison") {
                         QuantumComparisonView()
                             .navigationTitle("Quantum Comparison")
