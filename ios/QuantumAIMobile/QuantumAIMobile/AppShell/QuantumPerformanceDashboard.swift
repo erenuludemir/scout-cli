@@ -27,6 +27,68 @@ public struct PQCLogEntry: Identifiable, Equatable, Sendable {
         self.noiseLevel = noiseLevel
         self.isAIOptimized = isAIOptimized
     }
+
+    static func parseTerminalLine(_ line: String) -> PQCLogEntry? {
+        let protocolName = knownProtocols.first(where: { line.localizedCaseInsensitiveContains($0) }) ?? "Kyber-768"
+        let latency = firstDouble(in: line, regex: latencyRegex)
+            ?? firstDouble(in: line, regex: genericMsRegex)
+            ?? 0
+        let noise = firstDouble(in: line, regex: noiseRegex)
+            ?? (line.localizedCaseInsensitiveContains("AI") ? 12.0 : 82.0)
+        let isAIOptimized =
+            line.localizedCaseInsensitiveContains("AI")
+            || line.localizedCaseInsensitiveContains("OPTIMIZED")
+            || line.localizedCaseInsensitiveContains("AKTIF")
+        let action = actionText(from: line)
+
+        return PQCLogEntry(
+            timestamp: Date(),
+            protocolName: protocolName,
+            action: action,
+            latencyMs: latency,
+            noiseLevel: noise,
+            isAIOptimized: isAIOptimized
+        )
+    }
+
+    private static func actionText(from line: String) -> String {
+        var cleaned = line
+        if let firstClose = cleaned.firstIndex(of: "]") {
+            cleaned = String(cleaned[cleaned.index(after: firstClose)...]).trimmingCharacters(in: .whitespaces)
+        }
+        if let secondClose = cleaned.firstIndex(of: "]"), cleaned.first == "[" {
+            cleaned = String(cleaned[cleaned.index(after: secondClose)...]).trimmingCharacters(in: .whitespaces)
+        }
+
+        if let range = cleaned.range(of: "Gecikme:", options: .caseInsensitive) {
+            cleaned = String(cleaned[..<range.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        if let range = cleaned.range(of: "Noise:", options: .caseInsensitive) {
+            cleaned = String(cleaned[..<range.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        if let range = cleaned.range(of: "Gurultu:", options: .caseInsensitive) {
+            cleaned = String(cleaned[..<range.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        cleaned = cleaned.trimmingCharacters(in: CharacterSet(charactersIn: ". "))
+        return cleaned.isEmpty ? "Log Update" : cleaned
+    }
+
+    private static func firstDouble(in text: String, regex: NSRegularExpression) -> Double? {
+        let range = NSRange(text.startIndex..., in: text)
+        guard
+            let match = regex.firstMatch(in: text, range: range),
+            let valueRange = Range(match.range(at: 1), in: text)
+        else {
+            return nil
+        }
+        return Double(text[valueRange])
+    }
+
+    private static let knownProtocols = ["Kyber-512", "Kyber-768", "Kyber-1024", "Dilithium2", "Dilithium3", "Falcon-512", "SPHINCS+"]
+    private static let latencyRegex = try! NSRegularExpression(pattern: #"Gecikme:\s*([0-9]+(?:\.[0-9]+)?)ms"#, options: [.caseInsensitive])
+    private static let genericMsRegex = try! NSRegularExpression(pattern: #"([0-9]+(?:\.[0-9]+)?)ms"#, options: [.caseInsensitive])
+    private static let noiseRegex = try! NSRegularExpression(pattern: #"(?:Noise|Gurultu):\s*([0-9]+(?:\.[0-9]+)?)%?"#, options: [.caseInsensitive])
 }
 
 struct QuantumMetricsSnapshot: Equatable {
@@ -274,7 +336,7 @@ public struct QuantumPerformanceDashboard: View {
                 QuantumThreatCard(engine: engine)
                 QuantumMetricsGrid(engine: engine)
                 QuantumControlCard(engine: engine)
-                QuantumTerminalCard(logs: Array(engine.recentLogs.reversed()))
+                BursaHQTerminalView(bindToMetrics: true)
             }
             .padding(.horizontal, QAITokens.Layout.screenPadding)
             .padding(.top, QAITokens.Spacing.s)
@@ -393,44 +455,6 @@ private struct QuantumControlCard: View {
     }
 }
 
-private struct QuantumTerminalCard: View {
-    let logs: [PQCLogEntry]
-
-    var body: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
-                HStack {
-                    Image(systemName: "terminal")
-                        .foregroundStyle(Color.green)
-                    Text("CANLI PQC AKISI")
-                        .font(.system(size: 12, weight: .bold, design: .monospaced))
-                        .foregroundStyle(Color.green)
-                    Spacer()
-                    Text("tail -f pqc_node.log")
-                        .font(.system(size: 11, weight: .medium, design: .monospaced))
-                        .foregroundStyle(Color.green.opacity(0.7))
-                }
-
-                VStack(alignment: .leading, spacing: 8) {
-                    if logs.isEmpty {
-                        Text("[bootstrap] log akisi bekleniyor")
-                            .foregroundStyle(Color.green.opacity(0.85))
-                            .font(.system(size: 11, weight: .medium, design: .monospaced))
-                    } else {
-                        ForEach(logs.prefix(15)) { log in
-                            QuantumTerminalRow(log: log)
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(QAITokens.Spacing.m)
-                .background(Color.black.opacity(0.92))
-                .clipShape(RoundedRectangle(cornerRadius: QAITokens.Radius.button, style: .continuous))
-            }
-        }
-    }
-}
-
 private struct QuantumMetricCard: View {
     let title: String
     let value: Double
@@ -475,30 +499,6 @@ private struct QuantumMetricCard: View {
 
     private var valueText: String {
         String(format: "%.1f", value)
-    }
-}
-
-private struct QuantumTerminalRow: View {
-    let log: PQCLogEntry
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("[\(log.timestamp, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))]")
-                .foregroundStyle(Color.gray)
-
-            Text("[\(log.protocolName)]")
-                .foregroundStyle(log.isAIOptimized ? Color.cyan : Color.yellow)
-
-            Text(log.action)
-                .foregroundStyle(Color.white)
-
-            Spacer(minLength: 8)
-
-            Text(String(format: "%.1fms", log.latencyMs))
-                .foregroundStyle(log.latencyMs > 50 ? Color.red.opacity(0.9) : QAITokens.Palette.teal)
-        }
-        .font(.system(size: 11, weight: .medium, design: .monospaced))
-        .lineLimit(1)
     }
 }
 

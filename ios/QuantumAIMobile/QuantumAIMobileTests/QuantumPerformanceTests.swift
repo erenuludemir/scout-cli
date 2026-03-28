@@ -35,4 +35,18 @@ final class QuantumPerformanceTests: XCTestCase {
         let snapshot = QuantumMetricsSnapshot.reduce(logs: [], isAIOptimized: true, qkdStatus: "COMPROMISED")
         XCTAssertEqual(snapshot.threatLevel, "KRITIK (QKD HATTI KOMPROMIZE)")
     }
+
+    func testTerminalLogParserExtractsProtocolAndLatency() {
+        let line = "[07:22:01] [Kyber-768] Encapsulation tamamlandi. Gecikme: 12.40ms Noise: 7.5% AI AKTIF"
+
+        guard let entry = PQCLogEntry.parseTerminalLine(line) else {
+            return XCTFail("Terminal satiri parse edilemedi")
+        }
+
+        XCTAssertEqual(entry.protocolName, "Kyber-768")
+        XCTAssertEqual(entry.action, "Encapsulation tamamlandi")
+        XCTAssertEqual(entry.latencyMs, 12.4, accuracy: 0.001)
+        XCTAssertEqual(entry.noiseLevel, 7.5, accuracy: 0.001)
+        XCTAssertEqual(entry.isAIOptimized, true)
+    }
 }
