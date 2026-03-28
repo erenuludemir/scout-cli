@@ -27,13 +27,55 @@ public final class CoinMarketCapBridgeService: ObservableObject {
     private let session: URLSession
     private var refreshTask: Task<Void, Never>?
     private var currentSymbol = "BTCUSDT"
+    private var hasStartedBridge = false
+    private var isSceneActive = true
 
     public init(session: URLSession = .shared) {
         self.session = session
     }
 
     public func startIfNeeded(symbol: String) {
+        hasStartedBridge = true
         currentSymbol = symbol
+        guard isSceneActive else { return }
+        startRefreshLoopIfNeeded()
+    }
+
+    public func reconfigure(symbol: String) {
+        let symbolChanged = currentSymbol != symbol
+        hasStartedBridge = true
+        currentSymbol = symbol
+
+        guard isSceneActive else { return }
+
+        if refreshTask == nil {
+            startRefreshLoopIfNeeded()
+        } else if symbolChanged {
+            Task { [weak self] in
+                await self?.refreshNow()
+            }
+        }
+    }
+
+    public func pauseForInactiveScene() {
+        isSceneActive = false
+        refreshTask?.cancel()
+        refreshTask = nil
+    }
+
+    public func refreshForActiveScene() {
+        isSceneActive = true
+        guard hasStartedBridge else { return }
+        startRefreshLoopIfNeeded()
+    }
+
+    public func stop() {
+        hasStartedBridge = false
+        refreshTask?.cancel()
+        refreshTask = nil
+    }
+
+    private func startRefreshLoopIfNeeded() {
         guard refreshTask == nil else { return }
         refreshTask = Task { [weak self] in
             guard let self else { return }
@@ -44,23 +86,6 @@ public final class CoinMarketCapBridgeService: ObservableObject {
         }
     }
 
-    public func reconfigure(symbol: String) {
-        let symbolChanged = currentSymbol != symbol
-        currentSymbol = symbol
-        if refreshTask == nil {
-            startIfNeeded(symbol: symbol)
-        } else if symbolChanged {
-            Task { [weak self] in
-                await self?.refreshNow()
-            }
-        }
-    }
-
-    public func stop() {
-        refreshTask?.cancel()
-        refreshTask = nil
-    }
-
     public func bridgeURL(for tradingPair: String) -> URL {
         let baseSymbol = Self.baseSymbol(for: tradingPair)
         let slug = Self.slug(for: tradingPair)
@@ -69,6 +94,7 @@ public final class CoinMarketCapBridgeService: ObservableObject {
     }
 
     public func refreshNow() async {
+        guard isSceneActive else { return }
         guard !isLoading else { return }
 
         let interval: Any? = {

@@ -31,6 +31,7 @@ public final class MarketDataService: ObservableObject {
 
     private var currentModeIsSim = true
     private var currentSymbol = MarketDataDefaults.symbol
+    private var isSceneActive = true
 
     private var lastWebSocketTickAt: Date?
     private var lastPublishedLiveTickAt: Date?
@@ -97,6 +98,7 @@ public final class MarketDataService: ObservableObject {
         started = true
         currentModeIsSim = simMode
         currentSymbol = symbol
+        isSceneActive = true
 
         lastError = nil
         lastWebSocketTickAt = nil
@@ -114,6 +116,14 @@ public final class MarketDataService: ObservableObject {
     }
 
     private func startSim(symbol: String) {
+        guard isSceneActive else {
+            publish { store in
+                store.sourceText = "Simülasyon"
+                store.statusText = "Duraklatıldı"
+            }
+            return
+        }
+
         liveReconnectTask?.cancel()
         liveReconnectTask = nil
 
@@ -152,7 +162,7 @@ public final class MarketDataService: ObservableObject {
     }
 
     private func startLive(symbol: String) {
-        guard started, !currentModeIsSim, currentSymbol == symbol else { return }
+        guard started, !currentModeIsSim, currentSymbol == symbol, isSceneActive else { return }
 
         switch liveState {
         case .starting(let running) where running == symbol:
@@ -256,10 +266,38 @@ public final class MarketDataService: ObservableObject {
         }
 
         started = false
+        isSceneActive = true
+    }
+
+    public func pauseForInactiveScene() {
+        guard started else { return }
+
+        isSceneActive = false
+        simTask?.cancel()
+        simTask = nil
+        liveFallbackTask?.cancel()
+        liveFallbackTask = nil
+        liveReconnectTask?.cancel()
+        liveReconnectTask = nil
+
+        if !currentModeIsSim {
+            binanceAdapter?.disconnect()
+            binanceAdapter = nil
+            activeLiveConnectionID = nil
+            liveState = .idle
+        }
+
+        publish { store in
+            store.statusText = "Duraklatıldı"
+            if !store.currentModeIsSim {
+                store.sourceText = "Canlı akış"
+            }
+        }
     }
 
     public func refreshForActiveScene() {
         guard started else { return }
+        isSceneActive = true
 
         if currentModeIsSim {
             if simTask == nil {
@@ -388,6 +426,7 @@ public final class MarketDataService: ObservableObject {
     }
 
     private func startFallbackWatchdog(symbol: String) {
+        guard isSceneActive else { return }
         liveFallbackTask?.cancel()
         liveFallbackTask = Task { [weak self] in
             while !Task.isCancelled {
@@ -398,6 +437,7 @@ public final class MarketDataService: ObservableObject {
 
                 let shouldRefresh: Bool = await MainActor.run {
                     guard self.started, !self.currentModeIsSim, self.currentSymbol == symbol else { return false }
+                    guard self.isSceneActive else { return false }
 
                     if let lastWebSocketTickAt = self.lastWebSocketTickAt {
                         return Date().timeIntervalSince(lastWebSocketTickAt) >= 8
@@ -422,6 +462,7 @@ public final class MarketDataService: ObservableObject {
     }
 
     private func scheduleReconnect(symbol: String, delay: TimeInterval? = nil) {
+        guard isSceneActive else { return }
         liveReconnectTask?.cancel()
 
         let reconnectDelay = max(delay ?? reconnectDelayForCurrentState(), 3)
@@ -436,6 +477,10 @@ public final class MarketDataService: ObservableObject {
                     self.liveReconnectTask = nil
                     return
                 }
+                guard self.isSceneActive else {
+                    self.liveReconnectTask = nil
+                    return
+                }
 
                 self.binanceAdapter?.disconnect()
                 self.binanceAdapter = nil
@@ -447,7 +492,7 @@ public final class MarketDataService: ObservableObject {
 
     private func refreshFallbackTick(symbol: String, reason: String) async {
         let shouldRun = await MainActor.run {
-            started && !currentModeIsSim && currentSymbol == symbol
+            started && !currentModeIsSim && currentSymbol == symbol && isSceneActive
         }
         guard shouldRun else { return }
 

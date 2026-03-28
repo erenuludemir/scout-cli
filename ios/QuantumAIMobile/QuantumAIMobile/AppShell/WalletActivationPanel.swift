@@ -1,5 +1,14 @@
 import SwiftUI
 
+private enum WalletActivationFormatters {
+    static let verificationTimestamp: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }()
+}
+
 @available(iOS 17.0, macOS 14.0, *)
 public struct WalletActivationPanel: View {
     @EnvironmentObject private var env: AppEnvironment
@@ -131,7 +140,7 @@ private struct WalletConnectorRow: View {
             }
 
             if let verifiedAt, status == .verified {
-                Text("Son doğrulama: \(verifiedAt.formatted(date: .abbreviated, time: .shortened))")
+                Text("Son doğrulama: \(WalletActivationFormatters.verificationTimestamp.string(from: verifiedAt))")
                     .font(QAITokens.Typography.caption)
                     .foregroundStyle(QAITokens.Palette.textSecondary)
             }

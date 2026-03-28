@@ -32,17 +32,21 @@ public struct AppShell: View {
             showTraining = !launchArguments.contains("-disable-training-on-launch") && env.trainingJourney.shouldPresentOnLaunch
         }
         .onChange(of: scenePhase) { _, phase in
-            guard phase == .active else { return }
+            if phase == .active {
+                // Runtime refresh stays at shell level so every feature inherits the same behavior.
+                env.applyRuntimeSettings()
+                env.market.refreshForActiveScene()
+                env.marketBridge.refreshForActiveScene()
 
-            // Runtime refresh stays at shell level so every feature inherits the same behavior.
-            env.applyRuntimeSettings()
-            env.market.refreshForActiveScene()
-
-            if env.settings.marketBridgeEnabled {
-                Task {
-                    await Task.yield()
-                    await env.marketBridge.refreshNow()
+                if env.settings.marketBridgeEnabled {
+                    Task {
+                        await Task.yield()
+                        await env.marketBridge.refreshNow()
+                    }
                 }
+            } else {
+                env.market.pauseForInactiveScene()
+                env.marketBridge.pauseForInactiveScene()
             }
         }
 #if os(macOS)

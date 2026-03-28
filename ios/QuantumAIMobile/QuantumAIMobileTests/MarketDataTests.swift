@@ -62,6 +62,39 @@ final class MarketDataTests: XCTestCase {
         sut.stopAll()
     }
 
+    func testMarketPauseForInactiveSceneSuspendsAndResumesSimulation() async {
+        let metrics = MetricsCenter()
+        let sut = MarketDataService(metrics: metrics)
+
+        sut.startIfNeeded(simMode: true)
+        try? await Task.sleep(for: .milliseconds(1_200))
+
+        guard let pausedTick = sut.last else {
+            return XCTFail("Simulasyon tick'i uretilmedi")
+        }
+
+        sut.pauseForInactiveScene()
+        XCTAssertEqual(sut.statusText, "Duraklatıldı")
+
+        try? await Task.sleep(for: .milliseconds(1_200))
+        XCTAssertEqual(sut.last?.ts, pausedTick.ts)
+
+        let resumed = expectation(description: "tick after resume")
+        sut.$last
+            .compactMap { $0 }
+            .filter { $0.ts != pausedTick.ts }
+            .prefix(1)
+            .sink { _ in
+                resumed.fulfill()
+            }
+            .store(in: &cancellables)
+
+        sut.refreshForActiveScene()
+        await fulfillment(of: [resumed], timeout: 2.5)
+        XCTAssertEqual(sut.statusText, "Otomatik")
+        sut.stopAll()
+    }
+
     func testNormalizedSymbolTrimsUppercasesAndFallsBack() {
         XCTAssertEqual(MarketDataService.normalizedSymbol(" btc/usdt "), "BTCUSDT")
         XCTAssertEqual(MarketDataService.normalizedSymbol("  "), "BTCUSDT")

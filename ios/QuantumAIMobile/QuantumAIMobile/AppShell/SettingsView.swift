@@ -1,5 +1,14 @@
 import SwiftUI
 
+private enum SettingsDateFormatters {
+    static let timestamp: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }()
+}
+
 public struct SettingsView: View {
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
@@ -166,7 +175,7 @@ public struct SettingsView: View {
                                     .foregroundStyle(QAITheme.textSecondary)
 
                                 if let date = env.settings.licenseActivatedAt, env.settings.isAuthenticated {
-                                    Text("Aktivasyon: \(date.formatted(date: .abbreviated, time: .shortened))")
+                                    Text("Aktivasyon: \(SettingsDateFormatters.timestamp.string(from: date))")
                                         .font(.caption)
                                         .foregroundStyle(QAITheme.textSecondary)
                                 }

@@ -35,15 +35,20 @@ public struct RootView: View {
             showTraining = env.trainingJourney.shouldPresentOnLaunch
         }
         .onChange(of: scenePhase) { _, phase in
-            guard phase == .active else { return }
             DispatchQueue.main.async {
-                env.applyRuntimeSettings()
-                env.market.refreshForActiveScene()
-                if env.settings.marketBridgeEnabled {
-                    Task {
-                        await Task.yield()
-                        await env.marketBridge.refreshNow()
+                if phase == .active {
+                    env.applyRuntimeSettings()
+                    env.market.refreshForActiveScene()
+                    env.marketBridge.refreshForActiveScene()
+                    if env.settings.marketBridgeEnabled {
+                        Task {
+                            await Task.yield()
+                            await env.marketBridge.refreshNow()
+                        }
                     }
+                } else {
+                    env.market.pauseForInactiveScene()
+                    env.marketBridge.pauseForInactiveScene()
                 }
             }
         }
