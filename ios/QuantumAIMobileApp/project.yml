@@ -15,8 +15,8 @@ settings:
     DEVELOPMENT_TEAM: YH698TG69K
     CODE_SIGN_STYLE: Automatic
     PRODUCT_BUNDLE_IDENTIFIER: com.erenuludemir.quantumaimobile
-    CURRENT_PROJECT_VERSION: 1
-    MARKETING_VERSION: 1.0.0
+    CURRENT_PROJECT_VERSION: 3
+    MARKETING_VERSION: 1.0
     TARGETED_DEVICE_FAMILY: "1,2"
     IPHONEOS_DEPLOYMENT_TARGET: "17.0"
     GENERATE_INFOPLIST_FILE: NO
@@ -26,7 +26,6 @@ settings:
     SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
     DEVELOPMENT_TEAM: YH698TG69K
     CODE_SIGNING_ALLOWED: YES
-    CODE_SIGN_IDENTITY: Apple Development
     ENABLE_DEBUG_DYLIB: NO
 targets:
   QuantumAIMobileApp:
@@ -37,6 +36,7 @@ targets:
       - path: QuantumAIMobileApp
     resources:
       - path: QuantumAIMobileApp/Assets.xcassets
+      - path: QuantumAIMobileApp/Base.lproj/LaunchScreen.storyboard
       - path: QuantumAIMobileApp/PrivacyInfo.xcprivacy
     info:
       path: QuantumAIMobileApp/Info.plist
@@ -44,7 +44,8 @@ targets:
         CFBundleDisplayName: QuantumAI
         ITSAppUsesNonExemptEncryption: false
         NSFaceIDUsageDescription: Kimlik doğrulama ve cüzdan onayı için Face ID kullanılır.
-        UILaunchScreen: {}
+        UILaunchStoryboardName: LaunchScreen
+        UIRequiresFullScreen: true
         UIStatusBarStyle: UIStatusBarStyleLightContent
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait

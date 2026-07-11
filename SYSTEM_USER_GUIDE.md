@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD004 MD012 MD022 MD024 MD031 MD032 MD033 MD034 MD039 MD040 MD055 MD056 MD058 MD060 -->
+
 # QuantumAI System User Guide
 
 Version: 2025-08-28
@@ -9,9 +11,15 @@ Scope Root (External Drive Layout):
    - AI Model Artifacts: /Volumes/LaCie/Container-QuantumAI/Recovered_Backup_28082025/trained_model.json
    - Central Logs (optional): /Volumes/LaCie/Container-QuantumAI/QuantumAI-Dockerized-System-Log
    - Backups: /Volumes/LaCie/Container-QuantumAI/QuantumAI-Dockerized-System-Backup
+  - System Source: /Volumes/LaCie/Container-QuantumAI/QuantumAI-Dockerized-System (APP_ROOT)
+  - AI Model Artifacts: /Volumes/LaCie/Container-QuantumAI/Recovered_Backup_28082025/trained_model.json
+  - Central Logs (optional): /Volumes/LaCie/Container-QuantumAI/QuantumAI-Dockerized-System-Log
+  - Backups: /Volumes/LaCie/Container-QuantumAI/QuantumAI-Dockerized-System-Backup
 
 ---
 ### Etherscan V2 Unified Multi-Chain API (Introduction)
+
+## Etherscan V2 Unified Multi-Chain API (Introduction)
 
 Etherscan's V2 platform consolidates data access for dozens of EVM chains behind one endpoint and a single API key. This removes the historical need to manage separate `*_API_KEY` values (e.g., ETHERSCAN / BSCSCAN / ARBISCAN) and disparate base URLs. For QuantumAI you now keep a single secret (e.g. `ETHERSCAN_API_KEY`) and pass a `chainid` query parameter per request.
 

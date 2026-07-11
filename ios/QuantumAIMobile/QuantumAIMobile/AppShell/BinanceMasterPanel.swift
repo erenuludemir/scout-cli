@@ -6,7 +6,7 @@ public struct BinanceMasterPanel: View {
     public var body: some View {
         NavigationStack {
             ZStack {
-                QAITheme.background.ignoresSafeArea()
+                AppBackground()
                 
                 ScrollView {
                     VStack(spacing: 20) {

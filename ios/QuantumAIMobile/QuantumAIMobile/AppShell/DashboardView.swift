@@ -2,10 +2,17 @@ import SwiftUI
 import Combine
 
 public struct DashboardView: View {
-    @EnvironmentObject private var env: AppEnvironment
+    @ObservedObject private var env: AppEnvironment
     @ObservedObject private var branding = BrandingAndVoiceEngine.shared
     @ObservedObject private var hq = GlobalSinirSistemi.paylasilan
     @ObservedObject private var wealthBridge = WealthBridge.shared
+
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var isSceneActive = true
+    @State private var lastTickHandledAt: Date = .distantPast
+    private let tickThrottleInterval: TimeInterval = 0.5
+    @State private var lastAdviceRefreshAt: Date = .distantPast
+    private let adviceDebounceInterval: TimeInterval = 0.4
 
     @State private var aiAdvice = "Panel hazırlanıyor..."
     @State private var panelStatus = "Piyasa akışı bekleniyor"
@@ -15,7 +22,13 @@ public struct DashboardView: View {
 
     private let maxChartPoints = 36
 
-    public init() {}
+    public init(env: AppEnvironment) {
+        _env = ObservedObject(wrappedValue: env)
+    }
+
+    public init() {
+        _env = ObservedObject(wrappedValue: AppEnvironment.liveInSim())
+    }
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
@@ -123,35 +136,59 @@ public struct DashboardView: View {
             .padding(.top, QAITheme.shellTopPadding)
             .padding(.bottom, QAITheme.dockedBottomPadding)
         }
-        .background(QAITheme.shellGradient.ignoresSafeArea())
+        .background(AppBackground())
         .navigationTitle("Panel")
         .qaiNavigationTitleDisplayMode(.large)
         .task {
+            isSceneActive = (scenePhase == .active)
             env.training.loadIfNeeded()
             isCopyTradeActive = env.copyTrade.isActive
             seedChartIfNeeded()
             refreshAdvice()
             env.applyRuntimeSettings()
         }
+        .onChange(of: scenePhase) { _, newPhase in
+            isSceneActive = (newPhase == .active)
+        }
         .onReceive(env.market.$last.compactMap { $0 }) { tick in
+            guard isSceneActive else { return }
+            let now = Date()
+            if now.timeIntervalSince(lastTickHandledAt) < tickThrottleInterval { return }
+            lastTickHandledAt = now
             appendTick(tick)
             wealthBridge.evaluateWithdrawal(currentProfit: env.bot.estimatedPnL(currentPrice: tick.price))
             refreshAdvice(latestTick: tick)
         }
         .onReceive(env.bot.$activeOrders) { _ in
+            guard isSceneActive else { return }
+            let now = Date()
+            if now.timeIntervalSince(lastAdviceRefreshAt) < adviceDebounceInterval { return }
+            lastAdviceRefreshAt = now
             refreshAdvice()
         }
         .onReceive(env.storage.$outbox) { _ in
+            guard isSceneActive else { return }
+            let now = Date()
+            if now.timeIntervalSince(lastAdviceRefreshAt) < adviceDebounceInterval { return }
+            lastAdviceRefreshAt = now
             refreshAdvice()
         }
         .onReceive(env.copyTrade.$isActive) { value in
             isCopyTradeActive = value
+            guard isSceneActive else { return }
+            let now = Date()
+            if now.timeIntervalSince(lastAdviceRefreshAt) < adviceDebounceInterval { return }
+            lastAdviceRefreshAt = now
             refreshAdvice()
         }
     }
 
     private func selectSymbol(_ symbol: String) {
         guard env.settings.selectedSymbol != symbol else { return }
+        guard isSceneActive else {
+            panelStatus = "Sahne aktif değilken sembol değiştirme bekletildi"
+            return
+        }
         env.settings.selectedSymbol = symbol
         panelStatus = "\(symbol) izlemeye alındı"
         baselinePrice = nil
@@ -160,6 +197,10 @@ public struct DashboardView: View {
     }
 
     private func startDCA() {
+        guard isSceneActive else {
+            panelStatus = "Sahne aktif değilken DCA başlatılamaz"
+            return
+        }
         guard !env.bot.isDCAActive else {
             panelStatus = "DCA zaten aktif"
             return
@@ -170,6 +211,10 @@ public struct DashboardView: View {
     }
 
     private func startGrid() {
+        guard isSceneActive else {
+            panelStatus = "Sahne aktif değilken Grid başlatılamaz"
+            return
+        }
         guard !env.bot.isGridActive else {
             panelStatus = "Grid zaten aktif"
             return
@@ -180,6 +225,10 @@ public struct DashboardView: View {
     }
 
     private func toggleCopyTrade() {
+        guard isSceneActive else {
+            panelStatus = "Sahne aktif değilken CopyTrade değiştirilemez"
+            return
+        }
         if isCopyTradeActive {
             env.copyTrade.stop()
             panelStatus = "CopyTrade durduruldu"
@@ -191,6 +240,10 @@ public struct DashboardView: View {
     }
 
     private func exportOrdersCSV() {
+        guard isSceneActive else {
+            panelStatus = "Sahne aktif değilken dışa aktarma bekletildi"
+            return
+        }
         if let url = env.storage.exportOrdersCSV() {
             panelStatus = "CSV hazır: \(url.lastPathComponent)"
         } else {
@@ -199,12 +252,20 @@ public struct DashboardView: View {
     }
 
     private func clearOutbox() {
+        guard isSceneActive else {
+            panelStatus = "Sahne aktif değilken outbox temizlenemez"
+            return
+        }
         env.storage.clearOutbox()
         panelStatus = "Outbox temizlendi"
         refreshAdvice()
     }
 
     private func panicStop() {
+        guard isSceneActive else {
+            panelStatus = "Sahne aktif değilken panik stop uygulanamaz"
+            return
+        }
         env.bot.stopAll()
         env.copyTrade.stop()
         panelStatus = "Tüm stratejiler durduruldu"
@@ -246,9 +307,7 @@ public struct DashboardView: View {
         let queueDepth = env.storage.queueDepth()
         let retryRate = env.sync.retryRate()
 
-        if !env.settings.isAuthenticated {
-            aiAdvice = "Lisans merkezi üzerinden aktivasyon tamamlandığında premium bot akışları kalıcı açılır."
-        } else if retryRate > 0.25 {
+        if retryRate > 0.25 {
             aiAdvice = "Senkronizasyon tekrar deniyor. Outbox'u izleyin ve panik stopu hazır tutun."
         } else if queueDepth > 0 {
             aiAdvice = "Outbox'ta \(queueDepth) emir bekliyor. CSV alımı veya temizleme aksiyonu kullanabilirsiniz."
@@ -330,8 +389,8 @@ private struct DashboardHeroCard: View {
                             color: isPaperTrading ? QAITheme.warning : QAITheme.success
                         )
                         DashboardBadge(
-                            title: isAuthenticated ? "Ağ Enterprise" : "Ağ Demo",
-                            color: isAuthenticated ? QAITheme.accent : QAITheme.surfaceMuted
+                            title: "Ağ Açık Erişim",
+                            color: QAITheme.success
                         )
                         DashboardBadge(title: "Çifti \(selectedSymbol)", color: QAITheme.panelBlue)
                         DashboardBadge(title: "DCA \(Int(dcaAmount))$ / \(dcaPeriodSec)s", color: QAITheme.accentSoft)
@@ -575,7 +634,7 @@ private struct IntelligenceCard: View {
 
                 HStack(spacing: 10) {
                     DashboardBadge(title: activeSymbol, color: QAITheme.surfaceMuted)
-                    DashboardBadge(title: isLicensed ? "Premium" : "Demo", color: isLicensed ? QAITheme.success : QAITheme.warning)
+                    DashboardBadge(title: isLicensed ? "Tam Erişim" : "Temel", color: isLicensed ? QAITheme.success : QAITheme.warning)
                     Spacer()
                     Text(status)
                         .font(.caption)

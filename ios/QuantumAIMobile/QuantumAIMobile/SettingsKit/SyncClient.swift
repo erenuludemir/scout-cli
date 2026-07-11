@@ -63,8 +63,7 @@ public final class SyncClient {
                 "timestamp": order.timestamp.timeIntervalSince1970
             ]
             guard let data = try? JSONSerialization.data(withJSONObject: payload) else { continue }
-            let url = URL(string: "https://example.invalid/api/orders")!
-            let ok = await post(url, body: data, key: order.id, retries: 1)
+            let ok = await post(RuntimeServiceConfig.ordersURL, body: data, key: order.id, retries: 1)
             if ok {
                 storage.removeFromOutbox(order.id)
             }

@@ -6,9 +6,12 @@ public enum RemoteCommand: String, Codable {
     case resetVault = "RESET_VAULT"
 }
 
+private struct RemoteCommandEnvelope: Decodable {
+    let command: RemoteCommand
+}
+
 public final class CommandListener {
     private weak var env: AppEnvironment?
-    private let commandURL = URL(string: "https://example.invalid/v1/commands")!
     private var timer: Timer?
 
     public init(env: AppEnvironment) {
@@ -29,8 +32,16 @@ public final class CommandListener {
 
     public func checkForCommands() async {
         do {
-            let (data, _) = try await URLSession.shared.data(from: commandURL)
-            if let command = try? JSONDecoder().decode(RemoteCommand.self, from: data) {
+            let (data, response) = try await URLSession.shared.data(from: RuntimeServiceConfig.commandsURL)
+            if let http = response as? HTTPURLResponse, http.statusCode == 204 {
+                return
+            }
+            let decoder = JSONDecoder()
+            if let envelope = try? decoder.decode(RemoteCommandEnvelope.self, from: data) {
+                await execute(envelope.command)
+                return
+            }
+            if let command = try? decoder.decode(RemoteCommand.self, from: data) {
                 await execute(command)
             }
         } catch {}
@@ -49,7 +60,7 @@ public final class CommandListener {
         case .emergencySell:
             env.audit.append(action: "remote.emergency_sell", payload: [:])
         case .resetVault:
-            env.settings.isAuthenticated = false
+            env.settings.licenseActivatedAt = .now
             env.audit.append(action: "remote.reset_vault", payload: [:])
         }
     }

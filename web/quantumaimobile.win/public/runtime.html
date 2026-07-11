@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="pageTitleRuntime">QuantumAI Mobile Runtime</title>
+  <meta name="description" content="QuantumAI runtime visibility, queues, replay, DLQ, metrics, and operational controls." data-i18n-meta="metaDescriptionRuntime">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b1220'/%3E%3Cpath d='M20 18h24v24H34l8 8h-9l-8-8h-5V18zm8 8v8h8v-8h-8z' fill='%232dd4bf'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <span class="brand-kicker" data-i18n="runtimeBrandKicker">Runtime</span>
+        <span class="brand-title" data-i18n="runtimeBrandTitle">Observed, queued, and replayable</span>
+      </div>
+      <div class="nav-wrap">
+        <nav class="nav">
+          <a data-nav href="index.html" data-i18n="navOverview">Overview</a>
+          <a data-nav href="architecture.html" data-i18n="navArchitecture">Architecture</a>
+          <a data-nav href="runtime.html" data-i18n="navRuntime">Runtime</a>
+          <a data-nav href="mobile.html" data-i18n="navMobile">Mobile</a>
+          <a data-nav href="roadmap.html" data-i18n="navRoadmap">Roadmap</a>
+        </nav>
+        <div class="lang-switch" aria-label="Language selector">
+          <button type="button" class="lang-button" data-lang="en">EN</button>
+          <button type="button" class="lang-button" data-lang="tr">TR</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow" data-i18n="runtimeHeroEyebrow">Runtime lane</div>
+      <h1 data-i18n="runtimeHeroTitle">Outbox, replay, DLQ, and metrics all stay visible.</h1>
+      <p class="lead" data-i18n="runtimeHeroLead">
+        The runtime stack is built to keep operator visibility high: every queue pressure,
+        replay path, audit count, and readiness signal is meant to be visible both in backend tools and in the app surface.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="two-col">
+        <div class="col-4 metric">
+          <div class="metric-label" data-i18n="runtimeMetric1Label">Health endpoints</div>
+          <div class="metric-value mono" data-i18n="runtimeMetric1Value">/health + /ready</div>
+        </div>
+        <div class="col-4 metric">
+          <div class="metric-label" data-i18n="runtimeMetric2Label">Outbox lanes</div>
+          <div class="metric-value mono" data-i18n="runtimeMetric2Value">due / failed / dead_letter</div>
+        </div>
+        <div class="col-4 metric">
+          <div class="metric-label" data-i18n="runtimeMetric3Label">Topics</div>
+          <div class="metric-value mono" data-i18n="runtimeMetric3Value">incoming / replay / dead_letter</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="two-col">
+        <div class="col-6 card">
+          <h2 data-i18n="runtimeControlsTitle">Operational controls</h2>
+          <ul class="list">
+            <li data-i18n="runtimeControls1">Transactional outbox and relay worker.</li>
+            <li data-i18n="runtimeControls2">Manual replay and replay-all-dead-letters endpoints.</li>
+            <li data-i18n="runtimeControls3">Prometheus metrics for attempts, deliveries, failures, DLQ, and queue age.</li>
+            <li data-i18n="runtimeControls4">Grafana dashboard for runtime overview and queue state trends.</li>
+          </ul>
+        </div>
+        <div class="col-6 timeline">
+          <h3 data-i18n="runtimeWhyTitle">Why this matters</h3>
+          <div class="timeline-item">
+            <div class="timeline-kicker" data-i18n="runtimeWhy1Label">Signal</div>
+            <div data-i18n="runtimeWhy1Text">Runtime pulse is visible on device and backend at the same time.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-kicker" data-i18n="runtimeWhy2Label">Safety</div>
+            <div data-i18n="runtimeWhy2Text">Replay and DLQ are explicit operator actions, not hidden retries.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-kicker" data-i18n="runtimeWhy3Label">Delivery</div>
+            <div data-i18n="runtimeWhy3Text">Cloudflare presentation layer stays separate from the runtime control plane.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="shell footer" data-i18n="footerText">
+    Static package prepared for Cloudflare Pages and custom domain binding.
+  </footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

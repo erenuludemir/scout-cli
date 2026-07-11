@@ -1,8 +1,5 @@
 import Combine
 import Foundation
-#if canImport(PassKit)
-import PassKit
-#endif
 
 @MainActor
 public final class BursaNetworkEngine: ObservableObject {
@@ -27,17 +24,7 @@ public final class BursaNetworkEngine: ObservableObject {
         webSocketTask = nil
     }
 
-    public func processApplePay(amount: Double) {
-        #if canImport(PassKit)
-        let request = PKPaymentRequest()
-        request.merchantIdentifier = "merchant.bursa.quantumai"
-        request.supportedNetworks = [.visa, .masterCard]
-        request.paymentSummaryItems = [
-            PKPaymentSummaryItem(label: "QAI Asset Purchase", amount: NSDecimalNumber(value: amount))
-        ]
-        print("[APPLE-PAY] Odeme sayfasi hazirlandi: \(request.paymentSummaryItems.count) kalem")
-        #else
-        print("[APPLE-PAY] PassKit bu platformda kullanilamiyor. Tutar: \(amount)")
-        #endif
+    public func prepareFreeAccessState() {
+        print("[ACCESS] Free of charge build active. No payment sheet is required.")
     }
 }

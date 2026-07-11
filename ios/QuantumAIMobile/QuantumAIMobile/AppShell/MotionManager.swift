@@ -3,15 +3,19 @@ import SwiftUI
 import UIKit
 
 // Bursa Operasyon: Cihazın sallanmasını yakalayan Window eklentisi
+// Not: Shake algilamasi icin iOS girisinde ShakeDetectingWindow kullanin.
+// Ornek: SceneDelegate/AppDelegate icinde window = ShakeDetectingWindow(frame: UIScreen.main.bounds)
+
 extension NSNotification.Name {
     static let deviceDidShake = NSNotification.Name("deviceDidShake")
 }
 
-extension UIWindow {
-    open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+final class ShakeDetectingWindow: UIWindow {
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
             NotificationCenter.default.post(name: .deviceDidShake, object: nil)
         }
+        super.motionEnded(motion, with: event)
     }
 }
 

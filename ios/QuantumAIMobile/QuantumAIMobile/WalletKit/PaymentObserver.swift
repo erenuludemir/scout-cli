@@ -5,18 +5,10 @@ public final class PaymentObserver: ObservableObject {
     
     public init() {}
 
-    public func verifyTRC20Payment(address: String, amount: Double) async -> Bool {
-        // Bursa Operasyon: Gerçek dünyada TronGrid veya Infura API çağrısı yapılır
-        // Burada simüle edilmiş bir on-chain kontrolü yapıyoruz
+    public func activateFreeAccess() async -> Bool {
         await MainActor.run { isVerifying = true }
-        
-        // Ağ tarama simülasyonu (3 saniye)
-        try? await Task.sleep(nanoseconds: 3_000_000_000)
-        
-        // %90 ihtimalle onaylandığını varsayalım (Test için)
-        let success = true 
-        
+        try? await Task.sleep(nanoseconds: 700_000_000)
         await MainActor.run { isVerifying = false }
-        return success
+        return true
     }
 }

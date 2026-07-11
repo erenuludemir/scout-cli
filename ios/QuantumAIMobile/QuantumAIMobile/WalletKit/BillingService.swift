@@ -14,7 +14,7 @@ public struct Invoice: Identifiable, Equatable {
     public let address: String
     public var status: Status
 
-    public init(amount: Double, currency: String = "USDT (TRC20)", address: String = "TQaiSaaSServiceAddress", status: Status = .pending) {
+    public init(amount: Double, currency: String = "Free Access", address: String = "No payment required", status: Status = .confirmed) {
         self.amount = amount
         self.currency = currency
         self.address = address
@@ -31,13 +31,12 @@ public final class BillingService: ObservableObject {
     }
 
     public func createSubscriptionInvoice() {
-        self.currentInvoice = Invoice(amount: 99.0)
-        audit.append(action: "billing.invoice.created", payload: ["amount": 99.0])
+        self.currentInvoice = Invoice(amount: 0.0)
+        audit.append(action: "billing.invoice.created", payload: ["amount": 0.0, "mode": "free"])
     }
 
     public func checkPaymentStatus() async -> Bool {
-        try? await Task.sleep(nanoseconds: 2_000_000_000)
-        audit.append(action: "billing.invoice.checked", payload: ["status": "confirmed"])
+        audit.append(action: "billing.invoice.checked", payload: ["status": "confirmed", "mode": "free"])
         return true
     }
 }

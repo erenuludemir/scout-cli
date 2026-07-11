@@ -7,6 +7,9 @@ public struct AppShell: View {
     @State private var showTraining = false
     @State private var hasEvaluatedTrainingPresentation = false
     private let launchArguments = ProcessInfo.processInfo.arguments
+    private var forceTrainingOnLaunch: Bool {
+        launchArguments.contains("-force-training-on-launch")
+    }
 
     public init() {}
 
@@ -29,14 +32,21 @@ public struct AppShell: View {
         .task {
             guard !hasEvaluatedTrainingPresentation else { return }
             hasEvaluatedTrainingPresentation = true
-            showTraining = !launchArguments.contains("-disable-training-on-launch") && env.trainingJourney.shouldPresentOnLaunch
+            showTraining = forceTrainingOnLaunch && env.trainingJourney.shouldPresentOnLaunch
         }
         .onChange(of: scenePhase) { _, phase in
+            if AppEnvironment.LaunchControl.isUITesting {
+                if phase == .active {
+                    env.applyRuntimeSettings()
+                }
+                return
+            }
             if phase == .active {
                 // Runtime refresh stays at shell level so every feature inherits the same behavior.
                 env.applyRuntimeSettings()
                 env.market.refreshForActiveScene()
                 env.marketBridge.refreshForActiveScene()
+                env.walletPortfolio.refreshForActiveScene()
 
                 if env.settings.marketBridgeEnabled {
                     Task {
@@ -47,6 +57,7 @@ public struct AppShell: View {
             } else {
                 env.market.pauseForInactiveScene()
                 env.marketBridge.pauseForInactiveScene()
+                env.walletPortfolio.pauseForInactiveScene()
             }
         }
 #if os(macOS)

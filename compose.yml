@@ -17,6 +17,20 @@ services:
       retries: 10
       start_period: 5s
     restart: unless-stopped
+    networks:
+    - mcai_net
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 3s
+    restart: unless-stopped
+    networks:
+    - mcai_net
   quantumai-usdt:
     build: ./usdt
     image: quantumai-dockerized-system-quantumai-usdt:latest
@@ -39,6 +53,8 @@ services:
       retries: 12
       start_period: 10s
     restart: unless-stopped
+    networks:
+    - mcai_net
   gateway:
     build: ./gateway
     image: quantumai-dockerized-system-gateway:latest
@@ -60,8 +76,14 @@ services:
       retries: 10
       start_period: 3s
     restart: unless-stopped
+    networks:
+    - mcai_net
 
 volumes:
   dex_logs:
   quantumai_usdt_logs:
   gateway_file_logs:
+
+networks:
+  mcai_net:
+    name: quantumai-mcai

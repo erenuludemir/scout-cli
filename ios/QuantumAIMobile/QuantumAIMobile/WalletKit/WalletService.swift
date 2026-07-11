@@ -36,8 +36,46 @@ public final class WalletService {
     }
 
     public func address() throws -> String {
+        try address(for: WalletChainRegistry.defaultNetwork)
+    }
+
+    public func address(for network: WalletNetwork, configuredAddresses: [String: String] = [:]) throws -> String {
+        let normalizedAddresses = configuredAddresses.reduce(into: [String: String]()) { partialResult, entry in
+            partialResult[entry.key.lowercased()] = entry.value
+        }
+        let candidates = [
+            normalizedAddresses[network.id],
+            normalizedAddresses[network.family.rawValue],
+            network.family == .evm ? normalizedAddresses["ethereum"] : nil,
+            normalizedAddresses["default"],
+        ]
+        if let configuredAddress = candidates
+            .compactMap({ $0?.trimmingCharacters(in: .whitespacesAndNewlines) })
+            .first(where: { !$0.isEmpty })
+        {
+            return configuredAddress
+        }
+
         let key = try loadOrCreatePrivateKey()
-        return "qaidemo_" + Data(key.publicKey.rawRepresentation).base64EncodedString()
+        let publicKey = Data(key.publicKey.rawRepresentation)
+
+        switch network.family {
+        case .evm:
+            let hash = Data(SHA256.hash(data: publicKey))
+            return "0x" + Self.hexString(hash.suffix(20))
+        case .tron:
+            let hash = Data(SHA256.hash(data: publicKey))
+            var payload = Data([0x41])
+            payload.append(hash.suffix(20))
+            return Self.base58CheckEncode(payload)
+        case .solana:
+            return Self.base58Encode(publicKey)
+        case .bitcoin:
+            let hash = Data(SHA256.hash(data: publicKey))
+            var payload = Data([0x00])
+            payload.append(hash.prefix(20))
+            return Self.base58CheckEncode(payload)
+        }
     }
 
     public func sign(_ message: Data) throws -> Data {
@@ -92,5 +130,48 @@ public final class WalletService {
         }
 
         throw NSError(domain: "WalletService", code: -1)
+    }
+
+    private static func hexString<T: DataProtocol>(_ data: T) -> String {
+        data.map { String(format: "%02x", $0) }.joined()
+    }
+
+    private static func base58CheckEncode(_ payload: Data) -> String {
+        var checksumInput = payload
+        let firstHash = Data(SHA256.hash(data: checksumInput))
+        checksumInput = Data(SHA256.hash(data: firstHash).prefix(4))
+        return base58Encode(payload + checksumInput)
+    }
+
+    private static func base58Encode(_ data: Data) -> String {
+        guard !data.isEmpty else { return "" }
+
+        let alphabet = Array("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
+        var bytes = [UInt8](data)
+        var zeros = 0
+        while zeros < bytes.count, bytes[zeros] == 0 {
+            zeros += 1
+        }
+
+        var encoded: [Character] = []
+        var startIndex = zeros
+        while startIndex < bytes.count {
+            var remainder = 0
+            for index in startIndex..<bytes.count {
+                let value = Int(bytes[index]) + remainder * 256
+                bytes[index] = UInt8(value / 58)
+                remainder = value % 58
+            }
+            encoded.append(alphabet[remainder])
+            while startIndex < bytes.count, bytes[startIndex] == 0 {
+                startIndex += 1
+            }
+        }
+
+        if zeros > 0 {
+            encoded.append(contentsOf: Array(repeating: alphabet[0], count: zeros))
+        }
+
+        return String(encoded.reversed())
     }
 }

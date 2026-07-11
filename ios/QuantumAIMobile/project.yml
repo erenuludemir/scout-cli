@@ -12,7 +12,9 @@ settings:
     CODE_SIGN_STYLE: Automatic
     CODE_SIGN_IDENTITY: Apple Development
     CODE_SIGNING_ALLOWED: YES
-    PRODUCT_BUNDLE_IDENTIFIER: com.erenuludemir.quantumaimobile
+    PRODUCT_BUNDLE_IDENTIFIER: com.erenuludemir.quantumaimobile.host
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 targets:
   QuantumAIMobileHost:
     type: application
@@ -20,8 +22,24 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: QuantumAIMobileAppHost
+    resources:
+      - path: QuantumAIMobileAppHost/Assets.xcassets
+      - path: QuantumAIMobileAppHost/Base.lproj/LaunchScreen.storyboard
     info:
       path: QuantumAIMobileAppHost/Info.plist
+      properties:
+        CFBundleDisplayName: QuantumAI Host
+        ITSAppUsesNonExemptEncryption: false
+        UILaunchStoryboardName: LaunchScreen
+        UIRequiresFullScreen: true
+        UIStatusBarStyle: UIStatusBarStyleLightContent
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        "UISupportedInterfaceOrientations~ipad":
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
     dependencies:
       - package: QuantumAIMobile
         product: QuantumAIMobile

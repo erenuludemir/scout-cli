@@ -1,0 +1,77 @@
+# Performance Optimization Override for living_spring (managerai)
+# Use with: docker compose -f compose.yml -f compose.performance.yml up -d
+
+services:
+  managerai:
+    # Enhanced command with worker processes and optimizations
+    command:
+      - uvicorn
+      - managerai.app:app
+      - --host=0.0.0.0
+      - --port=8012
+      - --workers=4 # Parallel request handling
+      - --loop=uvloop # Faster event loop
+      - --access-log # Enable access logging
+      - --limit-max-requests=10000 # Recycle workers for stability
+      - --timeout=30 # Connection timeout
+
+    # Environment optimizations
+    environment:
+      PYTHONUNBUFFERED: "1" # Unbuffered real-time logging
+      PYTHONDONTWRITEBYTECODE: "1" # Don't create .pyc files
+      PYTHONOPTIMIZE: "2" # Run in optimized mode
+      UVLOOP_ENABLED: "1" # Enable uvloop
+      ASYNCIO_DEBUG: "0" # Disable debug in production
+      LOG_LEVEL: "info" # Less verbose logging
+      CACHE_TTL: "3600" # Cache timeout
+      CONNECTION_POOL_SIZE: "20" # Database pool size
+      MAX_CONNECTIONS: "100" # Max concurrent connections
+
+    # Optimized health check
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - -c
+        - "curl -f -s http://127.0.0.1:8012/healthz || exit 1"
+      interval: 30s # Check every 30 seconds
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+    # Optimized logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "10"
+
+    # Restart on failure
+    restart: on-failure
+
+# ═══════════════════════════════════════════════════════════════════════
+# USAGE & DEPLOYMENT INSTRUCTIONS
+# ═══════════════════════════════════════════════════════════════════════
+#
+# 1. Apply performance optimizations:
+#    docker compose -f compose.yml -f compose.performance.yml up -d managerai
+#
+# 2. Verify workers are running:
+#    docker exec living_spring ps aux | grep uvicorn
+#
+# 3. Check environment variables:
+#    docker exec living_spring env | grep PYTHON
+#
+# 4. Monitor baseline (before optimizations):
+#    bash monitor_living_spring.sh
+#
+# 5. Monitor improvements (after optimizations):
+#    bash profile_living_spring.sh
+#
+# 6. Performance test:
+#    wrk -t4 -c100 -d30s http://localhost:8012/healthz
+#
+# 7. Rollback to original (if needed):
+#    docker compose -f compose.yml up -d managerai
+#
+# ═══════════════════════════════════════════════════════════════════════

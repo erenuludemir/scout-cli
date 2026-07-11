@@ -1,26 +1,63 @@
 name: quantumai-base
 
 services:
-  quantumai-usdt-v2:
-    container_name: quantumai-usdt-v2
-    build:
-      context: ./quantumai-usdt-v2
-    volumes:
-      - quantumai_usdt_v2_logs:/var/log/qai
-    environment:
-      - PYTHONUNBUFFERED=1
-      - REDIS_URL=redis://redis:6379/0
-      - ETHERSCAN_CACHE_TTL=60
-    ports:
-      - "5005:5002"
-    depends_on:
-      - redis
-
-  redis:
-    container_name: redis
+  mcai-redis:
+    container_name: mcai-redis
     image: redis:7-alpine
     ports:
-      - "6381:6379"
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  mcai-postgres:
+    container_name: mcai-postgres
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=qai
+      - POSTGRES_PASSWORD=qai
+      - POSTGRES_DB=qaidb
+    ports:
+      - "5432:5432"
+
+  mcai-redpanda:
+    container_name: mcai-redpanda
+    image: redpandadata/redpanda:latest
+    ports:
+      - "9092:9092"
+    command:
+      - redpanda
+      - start
+      - --smp 1
+      - --memory 1G
+
+  # --- İŞLEM MOTORLARI UYKUDAN UYANDIRILIYOR ---
+  mcai-router:
+    container_name: mcai-router
+    image: python:3.9-alpine
+    volumes:
+      - ./payload:/payload
+    command: python /payload/neural_ignition.py
+
+  mcai-risk:
+    container_name: mcai-risk
+    image: python:3.9-alpine
+    volumes:
+      - ./payload:/payload
+    command: python /payload/neural_ignition.py
+
+  mcai-trade-engine:
+    container_name: mcai-trade-engine
+    image: python:3.9-alpine
+    volumes:
+      - ./payload:/payload
+    command: python /payload/neural_ignition.py
+
+  mcai-api:
+    container_name: mcai-api
+    image: python:3.9-alpine
+    volumes:
+      - ./payload:/payload
+    command: python /payload/neural_ignition.py
 
 volumes:
-  quantumai_usdt_v2_logs:
+  redis_data:

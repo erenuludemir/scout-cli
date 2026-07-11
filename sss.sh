@@ -56,7 +56,7 @@ docker buildx build --platform linux/arm64 -t "${DOCKER_USERNAME}/gli-app:fixed"
 yq -iy '.services["gli-container"].image="'"${DOCKER_USERNAME}/gli-app:fixed"'"' "$APP_DIR/compose.yml"
 yq -iy 'del(.services["gli-container"].command)' "$APP_DIR/compose.yml"
 yq -iy '.services["gli-mainnet"].image="'"${DOCKER_USERNAME}/gli-app:fixed"'"' "$APP_DIR/compose.yml"
-yq -iy 'del(.services["gli-mainnet"].command))' "$APP_DIR/compose.yml")
+yq -iy 'del(.services["gli-mainnet"].command)' "$APP_DIR/compose.yml"
 yq -iy '.services["gli-sepolia"].image="'"${DOCKER_USERNAME}/gli-app:fixed"'"' "$APP_DIR/compose.yml"
 yq -iy 'del(.services["gli-sepolia"].command)' "$APP_DIR/compose.yml"
 

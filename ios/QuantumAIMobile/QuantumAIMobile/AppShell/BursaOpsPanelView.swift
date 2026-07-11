@@ -48,7 +48,7 @@ public struct BursaOpsPanelView: View {
                 }
                 .padding()
             }
-            .background(QAITheme.background)
+            .background(AppBackground())
             .navigationTitle("OPERASYON MERKEZİ")
         }
     }

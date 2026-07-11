@@ -28,6 +28,7 @@ public final class MarketDataService: ObservableObject {
     private var simTask: Task<Void, Never>?
     private var liveFallbackTask: Task<Void, Never>?
     private var liveReconnectTask: Task<Void, Never>?
+    private var liveWarmupTask: Task<Void, Never>?
 
     private var currentModeIsSim = true
     private var currentSymbol = MarketDataDefaults.symbol
@@ -127,6 +128,9 @@ public final class MarketDataService: ObservableObject {
         liveReconnectTask?.cancel()
         liveReconnectTask = nil
 
+        liveWarmupTask?.cancel()
+        liveWarmupTask = nil
+
         liveFallbackTask?.cancel()
         liveFallbackTask = nil
 
@@ -188,12 +192,12 @@ public final class MarketDataService: ObservableObject {
         liveReconnectTask?.cancel()
         liveReconnectTask = nil
 
+        liveWarmupTask?.cancel()
+        liveWarmupTask = nil
+
         binanceAdapter?.disconnect()
         binanceAdapter = nil
         activeLiveConnectionID = nil
-
-        startFallbackWatchdog(symbol: symbol)
-        refreshFallbackIfNeeded(symbol: symbol, reason: "Canlı akış bağlanıyor.")
 
         if let cooldownUntil = websocketCooldownUntil, cooldownUntil > .now {
             let remaining = max(Int(cooldownUntil.timeIntervalSinceNow.rounded(.up)), 1)
@@ -234,6 +238,9 @@ public final class MarketDataService: ObservableObject {
         binanceAdapter = adapter
         adapter.connect()
         liveState = .live(symbol: symbol)
+
+        scheduleInitialFallbackProbe(symbol: symbol)
+        startFallbackWatchdog(symbol: symbol)
     }
 
     public func stopAll(clearLastTick: Bool = true) {
@@ -245,6 +252,9 @@ public final class MarketDataService: ObservableObject {
 
         liveReconnectTask?.cancel()
         liveReconnectTask = nil
+
+        liveWarmupTask?.cancel()
+        liveWarmupTask = nil
 
         binanceAdapter?.disconnect()
         binanceAdapter = nil
@@ -279,6 +289,8 @@ public final class MarketDataService: ObservableObject {
         liveFallbackTask = nil
         liveReconnectTask?.cancel()
         liveReconnectTask = nil
+        liveWarmupTask?.cancel()
+        liveWarmupTask = nil
 
         if !currentModeIsSim {
             binanceAdapter?.disconnect()
@@ -337,6 +349,7 @@ public final class MarketDataService: ObservableObject {
         simTask?.cancel()
         liveFallbackTask?.cancel()
         liveReconnectTask?.cancel()
+        liveWarmupTask?.cancel()
         binanceAdapter?.disconnect()
     }
 
@@ -374,6 +387,8 @@ public final class MarketDataService: ObservableObject {
         guard started, !currentModeIsSim else { return }
 
         let now = Date()
+        liveWarmupTask?.cancel()
+        liveWarmupTask = nil
         lastWebSocketTickAt = tick.ts
         websocketFailureCount = 0
         websocketCooldownUntil = nil
@@ -403,6 +418,9 @@ public final class MarketDataService: ObservableObject {
         websocketFailureCount += 1
         let reconnectDelay = reconnectDelayForCurrentState()
 
+        liveWarmupTask?.cancel()
+        liveWarmupTask = nil
+
         binanceAdapter?.disconnect()
         binanceAdapter = nil
         activeLiveConnectionID = nil
@@ -423,6 +441,25 @@ public final class MarketDataService: ObservableObject {
         runtimeMetrics?.recordReconnect()
 
         scheduleReconnect(symbol: symbol, delay: reconnectDelay)
+    }
+
+    private func scheduleInitialFallbackProbe(symbol: String) {
+        guard isSceneActive else { return }
+
+        liveWarmupTask?.cancel()
+        liveWarmupTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(3))
+            guard !Task.isCancelled else { return }
+            guard let self else { return }
+
+            let shouldProbe = await MainActor.run {
+                guard self.started, !self.currentModeIsSim, self.currentSymbol == symbol, self.isSceneActive else { return false }
+                return self.lastWebSocketTickAt == nil
+            }
+
+            guard shouldProbe else { return }
+            await self.refreshFallbackTick(symbol: symbol, reason: "Websocket ilk tick gecikti, geçici REST verisi kullanılıyor.")
+        }
     }
 
     private func startFallbackWatchdog(symbol: String) {

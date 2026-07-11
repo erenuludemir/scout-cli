@@ -32,7 +32,8 @@ public struct HedgeFundDashboardView: View {
                 }
             }
             .navigationTitle("Hedge Fonu Paneli")
-            .background(QAITheme.background)
+            .scrollContentBackground(.hidden)
+            .background(AppBackground())
         }
     }
 }

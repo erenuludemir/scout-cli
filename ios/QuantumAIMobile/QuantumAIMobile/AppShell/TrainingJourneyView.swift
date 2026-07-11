@@ -13,8 +13,13 @@ import UIKit
 public struct TrainingJourneyView: View {
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
     @State private var contextualDestination: TrainingJourneyDestination?
     @State private var selectedRating = 0
+    @State private var cachedDeviceOwnerAuthenticationSupport: Bool?
+    @State private var prerequisiteRefreshTask: Task<Void, Never>?
+    @State private var securityVerificationTask: Task<Void, Never>?
+    @State private var isSecurityVerificationInFlight = false
 
     let showsCloseButton: Bool
 
@@ -37,21 +42,30 @@ public struct TrainingJourneyView: View {
         .background(AppBackground())
         .screenNavigationChromeHidden()
         .task {
-            refreshPrerequisites()
-            recordContextualHelpIfNeeded()
-            selectedRating = journey.analytics.feedbackScore
+            await prepareJourneyRuntime()
         }
         .onChange(of: env.settings.isAuthenticated) { _, _ in
-            refreshPrerequisites()
+            schedulePrerequisiteRefresh()
         }
         .onChange(of: env.market.last != nil) { _, _ in
-            refreshPrerequisites()
+            schedulePrerequisiteRefresh()
         }
         .onChange(of: journey.analytics.feedbackScore) { _, score in
             selectedRating = score
         }
         .onChange(of: env.trainingJourney.currentStep) { _, _ in
             recordContextualHelpIfNeeded()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active else { return }
+            schedulePrerequisiteRefresh(forceDeviceCapabilityRefresh: true)
+        }
+        .onDisappear {
+            prerequisiteRefreshTask?.cancel()
+            prerequisiteRefreshTask = nil
+            securityVerificationTask?.cancel()
+            securityVerificationTask = nil
+            isSecurityVerificationInFlight = false
         }
         .navigationDestination(item: $contextualDestination) { destination in
             switch destination {
@@ -186,7 +200,7 @@ public struct TrainingJourneyView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     TrainingSectionTitle("Karşılama ve Amaç", icon: "flag.2.crossed.fill")
 
-                    Text("Bu training, wallet, bot ve blockchain akışlarını kontrollü sırayla kurar; kullanıcıyı gereksiz bekletmeden doğrudan iş üstünde öğrenmeye geçirir.")
+                    Text("Bu training, referans, bot ve blockchain akışlarını kontrollü sırayla kurar; kullanıcıyı gereksiz bekletmeden doğrudan iş üstünde öğrenmeye geçirir.")
                         .font(.body)
                         .foregroundStyle(QAITokens.Palette.textPrimary)
 
@@ -209,7 +223,7 @@ public struct TrainingJourneyView: View {
                     TrainingBullet(text: "Gerekli izinler ve cihaz hazır olma durumu tek ekranda toplanır.")
                     TrainingBullet(text: "Seviye ve role göre modüler akış oluşturulur.")
                     TrainingBullet(text: "Sandbox, mini test ve ilerleme takibi canlı işlemlerden ayrı tutulur.")
-                    TrainingBullet(text: "Harici wallet doğrulaması tamamlandıktan sonra işlem akışı yine bu uygulamada sürer.")
+                    TrainingBullet(text: "Harici referans doğrulaması tamamlandıktan sonra son teyit yine bu uygulamada sürer.")
                 }
             }
         }
@@ -232,7 +246,7 @@ public struct TrainingJourneyView: View {
 
                     TrainingReadinessRow(
                         title: "Hesap Durumu",
-                        subtitle: journey.prerequisites.accountReady ? "Demo veya lisanslı oturum hazır." : "Oturum durumu bekleniyor.",
+                        subtitle: journey.prerequisites.accountReady ? "Ücretsiz erişim oturumu hazır." : "Oturum durumu bekleniyor.",
                         isReady: journey.prerequisites.accountReady
                     )
 
@@ -244,23 +258,23 @@ public struct TrainingJourneyView: View {
 
                     TrainingReadinessRow(
                         title: "Cihaz Uyumluluğu",
-                        subtitle: journey.prerequisites.deviceReady ? "Cihaz biyometrik veya parola doğrulamasını destekliyor." : "Cihaz doğrulama desteği görünmüyor.",
+                        subtitle: deviceReadinessSubtitle,
                         isReady: journey.prerequisites.deviceReady
                     )
 
                     HStack(spacing: 10) {
-                        PrimaryActionButton(title: journey.prerequisites.securityVerified ? "Güvenlik Doğrulandı" : "Face ID / Parola ile Doğrula") {
-                            Task { await verifySecurity() }
+                        PrimaryActionButton(title: securityButtonTitle) {
+                            startSecurityVerification()
                         }
-                        .disabled(journey.prerequisites.securityVerified)
-                        .opacity(journey.prerequisites.securityVerified ? 0.55 : 1)
+                        .disabled(journey.prerequisites.securityVerified || isSecurityVerificationInFlight)
+                        .opacity(journey.prerequisites.securityVerified || isSecurityVerificationInFlight ? 0.55 : 1)
                     }
                 }
             }
 
             WalletActivationPanel(
-                headline: "Wallet Aktivasyonu",
-                subtitle: "Binance, Coinbase Wallet, Trust Wallet ve MetaMask aktivasyonu training başlamadan doğrulanabilir.",
+                headline: "Harici Referans Kontrolü",
+                subtitle: "Binance, Coinbase Wallet, Trust Wallet ve MetaMask geri dönüş akışları training başlamadan yerel olarak doğrulanabilir.",
                 onVerified: { _ in
                     journey.markInteractiveTask("wallet-activation")
                 }
@@ -324,7 +338,7 @@ public struct TrainingJourneyView: View {
                         .foregroundStyle(QAITokens.Palette.textSecondary)
 
                     DemoLane(title: "1. Paneli Tara", summary: "Risk modu, lisans ve feed kaynağı üstten görünür.", icon: "speedometer")
-                    DemoLane(title: "2. Cüzdanı Hazırla", summary: "Ağ seç, adresi göster ve güvenli imza akışını prova et.", icon: "wallet.pass.fill")
+                    DemoLane(title: "2. Referansı Hazırla", summary: "Ağ seç, adresi göster ve yerel doğrulama akışını prova et.", icon: "doc.text.magnifyingglass")
                     DemoLane(title: "3. Senaryoyu Simüle Et", summary: "Sandbox ile gerçek veri dışı pratik yap, sonra mini test ile doğrula.", icon: "rectangle.3.group.bubble.left.fill")
                 }
             }
@@ -373,15 +387,15 @@ public struct TrainingJourneyView: View {
 
                     InteractiveTaskRow(
                         title: "Bir blockchain ağı seçtim",
-                        subtitle: "Wallet yüzeyinde bir ağ seçip güvenli gönderim mantığını prova et.",
+                        subtitle: "Referans yüzeyinde bir ağ seçip yerel doğrulama mantığını prova et.",
                         isDone: journey.interactiveTasks.contains("network")
                     ) {
                         openContextualDestination(.wallet, taskID: "network")
                     }
 
                     InteractiveTaskRow(
-                        title: "Güvenli işlem adımını onayladım",
-                        subtitle: "Face ID / parola doğrulamasının işlem öncesinde geldiğini doğrula.",
+                        title: "Yerel doğrulama adımını onayladım",
+                        subtitle: "Face ID / parola doğrulamasının yayın yerine yerel teyit için geldiğini doğrula.",
                         isDone: journey.interactiveTasks.contains("security")
                     ) {
                         openContextualDestination(.wallet, taskID: "security")
@@ -391,8 +405,8 @@ public struct TrainingJourneyView: View {
 
             if journey.selectedModules.contains(.walletActivation) || !env.walletActivation.verifiedProviders.isEmpty {
                 WalletActivationPanel(
-                    headline: "Wallet Entegrasyon Görevi",
-                    subtitle: "Harici wallet doğrulamasını training içinde tamamla; sonrasında işlem uygulamaya geri dönsün.",
+                    headline: "Harici Referans Görevi",
+                    subtitle: "Harici uygulama geri dönüşünü training içinde doğrula; son teyit uygulama içinde kalsın.",
                     onVerified: { _ in
                         journey.markInteractiveTask("wallet-verified")
                     }
@@ -419,7 +433,7 @@ public struct TrainingJourneyView: View {
                     #endif
 
                     TrainingBullet(text: "İlerleme, kaldığın yer ve sonraki en iyi adım her ekranda görünür.")
-                    TrainingBullet(text: "Wallet aktivasyonu tamamlandığında tekrar harici uygulamada kalınmaz; işlem akışı bu uygulamada sürer.")
+                    TrainingBullet(text: "Harici referans doğrulaması tamamlandığında kullanıcı tekrar dış uygulamada tutulmaz; son teyit bu uygulamada kalır.")
                     TrainingBullet(text: "Dynamic Type, kontrast ve VoiceOver için tekrar erişilebilir etiketleme korunur.")
                 }
             }
@@ -535,6 +549,23 @@ public struct TrainingJourneyView: View {
         TrainingModuleOption.allCases.first(where: { !journey.selectedModules.contains($0) })?.title ?? "Tüm temel modüller tamamlandı"
     }
 
+    private var securityButtonTitle: String {
+        if isSecurityVerificationInFlight {
+            return "Doğrulanıyor..."
+        }
+        return journey.prerequisites.securityVerified ? "Güvenlik Doğrulandı" : "Face ID / Parola ile Doğrula"
+    }
+
+    private var deviceReadinessSubtitle: String {
+        if journey.prerequisites.deviceReady {
+            return "Cihaz biyometrik veya parola doğrulamasını destekliyor."
+        }
+        if cachedDeviceOwnerAuthenticationSupport == nil {
+            return "Cihaz doğrulama desteği kontrol ediliyor."
+        }
+        return "Cihaz doğrulama desteği görünmüyor."
+    }
+
     private func prerequisiteBinding(_ keyPath: WritableKeyPath<TrainingPrerequisites, Bool>) -> Binding<Bool> {
         Binding(
             get: { journey.prerequisites[keyPath: keyPath] },
@@ -546,22 +577,60 @@ public struct TrainingJourneyView: View {
         )
     }
 
-    private func refreshPrerequisites() {
+    @MainActor
+    private func prepareJourneyRuntime() async {
+        selectedRating = journey.analytics.feedbackScore
+        recordContextualHelpIfNeeded()
+        await refreshPrerequisites(forceDeviceCapabilityRefresh: cachedDeviceOwnerAuthenticationSupport == nil)
+    }
+
+    private func schedulePrerequisiteRefresh(forceDeviceCapabilityRefresh: Bool = false) {
+        prerequisiteRefreshTask?.cancel()
+        prerequisiteRefreshTask = Task {
+            if !forceDeviceCapabilityRefresh {
+                try? await Task.sleep(for: .milliseconds(120))
+            }
+            guard !Task.isCancelled else { return }
+            await refreshPrerequisites(forceDeviceCapabilityRefresh: forceDeviceCapabilityRefresh)
+        }
+    }
+
+    @MainActor
+    private func refreshPrerequisites(forceDeviceCapabilityRefresh: Bool = false) async {
+        let deviceReady = await resolveDeviceOwnerAuthenticationSupport(forceRefresh: forceDeviceCapabilityRefresh)
+        QAISignpost.event(
+            "TrainingJourneyView.refreshPrerequisites",
+            message: "account=\(env.settings.isAuthenticated) network=\(env.runtimeUsesSimulation || env.market.last != nil || env.settings.marketBridgeEnabled) device=\(deviceReady)"
+        )
         journey.refreshPrerequisites(
             accountReady: true,
             networkReady: env.runtimeUsesSimulation || env.market.last != nil || env.settings.marketBridgeEnabled,
-            deviceReady: deviceSupportsOwnerAuthentication()
+            deviceReady: deviceReady
         )
     }
 
-    private func verifySecurity() async {
-        do {
-            try await SecurityGate.verifyAction(
-                reason: "Training önkoşullarını tamamlamak için Face ID, Touch ID veya cihaz parolasını kullanın."
-            )
-            journey.markSecurityVerified()
-        } catch {
-            env.metrics.recordError("training_security_verification_failed=\(error.localizedDescription)")
+    private func startSecurityVerification() {
+        guard !isSecurityVerificationInFlight else { return }
+        securityVerificationTask?.cancel()
+        securityVerificationTask = Task {
+            isSecurityVerificationInFlight = true
+            defer {
+                isSecurityVerificationInFlight = false
+                securityVerificationTask = nil
+            }
+
+            do {
+                try await SecurityGate.verifyAction(
+                    reason: "Training önkoşullarını tamamlamak için Face ID, Touch ID veya cihaz parolasını kullanın."
+                )
+                guard !Task.isCancelled else { return }
+                journey.markSecurityVerified()
+                schedulePrerequisiteRefresh()
+            } catch is CancellationError {
+                return
+            } catch {
+                env.metrics.recordError("training_security_verification_failed=\(error.localizedDescription)")
+            }
         }
     }
 
@@ -584,7 +653,24 @@ public struct TrainingJourneyView: View {
         journey.advance()
     }
 
-    private func deviceSupportsOwnerAuthentication() -> Bool {
+    @MainActor
+    private func resolveDeviceOwnerAuthenticationSupport(forceRefresh: Bool) async -> Bool {
+        if !forceRefresh, let cachedDeviceOwnerAuthenticationSupport {
+            return cachedDeviceOwnerAuthenticationSupport
+        }
+
+        let supported = await Task.detached(priority: .utility) {
+            Self.deviceSupportsOwnerAuthentication()
+        }.value
+        cachedDeviceOwnerAuthenticationSupport = supported
+        QAISignpost.event(
+            "TrainingJourneyView.deviceSupportsOwnerAuthentication",
+            message: "supported=\(supported)"
+        )
+        return supported
+    }
+
+    nonisolated private static func deviceSupportsOwnerAuthentication() -> Bool {
         #if canImport(LocalAuthentication)
         let context = LAContext()
         var error: NSError?
@@ -935,7 +1021,7 @@ private struct TrainingProgressTip: Tip {
     }
 
     var message: Text? {
-        Text("Harici wallet doğrulamasını tamamladıktan sonra kullanıcı işlemi yine uygulama içinden sürdürmeli.")
+        Text("Harici referans doğrulamasını tamamladıktan sonra kullanıcı son teyidi yine uygulama içinden sürdürmeli.")
     }
 
     var image: Image? {

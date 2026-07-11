@@ -24,6 +24,8 @@ public struct PanelView: View {
                         }
                     )
 
+                    PanelRuntimePulseCard(state: state)
+
                     PanelOperationsMenuCard()
                         .id(Self.operationsMenuAnchor)
 
@@ -72,6 +74,12 @@ private struct PanelViewState {
     let exposureText: String
     let pnlText: String
     let successRateText: String
+    let runtimeStatusText: String
+    let runtimeDependencyText: String
+    let runtimeQueueText: String
+    let runtimeAuditText: String
+    let runtimeTopicText: String
+    let runtimeTrendLanes: [HQRuntimeTrendLane]
 
     static func from(environment env: AppEnvironment) -> PanelViewState {
         let lastPrice = env.market.last?.price ?? 0
@@ -80,6 +88,9 @@ private struct PanelViewState {
         let queueDepth = env.storage.queueDepth()
         let exposure = env.bot.exposureUSD()
         let successRate = max(0, min(100, Int((1.0 - env.sync.retryRate()) * 100)))
+        let runtimeAdmin = env.runtimeAdmin
+        let remoteOutbox = runtimeAdmin.outbox
+        let hotTopic = runtimeAdmin.runbook.topicActivity.first?.topic ?? "orders.incoming"
 
         return PanelViewState(
             symbol: env.settings.selectedSymbol,
@@ -91,11 +102,24 @@ private struct PanelViewState {
             queueDepth: queueDepth,
             exposureText: Self.currency(exposure),
             pnlText: Self.currency(pnl),
-            successRateText: "%\(successRate)"
+            successRateText: "%\(successRate)",
+            runtimeStatusText: runtimeAdmin.isReady ? "API READY" : "API \(runtimeAdmin.readiness.status.uppercased())",
+            runtimeDependencyText: "Deps \(runtimeAdmin.dependencySummary)",
+            runtimeQueueText: "Due \(remoteOutbox.due) • DLQ \(remoteOutbox.deadLetter)",
+            runtimeAuditText: runtimeAdmin.auditSummary,
+            runtimeTopicText: hotTopic,
+            runtimeTrendLanes: buildRuntimeTrendLanes(runtimeAdmin: runtimeAdmin)
         )
     }
 
     private static func summary(env: AppEnvironment, activeOrders: Int, queueDepth: Int) -> String {
+        let runtimeAdmin = env.runtimeAdmin
+        if runtimeAdmin.outbox.deadLetter > 0 {
+            return "Dead-letter queue aktif. Operatör ilk bakışta replay ve log aksiyonunu görmeli."
+        }
+        if runtimeAdmin.outbox.due > 0 || runtimeAdmin.outbox.failed > 0 {
+            return "Runtime gecikmeli. Outbox baskısı ve retry kuyruğu panelde görünür olmalı."
+        }
         if let error = env.market.lastError, !error.isEmpty {
             return "Piyasa akisi sorunlu. Kullaniciyi teknik detaya bogmadan tekrar dene akisi goster."
         }
@@ -113,6 +137,41 @@ private struct PanelViewState {
         return formatter.string(from: NSNumber(value: value)) ?? "$0"
     }
 
+    private static func buildRuntimeTrendLanes(runtimeAdmin: RuntimeAdminMonitor) -> [HQRuntimeTrendLane] {
+        let trend = Array(runtimeAdmin.runbook.trendPoints.suffix(8))
+        guard let latest = trend.last else { return [] }
+        return [
+            HQRuntimeTrendLane(
+                title: "Queue",
+                value: "\(latest.outboxDue + latest.outboxFailed + latest.outboxDeadLetter)",
+                detail: "pressure",
+                tint: QAITokens.Palette.chipAmber,
+                points: trend.map { Double($0.outboxDue + $0.outboxFailed + $0.outboxDeadLetter) }
+            ),
+            HQRuntimeTrendLane(
+                title: "Relay",
+                value: "\(latest.relaySent)",
+                detail: "sent",
+                tint: QAITokens.Palette.chipTeal,
+                points: trend.map { Double($0.relaySent) }
+            ),
+            HQRuntimeTrendLane(
+                title: "Replay",
+                value: "\(latest.relayReplay)",
+                detail: "recoveries",
+                tint: QAITokens.Palette.gold.opacity(0.8),
+                points: trend.map { Double($0.relayReplay) }
+            ),
+            HQRuntimeTrendLane(
+                title: "Deps",
+                value: "\(latest.connectedDependencies)/\(max(latest.totalDependencies, 1))",
+                detail: "online",
+                tint: QAITokens.Palette.chipBlue,
+                points: trend.map { Double($0.connectedDependencies) }
+            )
+        ]
+    }
+
     private static func makeCurrencyFormatter(maximumFractionDigits: Int) -> NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -120,6 +179,95 @@ private struct PanelViewState {
         formatter.maximumFractionDigits = maximumFractionDigits
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
+    }
+}
+
+private struct PanelRuntimePulseCard: View {
+    let state: PanelViewState
+
+    var body: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
+                HStack {
+                    Text("Runtime Pulse")
+                        .font(QAITokens.Typography.cardTitle)
+                        .foregroundStyle(QAITokens.Palette.textPrimary)
+                    Spacer()
+                    Text(state.runtimeStatusText)
+                        .font(.system(size: 11, weight: .bold, design: .monospaced))
+                        .foregroundStyle(QAITokens.Palette.textPrimary)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(QAITokens.Palette.chipTeal)
+                        .clipShape(Capsule())
+                }
+
+                LazyVGrid(
+                    columns: [GridItem(.adaptive(minimum: 140, maximum: 240), spacing: QAITokens.Spacing.s)],
+                    alignment: .leading,
+                    spacing: QAITokens.Spacing.s
+                ) {
+                    PanelStatCard(title: "Dependencies", value: state.runtimeDependencyText, tint: QAITokens.Palette.cardElevated)
+                    PanelStatCard(title: "Outbox", value: state.runtimeQueueText, tint: QAITokens.Palette.chipAmber)
+                    PanelStatCard(title: "Audit", value: state.runtimeAuditText, tint: QAITokens.Palette.chipBlue)
+                    PanelStatCard(title: "Hot Topic", value: state.runtimeTopicText, tint: QAITokens.Palette.chipTeal)
+                }
+
+                if !state.runtimeTrendLanes.isEmpty {
+                    LazyVGrid(
+                        columns: [GridItem(.adaptive(minimum: 148, maximum: 240), spacing: QAITokens.Spacing.s)],
+                        alignment: .leading,
+                        spacing: QAITokens.Spacing.s
+                    ) {
+                        ForEach(state.runtimeTrendLanes) { lane in
+                            NavigationLink {
+                                RuntimeTrendDetailView(lane: lane)
+                            } label: {
+                                PanelRuntimeTrendCard(lane: lane)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct PanelRuntimeTrendCard: View {
+    let lane: HQRuntimeTrendLane
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(lane.title)
+                        .font(QAITokens.Typography.caption)
+                        .foregroundStyle(QAITokens.Palette.textSecondary)
+                    Text(lane.value)
+                        .font(QAITokens.Typography.cardTitle)
+                        .foregroundStyle(QAITokens.Palette.textPrimary)
+                }
+
+                Spacer()
+
+                Text(lane.detail)
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundStyle(lane.tint)
+            }
+
+            PanelRuntimeSparkline(values: lane.points)
+                .stroke(lane.tint, style: StrokeStyle(lineWidth: 2.4, lineCap: .round, lineJoin: .round))
+                .frame(height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.white.opacity(0.04))
+                )
+        }
+        .padding(QAITokens.Spacing.m)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(QAITokens.Palette.cardElevated)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }
 
@@ -142,7 +290,11 @@ private struct PanelHeroCard: View {
                         .lineLimit(nil)
                 }
 
-                HStack(spacing: QAITokens.Spacing.s) {
+                LazyVGrid(
+                    columns: [GridItem(.adaptive(minimum: 110), spacing: QAITokens.Spacing.s)],
+                    alignment: .leading,
+                    spacing: QAITokens.Spacing.s
+                ) {
                     StatusPill(title: state.statusText, tint: QAITokens.Palette.gold)
                     StatusPill(title: state.sourceText, tint: QAITokens.Palette.teal)
                     StatusPill(title: state.symbol, tint: QAITokens.Palette.chipBlue)
@@ -153,9 +305,16 @@ private struct PanelHeroCard: View {
                     .foregroundStyle(QAITokens.Palette.textSecondary)
                     .lineLimit(nil)
 
-                HStack(spacing: QAITokens.Spacing.m) {
-                    PrimaryActionButton(title: "Sistem Sagligini Yenile", action: refreshAction)
-                    PrimaryActionButton(title: "Operasyonlara Git", style: .secondary, action: operationsAction)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: QAITokens.Spacing.m) {
+                        PrimaryActionButton(title: "Sistem Sagligini Yenile", action: refreshAction)
+                        PrimaryActionButton(title: "Operasyonlara Git", style: .secondary, action: operationsAction)
+                    }
+
+                    VStack(spacing: QAITokens.Spacing.s) {
+                        PrimaryActionButton(title: "Sistem Sagligini Yenile", action: refreshAction)
+                        PrimaryActionButton(title: "Operasyonlara Git", style: .secondary, action: operationsAction)
+                    }
                 }
             }
         }
@@ -163,7 +322,7 @@ private struct PanelHeroCard: View {
 }
 
 private struct PanelOperationsMenuCard: View {
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: QAITokens.Spacing.s), count: 3)
+    private let columns = [GridItem(.adaptive(minimum: 146, maximum: 220), spacing: QAITokens.Spacing.s)]
 
     var body: some View {
         GlassCard {
@@ -188,6 +347,14 @@ private struct PanelOperationsMenuCard: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("panel-op-intelligence")
+
+                    NavigationLink {
+                        AutonomyStudioView()
+                    } label: {
+                        PanelOperationTile(title: "Autonomy", icon: "command.circle", tint: QAITokens.Palette.gold.opacity(0.22))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("panel-op-autonomy")
 
                     NavigationLink {
                         StrategyLibraryView()
@@ -246,7 +413,11 @@ private struct PanelQuickStatsGrid: View {
     let state: PanelViewState
 
     var body: some View {
-        HStack(spacing: QAITokens.Spacing.s) {
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 148, maximum: 240), spacing: QAITokens.Spacing.s)],
+            alignment: .leading,
+            spacing: QAITokens.Spacing.s
+        ) {
             PanelStatCard(title: "PnL", value: state.pnlText, tint: QAITokens.Palette.chipBlue)
             PanelStatCard(title: "Maruziyet", value: state.exposureText, tint: QAITokens.Palette.chipTeal)
             PanelStatCard(title: "Acik Emir", value: "\(state.activeOrders)", tint: QAITokens.Palette.chipAmber)
@@ -265,25 +436,47 @@ private struct PanelMarketSnapshotCard: View {
                     .font(QAITokens.Typography.cardTitle)
                     .foregroundStyle(QAITokens.Palette.textPrimary)
 
-                HStack(alignment: .firstTextBaseline) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(state.symbol)
-                            .font(QAITokens.Typography.caption)
-                            .foregroundStyle(QAITokens.Palette.textSecondary)
-                        Text(state.lastPriceText)
-                            .font(QAITokens.Typography.statValue)
-                            .foregroundStyle(QAITokens.Palette.textPrimary)
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(state.symbol)
+                                .font(QAITokens.Typography.caption)
+                                .foregroundStyle(QAITokens.Palette.textSecondary)
+                            Text(state.lastPriceText)
+                                .font(QAITokens.Typography.statValue)
+                                .foregroundStyle(QAITokens.Palette.textPrimary)
+                        }
+
+                        Spacer()
+
+                        VStack(alignment: .trailing, spacing: 6) {
+                            Text(state.sourceText)
+                                .font(QAITokens.Typography.caption)
+                                .foregroundStyle(QAITokens.Palette.textSecondary)
+                            Text(state.statusText)
+                                .font(QAITokens.Typography.bodyStrong)
+                                .foregroundStyle(QAITokens.Palette.gold)
+                        }
                     }
 
-                    Spacer()
+                    VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(state.symbol)
+                                .font(QAITokens.Typography.caption)
+                                .foregroundStyle(QAITokens.Palette.textSecondary)
+                            Text(state.lastPriceText)
+                                .font(QAITokens.Typography.statValue)
+                                .foregroundStyle(QAITokens.Palette.textPrimary)
+                        }
 
-                    VStack(alignment: .trailing, spacing: 6) {
-                        Text(state.sourceText)
-                            .font(QAITokens.Typography.caption)
-                            .foregroundStyle(QAITokens.Palette.textSecondary)
-                        Text(state.statusText)
-                            .font(QAITokens.Typography.bodyStrong)
-                            .foregroundStyle(QAITokens.Palette.gold)
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(state.sourceText)
+                                .font(QAITokens.Typography.caption)
+                                .foregroundStyle(QAITokens.Palette.textSecondary)
+                            Text(state.statusText)
+                                .font(QAITokens.Typography.bodyStrong)
+                                .foregroundStyle(QAITokens.Palette.gold)
+                        }
                     }
                 }
 
@@ -371,18 +564,18 @@ private struct PanelOperationTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: QAITokens.Spacing.s) {
             Image(systemName: icon)
-                .font(.system(size: 26, weight: .medium))
+                .font(.system(size: 24, weight: .medium))
                 .foregroundStyle(QAITokens.Palette.textPrimary)
 
             Spacer(minLength: 0)
 
             Text(title)
-                .font(.system(size: 18, weight: .medium, design: .rounded))
+                .font(.system(size: 16, weight: .medium, design: .rounded))
                 .foregroundStyle(QAITokens.Palette.textPrimary)
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
         }
-        .frame(maxWidth: .infinity, minHeight: 132, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 118, alignment: .leading)
         .padding(18)
         .background(tint)
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
@@ -417,6 +610,31 @@ private struct PanelStatCard: View {
     }
 }
 
+private struct PanelRuntimeSparkline: Shape {
+    let values: [Double]
+
+    func path(in rect: CGRect) -> Path {
+        guard values.count > 1 else { return Path() }
+        let minValue = values.min() ?? 0
+        let maxValue = values.max() ?? 1
+        let range = max(maxValue - minValue, 0.001)
+        let stepX = rect.width / CGFloat(max(values.count - 1, 1))
+
+        var path = Path()
+        for (index, value) in values.enumerated() {
+            let x = CGFloat(index) * stepX
+            let normalized = (value - minValue) / range
+            let y = rect.maxY - (CGFloat(normalized) * rect.height)
+            if index == 0 {
+                path.move(to: CGPoint(x: x, y: y))
+            } else {
+                path.addLine(to: CGPoint(x: x, y: y))
+            }
+        }
+        return path
+    }
+}
+
 private struct StatusPill: View {
     let title: String
     let tint: Color
@@ -425,6 +643,8 @@ private struct StatusPill: View {
         Text(title)
             .font(QAITokens.Typography.caption)
             .foregroundStyle(QAITokens.Palette.textPrimary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .background(tint)

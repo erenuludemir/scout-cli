@@ -1,17 +1,24 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "[i] .env gncelleniyor"
+ENV_FILE="${ENV_FILE:-.env}"
+umask 077
+touch "$ENV_FILE"
+chmod 600 "$ENV_FILE"
 
-# ETHERSCAN
-grep -q '^ETHERSCAN_API_KEY=' .env \
-  && sed -i '' -E 's/^ETHERSCAN_API_KEY=.*/ETHERSCAN_API_KEY=REPLACE_WITH_YOUR_KEY/' .env \
-  || echo 'ETHERSCAN_API_KEY=REPLACE_WITH_YOUR_KEY' >> .env
+ensure_placeholder() {
+  local key="$1"
+  local placeholder="$2"
 
-# INFURA + ETH Bilgileri
-grep -q '^INFURA_PROJECT_ID=' .env     || echo 'INFURA_PROJECT_ID=a1308e9977764245b8d7b532a59ac7ee' >> .env
-grep -q '^ETH_SENDER_ADDRESS=' .env    || echo 'ETH_SENDER_ADDRESS=0xda93812D7D1F3D326ef8156D94175238948Da04f' >> .env
-grep -q '^ETH_PRIVATE_KEY=' .env       || echo 'ETH_PRIVATE_KEY=0xd1b9128cb5e34115f061a37348607e877d457cc53cde1825dac65e60427f9' >> .env
-grep -q '^ETH_RECIPIENT_ADDRESS=' .env || echo 'ETH_RECIPIENT_ADDRESS=0xc5C600c86E13e8c475BCEbC981966d47E171A18c' >> .env
+  if ! grep -q "^${key}=" "$ENV_FILE"; then
+    printf '%s=%s\n' "$key" "$placeholder" >> "$ENV_FILE"
+  fi
+}
 
-echo "[] .env baaryla gncellendi."
+ensure_placeholder "ETHERSCAN_API_KEY" "__YOUR_ETHERSCAN_API_KEY__"
+ensure_placeholder "INFURA_PROJECT_ID" "__YOUR_INFURA_PROJECT_ID__"
+ensure_placeholder "ETH_SENDER_ADDRESS" "__YOUR_WALLET_ADDRESS__"
+ensure_placeholder "ETH_PRIVATE_KEY" "__YOUR_PRIVATE_KEY__"
+ensure_placeholder "ETH_RECIPIENT_ADDRESS" "__RECEIVER_WALLET_ADDRESS__"
+
+echo "[OK] Missing Ethereum settings were added to $ENV_FILE as placeholders."

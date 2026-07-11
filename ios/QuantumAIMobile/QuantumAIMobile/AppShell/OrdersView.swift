@@ -8,7 +8,7 @@ public struct OrdersView: View {
 
     public var body: some View {
         ZStack {
-            QAITheme.background.ignoresSafeArea()
+            AppBackground()
 
             if env.bot.activeOrders.isEmpty {
                 VStack(spacing: 20) {

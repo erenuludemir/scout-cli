@@ -25,6 +25,5 @@ create_app = _app_module.create_app
 app = create_app()
 application = app
 
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("HOST_PORT", 5002)))
+    app.run(host="0.0.0.0", port=int(os.getenv("HOST_PORT", "5003")))

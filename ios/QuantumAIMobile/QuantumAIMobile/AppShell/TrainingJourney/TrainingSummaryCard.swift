@@ -32,7 +32,7 @@ struct TrainingSummaryCard: View {
                         value: "\(quizScore)/\(quizTotal)",
                         tint: quizScore == quizTotal ? QAITokens.Palette.chipTeal : QAITokens.Palette.chipAmber
                     )
-                    MetricChipView(title: "Wallet", value: "\(walletCount)", tint: QAITokens.Palette.cardElevated)
+                    MetricChipView(title: "Referans", value: "\(walletCount)", tint: QAITokens.Palette.cardElevated)
                 }
 
                 VStack(spacing: QAITokens.Spacing.s) {

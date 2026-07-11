@@ -1,8 +1,8 @@
 import SwiftUI
 
 public struct PartnerCommandView: View {
+    @EnvironmentObject private var env: AppEnvironment
     @ObservedObject private var branding = PartnerBrandingEngine.shared
-    @State private var hqTotalValue: Double = 52_400_150.0
 
     public init() {}
 
@@ -13,9 +13,12 @@ public struct PartnerCommandView: View {
                     .font(.caption2)
                     .foregroundStyle(QAITheme.textSecondary)
                     .bold()
-                Text("$\(String(format: "%.2f", hqTotalValue))")
+                Text(env.walletPortfolio.totalEquityText)
                     .font(.system(size: 28, weight: .black, design: .monospaced))
                     .foregroundStyle(branding.primaryThemeColor)
+                Text(env.walletPortfolio.dataSourceSummary + " • " + env.walletPortfolio.lastRefreshDescription)
+                    .font(.caption2)
+                    .foregroundStyle(QAITheme.textSecondary)
             }
             .padding()
             .frame(maxWidth: .infinity)
@@ -41,7 +44,7 @@ public struct PartnerCommandView: View {
             HStack {
                 Image(systemName: "lightbulb.fill")
                     .foregroundStyle(QAITheme.accent)
-                Text("AI onerisi: gayrimenkul / nakit orani dengeli.")
+                Text("AI onerisi: \(env.settings.selectedWalletNetworkID.uppercased()) wallet live equity akisi aktif.")
                     .font(.caption)
                 Spacer()
             }

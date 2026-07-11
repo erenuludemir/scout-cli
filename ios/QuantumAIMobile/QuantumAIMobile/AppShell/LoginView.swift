@@ -14,7 +14,7 @@ public struct LoginView: View {
                 .font(.system(size: 60))
                 .foregroundStyle(QAITheme.accent)
 
-            Text("Quantum AI Enterprise")
+            Text("Quantum AI Workspace")
                 .font(.title.bold())
                 .foregroundStyle(QAITheme.textPrimary)
 
@@ -30,7 +30,7 @@ public struct LoginView: View {
             }
             .padding(.horizontal)
 
-            PrimaryButton(title: isLoggingIn ? "Giriş Yapılıyor..." : "Sisteme Gir") {
+            PrimaryButton(title: isLoggingIn ? "Hazırlanıyor..." : "Devam Et") {
                 isLoggingIn = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                     env.settings.isAuthenticated = true
@@ -42,6 +42,6 @@ public struct LoginView: View {
                 .foregroundStyle(QAITheme.accent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(QAITheme.background.ignoresSafeArea())
+        .background(AppBackground())
     }
 }

@@ -11,8 +11,7 @@ private typealias PlatformImage = NSImage
 #endif
 
 public final class SaaSPaymentService: ObservableObject {
-    public let walletAddress = "TQaiSaaS77BursaOperationCenterUSDT"
-    public let monthlyFee: Double = 99.0
+    public let accessLabel = "Free of Charge"
     private static let context = CIContext()
 
     public init() {}
@@ -50,8 +49,8 @@ public struct SaaSInvoiceView: View {
     
     public var body: some View {
         VStack(spacing: 20) {
-            Text("SaaS Aboneliği").font(.title2.bold())
-            
+            Text("Erişim Bilgisi").font(.title2.bold())
+
             if let qr = qrImage {
                 #if canImport(UIKit)
                 Image(uiImage: qr)
@@ -71,9 +70,9 @@ public struct SaaSInvoiceView: View {
             }
             
             VStack(alignment: .leading, spacing: 8) {
-                Text("Tutar: \(String(format: "%.2f", payment.monthlyFee)) USDT").bold()
-                Text("Ağ: TRON (TRC20)").foregroundColor(.gray)
-                Text(payment.walletAddress)
+                Text("Ücret: 0.00").bold()
+                Text("Model: \(payment.accessLabel)").foregroundColor(.gray)
+                Text("Bu App Store sürümünde ayrı bir ödeme veya kripto transferi gerekmez.")
                     .font(.system(.caption, design: .monospaced))
                     .foregroundColor(QAITheme.accent)
                     .multilineTextAlignment(.center)
@@ -82,16 +81,16 @@ public struct SaaSInvoiceView: View {
             .background(Color.white.opacity(0.05))
             .cornerRadius(8)
             
-            PrimaryButton(title: observer.isVerifying ? "Doğrulanıyor..." : "Ödemeyi Onayla") {
+            PrimaryButton(title: observer.isVerifying ? "Hazırlanıyor..." : "Ücretsiz Erişimi Onayla") {
                 confirmPayment()
             }
-            .disabled(observer.isVerifying || env.settings.isAuthenticated)
+            .disabled(observer.isVerifying)
         }
         .padding()
         .background(Color.black.ignoresSafeArea())
         .task {
             if qrImage == nil {
-                qrImage = payment.generateQRCode(from: payment.walletAddress)
+                qrImage = payment.generateQRCode(from: payment.accessLabel)
             }
         }
         .onDisappear {
@@ -101,24 +100,19 @@ public struct SaaSInvoiceView: View {
     }
 
     private func confirmPayment() {
-        guard !observer.isVerifying, !env.settings.isAuthenticated else { return }
+        guard !observer.isVerifying else { return }
 
         verificationTask?.cancel()
         verificationTask = Task {
-            let isVerified = await observer.verifyTRC20Payment(
-                address: payment.walletAddress,
-                amount: payment.monthlyFee
-            )
+            let isVerified = await observer.activateFreeAccess()
 
             guard isVerified, !Task.isCancelled else { return }
 
             await MainActor.run {
-                guard !env.settings.isAuthenticated else { return }
-
                 env.settings.isAuthenticated = true
                 GlobalSinirSistemi.paylasilan.veriPompala(
                     kategori: .sistem,
-                    mesaj: "Lisans Aktif Edildi: TRC20 Onaylandı",
+                    mesaj: "Ucretsiz erisim bu cihazda onaylandi",
                     veri: [:]
                 )
                 dismiss()

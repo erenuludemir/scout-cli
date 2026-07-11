@@ -1,12 +1,14 @@
 {
   "name": "quantumai-dockerized-system",
   "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
+  "description": "JavaScript utilities for the QuantumAI repository",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check": "node --check send-usdt.mjs && node --check core/telemetry/hq_visualizer.js && node --check managerai/static/app.js && node --check web/quantumaimobile.win/public/assets/app.js",
+    "test": "npm run check"
   },
   "keywords": [],
   "author": "",

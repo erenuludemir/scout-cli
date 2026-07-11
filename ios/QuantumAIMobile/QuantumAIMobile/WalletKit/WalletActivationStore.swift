@@ -19,10 +19,10 @@ public enum WalletConnectorProvider: String, CaseIterable, Identifiable, Codable
 
     public var summary: String {
         switch self {
-        case .binance: return "Aktivasyon sonrası borsa doğrulamasını bitir."
-        case .coinbase: return "Wallet açılışını tamamla ve uygulamaya geri dön."
-        case .trust: return "Cüzdanı aç, ağ onayını tamamla, geri dön."
-        case .metamask: return "Mobil cüzdan kurulumunu tamamla ve doğrulamayı bitir."
+        case .binance: return "Binance Spot cüzdanını aç, bakiye görünümünü doğrula ve bu ekrana geri dön."
+        case .coinbase: return "Uygulamayı açıp bağlantı durumunu gözden geçir, sonra geri dön."
+        case .trust: return "Harici onayı tamamlayıp uygulama içi doğrulamaya dön."
+        case .metamask: return "Kurulum yerine yalnızca geri dönüş ve doğrulama yolunu kontrol et."
         }
     }
 

@@ -1,0 +1,5 @@
+services:
+  cadvisor:
+    profiles: ["ops"]
+  autoheal:
+    profiles: ["ops"]

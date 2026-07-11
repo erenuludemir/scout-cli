@@ -94,7 +94,7 @@ public struct SimulationsHubView: View {
             .padding(.top, QAITheme.shellTopPadding)
             .padding(.bottom, QAITheme.dockedBottomPadding)
         }
-        .background(QAITheme.shellGradient.ignoresSafeArea())
+        .background(AppBackground())
         .navigationTitle("Simulation Stack")
         .qaiNavigationTitleDisplayMode(.large)
         .task {
@@ -201,7 +201,7 @@ public struct SimulationVersionDetailView: View {
             .padding(.top, QAITheme.shellTopPadding)
             .padding(.bottom, QAITheme.dockedBottomPadding)
         }
-        .background(QAITheme.shellGradient.ignoresSafeArea())
+        .background(AppBackground())
         .navigationTitle(bundle.version.displayName)
     }
 }

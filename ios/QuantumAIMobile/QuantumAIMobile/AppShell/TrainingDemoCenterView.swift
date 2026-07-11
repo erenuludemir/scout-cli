@@ -11,8 +11,10 @@ import AppKit
 
 @available(iOS 17.0, macOS 14.0, *)
 struct TrainingDemoCenterView: View {
-    @EnvironmentObject private var env: AppEnvironment
     @State private var selectedSection: TrainingCenterSection = .demo
+    @State private var guideDocument: TrainingBundleResource.HTMLDocument?
+    @State private var guideURL: URL?
+    @State private var hasLoadedGuide = false
 
     var body: some View {
         CardView {
@@ -29,6 +31,9 @@ struct TrainingDemoCenterView: View {
                     guideSection
                 }
             }
+        }
+        .task(id: selectedSection) {
+            await loadGuideIfNeeded(for: selectedSection)
         }
     }
 
@@ -87,8 +92,8 @@ struct TrainingDemoCenterView: View {
 
             TrainingScenarioCard(
                 step: "2",
-                title: "Cüzdan ve doğrulama",
-                summary: "Binance, Coinbase Wallet, Trust Wallet veya MetaMask aktivasyonunu başlat; onaydan sonra akış uygulamada devam eder.",
+                title: "Adres ve doğrulama",
+                summary: "Harici referans uygulaması dönüşünü kontrol et; son onay uygulama içinde yerel olarak tamamlanır.",
                 result: "Face ID / parola ile güvenli doğrulama mantığı görünür olur."
             )
 
@@ -108,8 +113,8 @@ struct TrainingDemoCenterView: View {
                 )
 
                 TrainingQuickActionTile(
-                    title: "Wallet Aç",
-                    subtitle: "\(env.walletActivation.verifiedProviders.count) doğrulandı",
+                    title: "Referans Aç",
+                    subtitle: "Adres ve doğrulama",
                     tint: QAITheme.success,
                     destination: WalletView()
                 )
@@ -135,8 +140,8 @@ struct TrainingDemoCenterView: View {
                 title: "Hazırlık",
                 items: [
                     .init(title: "Dashboard durumu görünüyor", detail: "Sembol, mod ve temel durum kartları ekranda okunmalı."),
-                    .init(title: "Wallet adresi okunuyor", detail: "Adres gösterimi ve kopyalama akışı çalışmalı."),
-                    .init(title: "Harici wallet dönüşü anlaşılır", detail: "Doğrulama harici wallet'ta başlasa da işlem uygulamada sürmeli.")
+                    .init(title: "Referans adresi okunuyor", detail: "Adres gösterimi ve kopyalama akışı çalışmalı."),
+                    .init(title: "Harici uygulama dönüşü anlaşılır", detail: "Doğrulama dış uygulamada başlasa da son kontrol uygulama içinde tamamlanmalı.")
                 ]
             )
 
@@ -168,8 +173,7 @@ struct TrainingDemoCenterView: View {
                 message: "Yüklediğin `TrainingV140721.html` dosyası kullanıcı odaklı yeni sürüm olarak uygulama içine alındı. Bu görünüm teknik runbook ve iç süreçleri değil, Test ve Demo akışını gösterir."
             )
 
-            if let document = TrainingBundleResource.trainingHTMLDocument,
-               let url = TrainingBundleResource.trainingHTMLURL {
+            if let document = guideDocument, let url = guideURL {
                 PlatformHTMLFileView(html: document.html, baseURL: document.baseURL)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 760)
@@ -185,7 +189,7 @@ struct TrainingDemoCenterView: View {
                         .background(QAITheme.surfaceMuted)
                         .clipShape(RoundedRectangle(cornerRadius: QAITheme.compactInnerCornerRadius, style: .continuous))
                 }
-            } else {
+            } else if hasLoadedGuide {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("TrainingV140721.html bulunamadı")
                         .font(QAITheme.sectionTitleFont)
@@ -194,8 +198,35 @@ struct TrainingDemoCenterView: View {
                         .font(QAITheme.bodyFont)
                         .foregroundStyle(QAITheme.textSecondary)
                 }
+            } else {
+                HStack(spacing: 10) {
+                    ProgressView()
+                        .tint(QAITheme.accent)
+                    Text("HTML rehber hazırlanıyor...")
+                        .font(QAITheme.bodyFont)
+                        .foregroundStyle(QAITheme.textSecondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
+                .background(QAITheme.surfaceMuted.opacity(0.42))
+                .clipShape(RoundedRectangle(cornerRadius: QAITheme.compactInnerCornerRadius, style: .continuous))
             }
         }
+    }
+
+    @MainActor
+    private func loadGuideIfNeeded(for section: TrainingCenterSection) async {
+        guard section == .guide, !hasLoadedGuide else { return }
+        let loaded = await Task.detached(priority: .utility) {
+            (
+                TrainingBundleResource.trainingHTMLDocument,
+                TrainingBundleResource.trainingHTMLURL
+            )
+        }.value
+
+        guideDocument = loaded.0
+        guideURL = loaded.1
+        hasLoadedGuide = true
     }
 }
 

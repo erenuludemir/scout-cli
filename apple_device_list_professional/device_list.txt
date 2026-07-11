@@ -1,0 +1,24 @@
+Device ID	Device Name	Platform
+00008122-00156841226A001C	iPhone_00008122_00156841226A001C	iOS
+
+CİHAZ BİLGİLERİ
+Mobil Cihaz UDID: 00008122-00156841226A001C
+Mobil Platform: iOS
+Yükleme İçin Önerilen Cihaz Adı: iPhone_00008122_00156841226A001C
+
+GELİŞTİRİCİ / EKOSİSTEM BİLGİLERİ
+Development Team: YH698TG69K
+Bundle ID: com.erenuludemir.quantumaimobile
+
+MAC GELİŞTİRME ORTAMI
+Model Adı: MacBook Air
+Model Tanıtıcısı: Mac15,13
+Model Numarası: MRYV3TU/A
+Çip: Apple M3
+Toplam Çekirdek Sayısı: 8 (4 Performans, 4 Verimlilik)
+Bellek: 8 GB
+Sistem Firmware Sürümü: 13822.81.10
+İşletim Sistemi Yükleyicisi Sürümü: 13822.81.10
+Seri Numarası (sistem): DDH67M0GTK
+Donanım UUID’si: 6BEC6EC1-19B5-52EA-BCFD-804240424610
+Etkinleştirme Kilidi Durumu: Etkin

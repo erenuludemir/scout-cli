@@ -5,13 +5,27 @@ description = "QuantumAI microservices (USDT, Etherscan integration, gateway)"
 authors = [{name = "QuantumAI", email = "devnull@example.com"}]
 requires-python = ">=3.11"
 dependencies = [
-	"Flask==2.2.5",
+	"Flask==2.3.3",
+	"PyYAML==6.0.2",
+	"Werkzeug==2.3.8",
 	"requests>=2.31.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-	"pytest>=8.2",
+	"fastapi==0.116.1",
+	"httpx==0.28.1",
+	"joblib==1.4.2",
+	"numpy==2.1.1",
+	"pandas==2.2.3",
+	"pyarrow>=17,<24",
+	"python-dotenv==1.0.1",
+	"redis==5.0.7",
+	"ruff==0.6.9",
+	"scikit-learn==1.5.2",
+	"ta==0.11.0",
+	"web3==6.20.3",
+	"pytest>=8.3,<10",
 	"pytest-cov>=5.0",
 ]
 
@@ -36,4 +50,3 @@ extend-exclude = [".venv", "_wheels"]
 [tool.ruff.lint]
 select = ["E", "F"]
 ignore = ["E501"]
-

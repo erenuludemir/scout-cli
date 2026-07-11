@@ -9,9 +9,13 @@
 /* Begin PBXBuildFile section */
 		4F2A49B50463903A5E95FB2E /* QuantumAIMobileHostApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15C9C6173F1C4A4B0B76CB8 /* QuantumAIMobileHostApp.swift */; };
 		7727B5E28B0E16806F033DEF /* QuantumAIMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 785E71437F5011F039A7CBE1 /* QuantumAIMobile */; };
+		AD82F59DF57C537740295404 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3592BD5261A62CC78B863645 /* LaunchScreen.storyboard */; };
+		D7B4B7C7AFC8540C8AF1DF82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5767B29275B487A1953C4CDE /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1D5BAB0991B2D57BA19C4D01 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		5767B29275B487A1953C4CDE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7A066BFECE69D5F74AE93EEF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A15C9C6173F1C4A4B0B76CB8 /* QuantumAIMobileHostApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantumAIMobileHostApp.swift; sourceTree = "<group>"; };
 		AB29AFA97F063BF9B1E8E6B1 /* QuantumAIMobileHost.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = QuantumAIMobileHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,8 +45,10 @@
 		B5894A1BE1F062F9A5112EB7 /* QuantumAIMobileAppHost */ = {
 			isa = PBXGroup;
 			children = (
+				5767B29275B487A1953C4CDE /* Assets.xcassets */,
 				7A066BFECE69D5F74AE93EEF /* Info.plist */,
 				A15C9C6173F1C4A4B0B76CB8 /* QuantumAIMobileHostApp.swift */,
+				3592BD5261A62CC78B863645 /* LaunchScreen.storyboard */,
 			);
 			path = QuantumAIMobileAppHost;
 			sourceTree = "<group>";
@@ -72,6 +78,7 @@
 			buildConfigurationList = 10C9AA7E21F992FB6D10F75A /* Build configuration list for PBXNativeTarget "QuantumAIMobileHost" */;
 			buildPhases = (
 				1CAA6696F20286A8B95889A5 /* Sources */,
+				652891EC0438EC0F93383B5C /* Resources */,
 				68AE677403F9D2A9FDD8EB28 /* Frameworks */,
 			);
 			buildRules = (
@@ -123,6 +130,18 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		652891EC0438EC0F93383B5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D7B4B7C7AFC8540C8AF1DF82 /* Assets.xcassets in Resources */,
+				AD82F59DF57C537740295404 /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1CAA6696F20286A8B95889A5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -134,11 +153,24 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		3592BD5261A62CC78B863645 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1D5BAB0991B2D57BA19C4D01 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		1ADAB745634A1C3A32DECBE3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -194,7 +226,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.erenuludemir.quantumaimobile;
+				PRODUCT_BUNDLE_IDENTIFIER = com.erenuludemir.quantumaimobile.host;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -223,6 +255,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -271,7 +305,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.erenuludemir.quantumaimobile;
+				PRODUCT_BUNDLE_IDENTIFIER = com.erenuludemir.quantumaimobile.host;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

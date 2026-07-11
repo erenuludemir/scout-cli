@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
 # Plan B: using alternate USDT contract address
 set -euo pipefail
-done
 export LANG=C LC_ALL=C
 APP_DIR="${APP_DIR:-$HOME/QuantumAI-Dockerized-System}"
 IMAGE="${IMAGE:-erenuludemir/gli-app:fixed}"
 CTR="${CTR:-gli-container}"
 HOST_PORT="${HOST_PORT:-5002}"
 USE_COLIMA_SOCKET=0
-done
-if [[ -z "$APP_DIR" || -z "$IMAGE" || -z "$CTR
 brew_install() { command -v brew >/dev/null 2>&1 && brew list "$1" >/dev/null 2>&1 || brew install "$1" || true; }
 wait_for_docker() { for _ in $(seq 1 90); do docker info >/dev/null 2>&1 && return 0; sleep 2; done; return 1; }
-done
-if [[ "$(uname -s)" != "Darwin" ]]; then echo "[ERR] S
 mkdir -p "$APP_DIR"
 cd "$APP_DIR"
 
@@ -21,7 +16,6 @@ if ! command -v curl >/dev/null 2>&1; then echo "[ERR] curl gerekli"; exit 1; fi
 command -v jq >/dev/null 2>&1 || brew_install jq
 command -v tmux >/dev/null 2>&1 || brew_install tmux
 command -v colima >/dev/null 2>&1 || true
-done
 if ! command -v docker >/dev/null 2>&1; then echo "[ERR] docker yok"; exit 1; fi
 
 if ! docker info >/dev/null 2>&1; then
@@ -46,7 +40,6 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 docker info >/dev/null || { echo "[ERR] Docker daemon erişilemiyor"; exit 1; }
-done
 docker rm -f quantumai-usdt watchtower autoheal "$CTR" >/dev/null 2>&1 || true
 load_dotenv() { :; }
 if [[ ! -f ".env" ]]; then
@@ -70,11 +63,10 @@ ETH_SENDER_ADDRESS="$(grep -E '^ETH_SENDER_ADDRESS=' .env | cut -d= -f2- || true
 ETH_PRIVATE_KEY="$(grep -E '^ETH_PRIVATE_KEY=' .env | cut -d= -f2- || true)"
 if [[ -z "$INFURA_PROJECT_ID" || "$INFURA_PROJECT_ID" == __REQUIRED_INFURA_ID__ ]] || \
   [[ -z "$ETH_SENDER_ADDRESS" || "$ETH_SENDER_ADDRESS" == __YOUR_WALLET_ADDRESS__ ]] || \
-  [[ -z "$ETH_PRIVATE_KEY" || "$ETH_PRIVATE_KEY" == __YOUR_PRIVATE_KEY__(never commit real key) ]]; then
+  [[ -z "$ETH_PRIVATE_KEY" || "$ETH_PRIVATE_KEY" == "__YOUR_PRIVATE_KEY__(never commit real key)" ]]; then
   echo "[ERR] .env zorunlu alanlar boş. Doldur ve tekrar çalıştır."
   exit 1
 fi
-done
 cat > app.py <<"PY"
 from flask import Flask, request, jsonify
 from web3 import Web3
@@ -206,7 +198,6 @@ def balance():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5002)
 PY
-done
 cat > requirements.txt <<"REQ"
 Flask==2.2.5
 Werkzeug==2.2.3
@@ -230,7 +221,6 @@ if [[ ! -f "requirements.lock" ]]; then
     cp requirements.txt requirements.lock
   fi
 fi
-done
 cat > Dockerfile <<"DF"
 FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
@@ -252,13 +242,11 @@ Dockerfile
 docker-compose.yml
 ENV.bak
 IGN
-done
 docker build -t "$IMAGE" .
-done
 docker rm -f "$CTR" >/dev/null 2>&1 || true
 docker run -d --name "$CTR" \
   --env-file "$APP_DIR/.env" \
-  -e GLI_DRY_RUN=0 \
+  -e GLI_DRY_RUN="${GLI_DRY_RUN:-1}" \
   -p "${HOST_PORT}:5002" \
   --restart=unless-stopped \
   --health-cmd='curl -sf http://127.0.0.1:5002/ || exit 1' \
@@ -272,7 +260,6 @@ for _ in $(seq 1 60); do
 done
 
 docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Image}}'
-done
 MAIN="http://127.0.0.1:${HOST_PORT}"
 ADDR_CHECK="${ETH_RECIPIENT_ADDRESS:-0xc5C600c86E13e8c475BCEbC981966d47E171A18c}"
 AMOUNT_BIG=150000000    # 150 USDT (6-dec)
@@ -284,13 +271,12 @@ echo "== / =="
 curl -fsS "$MAIN/" | eval "$JF" || true; echo
 echo "== /estimate (150 USDT) =="
 curl -fsS "$MAIN/estimate" -H 'Content-Type: application/json' -d "{\"recipient\":\"$ADDR_CHECK\",\"amount\":$AMOUNT_BIG}" | eval "$JF" || true; echo
-echo "== /transfer (0.006 USDT) =="
+echo "== /transfer dry-run (0.006 USDT) =="
 curl -fsS "$MAIN/transfer" -H 'Content-Type: application/json' -d "{\"recipient\":\"$ADDR_CHECK\",\"amount\":$AMOUNT_SMALL}" | eval "$JF" || true; echo
 echo "== /balance (SENDER) =="
 curl -fsS -X POST "$MAIN/balance" -H 'Content-Type: application/json' -d '{}' | eval "$JF" || true; echo
 echo "== /balance ($ADDR_CHECK) =="
 curl -fsS -X POST "$MAIN/balance" -H 'Content-Type: application/json' -d "{\"address\":\"$ADDR_CHECK\"}" | eval "$JF" || true; echo
-done
 mkdir -p "$APP_DIR/bin" "$HOME/Library/LaunchAgents"
 
 cat > "$APP_DIR/bin/gli-ensure.sh" <<"ENS"
@@ -304,7 +290,7 @@ if ! docker ps --format '{{.Names}}' | grep -qx "$CTR"; then
   docker rm -f "$CTR" >/dev/null 2>&1 || true
   docker run -d --name "$CTR" \
     --env-file "$APP_DIR/.env" \
-    -e GLI_DRY_RUN="${GLI_DRY_RUN:-0}" \
+    -e GLI_DRY_RUN="${GLI_DRY_RUN:-1}" \
     -p "${HOST_PORT}:5002" \
     --restart=unless-stopped \
     --health-cmd='curl -sf http://127.0.0.1:5002/ || exit 1' \
@@ -328,7 +314,6 @@ cat > "$HOME/Library/LaunchAgents/com.${USER}.gli.ensure.plist" <<PL
 PL
 launchctl unload "$HOME/Library/LaunchAgents/com.${USER}.gli.ensure.plist" >/dev/null 2>&1 || true
 launchctl load "$HOME/Library/LaunchAgents/com.${USER}.gli.ensure.plist" >/dev/null 2>&1 || true
-done
 if command -v tmux >/dev/null 2>&1; then
   SESSION="gli-stack"
   if ! tmux has-session -t "$SESSION" 2>/dev/null; then
@@ -338,5 +323,4 @@ if command -v tmux >/dev/null 2>&1; then
     tmux send-keys -t "$SESSION:watch" 'watch -n 5 "docker ps --format \\"table {{.Names}}\\t{{.Status}}\\t{{.Image}}\\"; echo; curl -fsS '$MAIN'/ || true"' C-m
   fi
 fi
-done
 exit 0

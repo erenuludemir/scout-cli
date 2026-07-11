@@ -19,8 +19,7 @@ let package = Package(
                 "DesignSystem/PerformanceChart.swift",
                 "StorageKit/AuditReportGenerator.swift",
                 "StorageKit/IntegrityChecker.swift",
-                "SyncKit/SyncClient.legacy.disabled",
-                "SyncKit/SyncClient.legacy.disabled.SyncKit"
+                "SyncKit/SyncClient.legacy.disabled"
             ],
             sources: [
                 "AlertKit",

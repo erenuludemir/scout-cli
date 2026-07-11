@@ -238,3 +238,7 @@ docker compose -f "$COMPOSE" pull || true
 docker compose -f "$COMPOSE" build || true
 docker compose -f "$COMPOSE" up -d
 docker compose -f "$COMPOSE" ps
+BASH
+
+chmod +x "$APP_DIR/tools/fix-start.sh"
+echo "[OK] $APP_DIR/tools/fix-start.sh hazır."

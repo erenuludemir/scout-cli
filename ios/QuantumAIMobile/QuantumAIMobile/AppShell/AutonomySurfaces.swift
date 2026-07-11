@@ -104,6 +104,7 @@ public struct CitadelStatusView: View {
 public struct NeuralCommandView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var telepathy = TelepathyGateway.shared
+    @ObservedObject private var autonomy = AutonomyControlCenter.shared
     private let showsBackButton: Bool
 
     public init(showsBackButton: Bool = false) {
@@ -126,7 +127,7 @@ public struct NeuralCommandView: View {
                                 Text("Neural command rail")
                                     .font(QAITokens.Typography.cardTitle)
                                     .foregroundStyle(QAITokens.Palette.textPrimary)
-                                Text("Gercek BCI degil; komut akislarini dusuk yuke sahip bir karar rayinda ozetler.")
+                                Text("BCI decoder, niyet cozumleme ve dusunce-aksiyon yonlendirme durumu bu yuzeyde tek ekranda izlenir.")
                                     .font(QAITokens.Typography.caption)
                                     .foregroundStyle(QAITokens.Palette.textSecondary)
                                     .lineLimit(nil)
@@ -138,6 +139,25 @@ public struct NeuralCommandView: View {
                             AutonomyStatTile(title: "Intent", value: telepathy.lastIntentCode, tint: QAITokens.Palette.chipTeal)
                             AutonomyStatTile(title: "Latency", value: String(format: "%.3f ms", telepathy.lastLatencyMs), tint: QAITokens.Palette.chipAmber)
                         }
+                    }
+                }
+
+                GlassCard {
+                    VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
+                        Text("BCI Decoder / SLO")
+                            .font(QAITokens.Typography.cardTitle)
+                            .foregroundStyle(QAITokens.Palette.textPrimary)
+
+                        HStack(spacing: QAITokens.Spacing.s) {
+                            AutonomyStatTile(title: "Decoder", value: autonomy.module(step: 4)?.status ?? "LEARNING", tint: QAITokens.Palette.chipBlue)
+                            AutonomyStatTile(title: "Effective", value: AutonomyControlCenter.percentText(autonomy.reliability.effectiveSuccessRate), tint: QAITokens.Palette.chipTeal)
+                            AutonomyStatTile(title: "Target", value: AutonomyControlCenter.percentText(autonomy.reliability.targetEffectiveSuccessRate), tint: QAITokens.Palette.chipAmber)
+                        }
+
+                        Text(autonomy.module(step: 4)?.detail ?? "Niyet çözümü bekleniyor.")
+                            .font(QAITokens.Typography.body)
+                            .foregroundStyle(QAITokens.Palette.textSecondary)
+                            .lineLimit(nil)
                     }
                 }
 
@@ -182,6 +202,7 @@ public struct EternityView: View {
     @ObservedObject private var twin = CognitiveTwinRegistry.shared
     @ObservedObject private var citadel = BarakfakihCitadel.shared
     @ObservedObject private var telepathy = TelepathyGateway.shared
+    @ObservedObject private var autonomy = AutonomyControlCenter.shared
     private let showsBackButton: Bool
 
     public init(showsBackButton: Bool = false) {
@@ -191,11 +212,11 @@ public struct EternityView: View {
     public var body: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(spacing: QAITokens.Spacing.l) {
-                ScreenHeader(title: "Eternity Relay", showsBackButton: showsBackButton, onBack: { dismiss() })
+                ScreenHeader(title: "Dashboard ETERNITY", showsBackButton: showsBackButton, onBack: { dismiss() })
 
                 GlassCard {
                     VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
-                        Text("Future-readiness composite")
+                        Text("Geleceğin Gözü")
                             .font(QAITokens.Typography.cardTitle)
                             .foregroundStyle(QAITokens.Palette.textPrimary)
 
@@ -205,10 +226,44 @@ public struct EternityView: View {
                             AutonomyStatTile(title: "Neural", value: "%\(Int(telepathy.neuralSyncPhase * 100))", tint: QAITokens.Palette.chipTeal)
                         }
 
-                        Text("Bu yuzey gercek dunyada telepati veya kimlik dogrulama yapmaz; quantum ops, komut rayi ve fiziksel anchor telemetrisinin kontrollu ozetidir.")
+                        Text("Bu yuzey canlı wallet telemetrisi, egemen kale durumu ve nöral komut hattını aynı SLO hedefi altında izler.")
                             .font(QAITokens.Typography.body)
                             .foregroundStyle(QAITokens.Palette.textSecondary)
                             .lineLimit(nil)
+                    }
+                }
+
+                GlassCard {
+                    VStack(alignment: .leading, spacing: QAITokens.Spacing.m) {
+                        Text("99.95 SLO Yolu")
+                            .font(QAITokens.Typography.cardTitle)
+                            .foregroundStyle(QAITokens.Palette.textPrimary)
+
+                        HStack(spacing: QAITokens.Spacing.s) {
+                            AutonomyStatTile(title: "Base", value: AutonomyControlCenter.percentText(autonomy.reliability.baseSuccessRate), tint: QAITokens.Palette.chipBlue)
+                            AutonomyStatTile(title: "Recovery", value: AutonomyControlCenter.percentText(autonomy.reliability.recoveryRate), tint: QAITokens.Palette.chipAmber)
+                            AutonomyStatTile(title: "Effective", value: AutonomyControlCenter.percentText(autonomy.reliability.effectiveSuccessRate), tint: QAITokens.Palette.chipTeal)
+                        }
+
+                        ForEach(autonomy.modules) { module in
+                            HStack(alignment: .top, spacing: QAITokens.Spacing.s) {
+                                Text("\(module.step).")
+                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                    .foregroundStyle(QAITokens.Palette.gold)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(module.title)
+                                        .font(QAITokens.Typography.bodyStrong)
+                                        .foregroundStyle(QAITokens.Palette.textPrimary)
+                                    Text(module.status + " • " + module.stack)
+                                        .font(QAITokens.Typography.caption)
+                                        .foregroundStyle(QAITokens.Palette.textSecondary)
+                                }
+                                Spacer()
+                            }
+                            .padding(QAITokens.Spacing.s)
+                            .background(Color.white.opacity(0.04))
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        }
                     }
                 }
             }

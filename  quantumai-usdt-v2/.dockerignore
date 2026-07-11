@@ -1,6 +1,0 @@
-.git
-.venv
-node_modules
-tmp
-logs
-__pycache__

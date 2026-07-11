@@ -4,6 +4,8 @@
     "compose.master.yml",
     "compose.override.yml"
   ],
-  "docker.context": "colima"
+  "docker.context": "colima",
+  "git.ignoreLimitWarning": true,
+  "python-envs.defaultEnvManager": "ms-python.python:system"
 }
 

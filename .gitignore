@@ -1,15 +1,17 @@
 
 # ===== Secrets & Environment (CRITICAL - never commit) =====
 .env
-.env.secrets
-.env.local
-.env.runtime
-.env.export
+.env.*
+!.env.example
+!.env.*.example
+!**/.env.example
+!env.example
+!env.template
 .env.backup*
 .env.bak*
 .env.*.bak
-.env.auto
 .venv-safe.env
+*.keys.only
 
 # ===== Environment & Shell Config =====
 .envrc
@@ -17,11 +19,10 @@
 .envrc.bak*
 
 # ===== Virtual Environments =====
-.venv/
-.venv-host/
-venv/
-ENV/
-env/
+.venv*/
+venv*/
+ENV*/
+env*/
 
 # ===== Python =====
 __pycache__/
@@ -33,6 +34,8 @@ dist/
 build/
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+.coverage
 
 # ===== Logs & Runtime =====
 *.log
@@ -42,15 +45,26 @@ _backups/
 _runtime_backups/
 *.txt.save
 nohup.out
+*.pid
 
 # ===== Docker & Compose Backups =====
 compose.*.bak.*
 compose.*.broken*
 docker-compose.*.bak.*
 docker-compose.*.broken*
+*.bak
+*.bak.*
+*.backup
+*.backup.*
+.backup*/
 
 # ===== IDE & Editor =====
-.vscode/
+.git/
+.vscode/*
+!.vscode/cspell.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
 .idea/
 *.swp
 *.swo
@@ -61,6 +75,13 @@ docker-compose.*.broken*
 .early.coverage
 coverage/
 htmlcov/
+*DerivedData*/
+.build*/
+.swiftpm/
+xcuserdata/
+*.xcarchive/
+*.dSYM/
+.playwright-cli/
 
 # ===== Docker & Container Data =====
 pgdata/
@@ -69,15 +90,21 @@ db/
 
 # ===== Node & Package Management =====
 node_modules/
-package-lock.json
-.npm
+.npm/
 
 # ===== Runtime State (volatile) =====
 _state/
-_reports/
+_reports/*
+!_reports/managerai/
+!_reports/managerai/finalization_20260711T045831Z.md
+!_reports/repository/
+!_reports/repository/*.md
 cache/
 tmp/
 .runmode
+quantumai_boot.db
+backend/qai_runtime/data/*.db
+backend/qai_runtime/data/*.pid
 
 # ===== Wheel & Binary Files =====
 _wheels/
@@ -88,7 +115,5 @@ history_*.json
 response_*.json
 terminal-out.txt
 docker_logs.txt.save
+Developer ID Application*.cer
 # ===== QuantumAIMobile local package artifacts =====
-ios/QuantumAIMobile/.build/
-ios/QuantumAIMobile/.swiftpm/
-ios/QuantumAIMobile/QuantumAIMobileHost.xcodeproj/project.xcworkspace/xcuserdata/

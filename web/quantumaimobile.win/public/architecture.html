@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="pageTitleArchitecture">QuantumAI Mobile Architecture</title>
+  <meta name="description" content="QuantumAI Mobile architecture, runtime spine, observability, queues, and control domains." data-i18n-meta="metaDescriptionArchitecture">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b1220'/%3E%3Cpath d='M20 18h24v24H34l8 8h-9l-8-8h-5V18zm8 8v8h8v-8h-8z' fill='%232dd4bf'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <span class="brand-kicker" data-i18n="architectureBrandKicker">Architecture</span>
+        <span class="brand-title" data-i18n="architectureBrandTitle">Operational backbone</span>
+      </div>
+      <div class="nav-wrap">
+        <nav class="nav">
+          <a data-nav href="index.html" data-i18n="navOverview">Overview</a>
+          <a data-nav href="architecture.html" data-i18n="navArchitecture">Architecture</a>
+          <a data-nav href="runtime.html" data-i18n="navRuntime">Runtime</a>
+          <a data-nav href="mobile.html" data-i18n="navMobile">Mobile</a>
+          <a data-nav href="roadmap.html" data-i18n="navRoadmap">Roadmap</a>
+        </nav>
+        <div class="lang-switch" aria-label="Language selector">
+          <button type="button" class="lang-button" data-lang="en">EN</button>
+          <button type="button" class="lang-button" data-lang="tr">TR</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow" data-i18n="architectureHeroEyebrow">System map</div>
+      <h1 data-i18n="architectureHeroTitle">One mobile surface, one runtime spine, multiple controlled lanes.</h1>
+      <p class="lead" data-i18n="architectureHeroLead">
+        The current architecture is organized around an idempotent API entrypoint,
+        queue-backed relay, audited storage, and a device-first control surface.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="two-col">
+        <div class="col-6 card">
+          <h2 data-i18n="architectureCoreTitle">Core topology</h2>
+          <ul class="list">
+            <li data-i18n="architectureCore1">SwiftUI front end for Panel, Markets, Bots, and Settings surfaces.</li>
+            <li data-i18n="architectureCore2">FastAPI runtime for health, ready, outbox admin, and runbook APIs.</li>
+            <li data-i18n="architectureCore3">Redis and Kafka for relay, retry, and asynchronous delivery paths.</li>
+            <li data-i18n="architectureCore4">Postgres for durable order, outbox, and audit persistence.</li>
+            <li data-i18n="architectureCore5">Prometheus and Grafana for metrics, trend lanes, and runtime dashboards.</li>
+          </ul>
+        </div>
+        <div class="col-6 card">
+          <h2 data-i18n="architectureDomainsTitle">Primary control domains</h2>
+          <ul class="list">
+            <li data-i18n="architectureDomains1">TrainingJourney for onboarding, prerequisites, and secure capability checks.</li>
+            <li data-i18n="architectureDomains2">MarketBridge for snapshot, bridge, and guide orchestration.</li>
+            <li data-i18n="architectureDomains3">Panel and HQ Admin for runtime pulse, outbox pressure, and replay controls.</li>
+            <li data-i18n="architectureDomains4">TradeView for DCA, grid, copy-trade rehearsal, and outbox clearing.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer" data-i18n="footerText">
+    Static package prepared for Cloudflare Pages and custom domain binding.
+  </footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

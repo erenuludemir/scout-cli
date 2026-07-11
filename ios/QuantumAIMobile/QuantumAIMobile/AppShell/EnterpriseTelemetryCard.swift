@@ -13,7 +13,7 @@ public struct EnterpriseTelemetryCard: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("BURSA HQ ENTERPRISE")
+                    Text("BURSA HQ WORKSPACE")
                         .font(.system(size: 12, weight: .black))
                         .tracking(1.6)
                     Text("Neural, sync ve transfer telemetrisi")

@@ -1,0 +1,161 @@
+services:
+  qai-postgres:
+    image: postgres:16.8-alpine
+    container_name: qai-postgres
+    environment:
+      POSTGRES_DB: qai
+      POSTGRES_USER: qaiuser
+      POSTGRES_PASSWORD: qaipass
+    volumes:
+      - qai-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qaiuser -d qai"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  qai-redis:
+    image: redis:7.4.2-alpine
+    container_name: qai-redis
+    volumes:
+      - qai-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  qai-redpanda:
+    image: redpandadata/redpanda:latest
+    container_name: qai-redpanda
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp
+      - "1"
+      - --memory
+      - 1G
+      - --reserve-memory
+      - 0M
+      - --check=false
+      - --node-id
+      - "0"
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://qai-redpanda:9092
+      - --pandaproxy-addr
+      - 0.0.0.0:8082
+      - --advertise-pandaproxy-addr
+      - qai-redpanda:8082
+      - --set
+      - redpanda.auto_create_topics_enabled=true
+    ports:
+      - "9092:9092"
+      - "9644:9644"
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q Healthy"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 25s
+
+  qai-runtime-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qai-runtime-api
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8787"]
+    environment:
+      QAI_DB_PATH: /app/data/runtime.db
+      QAI_POSTGRES_DSN: postgresql://qaiuser:qaipass@qai-postgres:5432/qai
+      QAI_REDIS_URL: redis://qai-redis:6379/0
+      QAI_KAFKA_BOOTSTRAP_SERVERS: qai-redpanda:9092
+      QAI_REQUIRE_POSTGRES: "1"
+      QAI_REQUIRE_REDIS: "1"
+      QAI_REQUIRE_KAFKA: "1"
+      QAI_ENABLE_EMBEDDED_RELAY: "0"
+      QAI_RELAY_POLL_INTERVAL: "2"
+      QAI_RELAY_BATCH_SIZE: "50"
+      QAI_RELAY_RETRY_DELAY: "5"
+      QAI_RELAY_MAX_ATTEMPTS: "3"
+    ports:
+      - "8787:8787"
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      qai-postgres:
+        condition: service_healthy
+      qai-redis:
+        condition: service_healthy
+      qai-redpanda:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8787/health', timeout=3).read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  qai-runtime-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qai-runtime-worker
+    command: ["python", "-m", "app.worker"]
+    environment:
+      QAI_DB_PATH: /app/data/runtime.db
+      QAI_POSTGRES_DSN: postgresql://qaiuser:qaipass@qai-postgres:5432/qai
+      QAI_REDIS_URL: redis://qai-redis:6379/0
+      QAI_KAFKA_BOOTSTRAP_SERVERS: qai-redpanda:9092
+      QAI_REQUIRE_POSTGRES: "1"
+      QAI_REQUIRE_REDIS: "1"
+      QAI_REQUIRE_KAFKA: "1"
+      QAI_ENABLE_EMBEDDED_RELAY: "0"
+      QAI_RELAY_POLL_INTERVAL: "2"
+      QAI_RELAY_BATCH_SIZE: "50"
+      QAI_RELAY_RETRY_DELAY: "5"
+      QAI_RELAY_MAX_ATTEMPTS: "3"
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      qai-runtime-api:
+        condition: service_healthy
+
+  qai-prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: qai-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - qai-prometheus-data:/prometheus
+    depends_on:
+      qai-runtime-api:
+        condition: service_healthy
+
+  qai-grafana:
+    image: grafana/grafana:11.1.4
+    container_name: qai-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - qai-grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      qai-prometheus:
+        condition: service_started
+
+volumes:
+  qai-postgres-data:
+  qai-redis-data:
+  qai-prometheus-data:
+  qai-grafana-data:

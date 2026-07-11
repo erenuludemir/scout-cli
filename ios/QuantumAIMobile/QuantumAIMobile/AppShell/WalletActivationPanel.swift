@@ -19,11 +19,11 @@ public struct WalletActivationPanel: View {
     let subtitle: String
     let onVerified: ((WalletConnectorProvider) -> Void)?
 
-    @State private var statusMessage = "Aktivasyon sonrası doğrulama burada tamamlanır ve işlem akışı uygulama içinde sürer."
+    @State private var statusMessage = "Harici uygulama dönüşünden sonra yerel doğrulama bu ekranda tamamlanır."
 
     public init(
-        headline: String = "Harici Wallet Aktivasyonu",
-        subtitle: String = "Binance, Coinbase Wallet, Trust Wallet ve MetaMask için aktivasyon, doğrulama ve geri dönüş akışını tek yerden yönet.",
+        headline: String = "Harici Referans Bağlantıları",
+        subtitle: String = "Binance, Coinbase Wallet, Trust Wallet ve MetaMask geri dönüş akışlarını kontrol et; son onay uygulama içinde yerel olarak kalsın.",
         onVerified: ((WalletConnectorProvider) -> Void)? = nil
     ) {
         self.headline = headline
@@ -73,25 +73,25 @@ public struct WalletActivationPanel: View {
         }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active, let provider = pendingVerificationProvider else { return }
-            statusMessage = "\(provider.title) aktivasyonundan QuantumAI'ya geri dönüldü. Doğrulamayı burada tamamlayıp akışa devam et."
+            statusMessage = "\(provider.title) bağlantısından QuantumAI'ya geri dönüldü. Yerel doğrulamayı burada tamamlayıp devam et."
         }
     }
 
     private func activate(_ provider: WalletConnectorProvider) {
         env.walletActivation.markActivationStarted(for: provider)
         openURL(provider.activationURL)
-        statusMessage = "\(provider.title) açıldı. Dış doğrulamayı bitirip uygulamaya geri dön, işlem burada devam etsin."
+        statusMessage = "\(provider.title) açıldı. Harici kontrolü bitirip uygulamaya geri dön."
     }
 
     private func verify(_ provider: WalletConnectorProvider) async {
         do {
             statusMessage = "\(provider.title) için Face ID / cihaz parolası doğrulaması bekleniyor..."
             try await SecurityGate.verifyAction(
-                reason: "\(provider.title) entegrasyonunu doğrulamak için Face ID, Touch ID veya cihaz parolasını kullanın."
+                reason: "\(provider.title) geri dönüşünü doğrulamak için Face ID, Touch ID veya cihaz parolasını kullanın."
             )
             env.walletActivation.markVerified(for: provider)
             onVerified?(provider)
-            statusMessage = "\(provider.title) doğrulandı. Sonraki imza ve işlem akışı artık uygulama içinden devam edecek."
+            statusMessage = "\(provider.title) doğrulandı. Bu bağlantı artık yalnızca referans ve eğitim amaçlı işaretlendi."
         } catch {
             statusMessage = "Doğrulama tamamlanmadı: \(error.localizedDescription)"
         }
@@ -99,7 +99,7 @@ public struct WalletActivationPanel: View {
 
     private func reset(_ provider: WalletConnectorProvider) {
         env.walletActivation.reset(provider)
-        statusMessage = "\(provider.title) aktivasyon durumu sıfırlandı."
+        statusMessage = "\(provider.title) bağlantı durumu sıfırlandı."
     }
 
     private var pendingVerificationProvider: WalletConnectorProvider? {
@@ -147,12 +147,12 @@ private struct WalletConnectorRow: View {
 
             HStack(spacing: QAITokens.Spacing.s) {
                 ActivationButton(
-                    title: "Aktive Et",
+                    title: "Bağlantıyı Aç",
                     tint: QAITokens.Palette.chipBlue,
                     action: onActivate
                 )
                 ActivationButton(
-                    title: status == .verified ? "Doğrulandı" : "Doğrula",
+                    title: status == .verified ? "Onaylandı" : "Yerelde Onayla",
                     tint: QAITokens.Palette.teal,
                     action: onVerify
                 )
@@ -179,9 +179,9 @@ private struct WalletConnectorRow: View {
         case .idle:
             return "Bekliyor"
         case .activationStarted:
-            return "Aktivasyon Açıldı"
+            return "Bağlantı Açıldı"
         case .verified:
-            return "Doğrulandı"
+            return "Onaylandı"
         }
     }
 

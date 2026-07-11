@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="pageTitleIndex">QuantumAI Mobile</title>
+  <meta name="description" content="QuantumAI Mobile control surface, runtime stack, physical-device validation lane, and deployment-ready architecture." data-i18n-meta="metaDescriptionIndex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b1220'/%3E%3Cpath d='M20 18h24v24H34l8 8h-9l-8-8h-5V18zm8 8v8h8v-8h-8z' fill='%232dd4bf'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <span class="brand-kicker" data-i18n="siteBrandKicker">QuantumAI Mobile</span>
+        <span class="brand-title" data-i18n="siteBrandTitle">Control Surface for mobile ops</span>
+      </div>
+      <div class="nav-wrap">
+        <nav class="nav">
+          <a data-nav href="index.html" data-i18n="navOverview">Overview</a>
+          <a data-nav href="architecture.html" data-i18n="navArchitecture">Architecture</a>
+          <a data-nav href="runtime.html" data-i18n="navRuntime">Runtime</a>
+          <a data-nav href="mobile.html" data-i18n="navMobile">Mobile</a>
+          <a data-nav href="roadmap.html" data-i18n="navRoadmap">Roadmap</a>
+        </nav>
+        <div class="lang-switch" aria-label="Language selector">
+          <button type="button" class="lang-button" data-lang="en">EN</button>
+          <button type="button" class="lang-button" data-lang="tr">TR</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow" data-i18n="indexHeroEyebrow">Live build, runtime, and deployment lane</div>
+          <h1 data-i18n="indexHeroTitle">QuantumAI Mobile is packaged for device, runtime, and domain.</h1>
+          <p class="lead" data-i18n="indexHeroLead">
+            This site mirrors the current QuantumAI Mobile operating model:
+            physical-device validated iOS surfaces, FastAPI runtime, outbox relay,
+            Prometheus and Grafana visibility, and a Cloudflare-ready static presentation layer.
+          </p>
+          <div class="cta-row">
+            <a class="button button-primary" href="architecture.html" data-i18n="indexCTAArchitecture">Open architecture</a>
+            <a class="button button-secondary" href="mobile.html" data-i18n="indexCTAMobile">See mobile surfaces</a>
+          </div>
+          <div class="chips">
+            <span class="chip" data-i18n="chipHost">QuantumAI Host</span>
+            <span class="chip" data-i18n="chipQuantumAI">QuantumAI</span>
+            <span class="chip" data-i18n="chipApp">QuantumAIMobileApp</span>
+            <span class="chip" data-i18n="chipStack">FastAPI + Kafka + Redis + Postgres</span>
+            <span class="chip" data-i18n="chipDeviceValidated">Physical device validated</span>
+          </div>
+        </div>
+        <div class="hero-side card">
+          <h3 data-i18n="deployStatusTitle">Deployment status</h3>
+          <div class="metric-grid">
+            <div class="metric">
+              <div class="metric-label" data-i18n="customDomainLabel">Custom domain</div>
+              <div class="metric-value mono" data-i18n="customDomainValue">quantumaimobile.win</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label" data-i18n="presentationModeLabel">Presentation mode</div>
+              <div class="metric-value" data-i18n="presentationModeValue">Cloudflare Pages</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label" data-i18n="validationLaneLabel">Validation lane</div>
+              <div class="metric-value" data-i18n="validationLaneValue">Physical iPhone 14 Pro Max</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label" data-i18n="preparedStampLabel">Prepared stamp</div>
+              <div class="metric-value" data-i18n-stamp></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="two-col">
+        <div class="col-7 card">
+          <h2 data-i18n="indexWhatTitle">What this domain package carries</h2>
+          <ul class="list">
+            <li data-i18n="indexWhat1">Front-page description of the product surface and operations model.</li>
+            <li data-i18n="indexWhat2">Architecture page for runtime, queueing, observability, and deployment flow.</li>
+            <li data-i18n="indexWhat3">Mobile page for app, host, and device-validated UI lanes.</li>
+            <li data-i18n="indexWhat4">Roadmap page for SLO-driven release and hardening milestones.</li>
+            <li data-i18n="indexWhat5">Cloudflare Pages config and security headers for direct transfer.</li>
+          </ul>
+        </div>
+        <div class="col-5 timeline">
+          <h3 data-i18n="releaseTrackTitle">Release track</h3>
+          <div class="timeline-item">
+            <div class="timeline-kicker" data-i18n="releaseLane1Label">Lane 1</div>
+            <div data-i18n="releaseLane1Text">QuantumAI Host build, install, and trace validation</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-kicker" data-i18n="releaseLane2Label">Lane 2</div>
+            <div data-i18n="releaseLane2Text">QuantumAI device smoke, replay, and navigation checks</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-kicker" data-i18n="releaseLane3Label">Lane 3</div>
+            <div data-i18n="releaseLane3Text">Archive, export, domain packaging, and Cloudflare transfer prep</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer" data-i18n="footerText">
+    Static package prepared for Cloudflare Pages and custom domain binding.
+  </footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

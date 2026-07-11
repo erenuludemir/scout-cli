@@ -7,6 +7,7 @@
     <key>qai.live_endpoints</key>
     <array>
         <string>https://api.example.com</string>
+        <string>http://127.0.0.1:8787</string>
     </array>
     <key>qai.tls_pins</key>
     <array>

@@ -5,8 +5,20 @@
     <key>TenantID</key>
     <string>TENANT-BURSA-01</string>
     <key>LicenseTier</key>
-    <string>Enterprise</string>
+    <string>Free</string>
     <key>IsMultiUserEnabled</key>
     <true/>
+    <key>APIBaseURL</key>
+    <string>http://127.0.0.1:8787</string>
+    <key>DeviceAPIBaseURL</key>
+    <string>http://MacBook-Air.local:8787</string>
+    <key>OrdersPath</key>
+    <string>api/orders</string>
+    <key>CommandsPath</key>
+    <string>v1/commands</string>
+    <key>HealthPath</key>
+    <string>health</string>
+    <key>ReadyPath</key>
+    <string>ready</string>
 </dict>
 </plist>

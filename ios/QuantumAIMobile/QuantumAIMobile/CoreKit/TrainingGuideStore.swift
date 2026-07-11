@@ -182,10 +182,10 @@ public final class TrainingGuideStore: ObservableObject {
 
         let title = Self.firstMatch(in: html, pattern: #"<title>(.*?)</title>"#) ?? "QuantumAI Eğitim Rehberi"
         let summary = Self.firstMatch(in: html, pattern: #"<meta name="description" content="(.*?)">"#) ?? "Eğitim kaynağı yüklendi."
-        let sections = Self.extractSections(from: html)
+        let sections = Self.mergedSections(from: html)
         return TrainingGuide(
             title: Self.decodeEntities(title),
-            summary: Self.decodeEntities(summary),
+            summary: Self.decodeEntities(summary) + " Quantum AI finansal mimari, otomasyon ve güvenlik blueprint'i de yüklendi.",
             sections: sections,
             presets: Self.buildPresets(from: sections)
         )
@@ -206,16 +206,6 @@ public final class TrainingGuideStore: ObservableObject {
     public func contextualRecommendations(for context: BrainContext) -> [TrainingRecommendation] {
         guard !guide.sections.isEmpty else { return [] }
         var recommendations: [TrainingRecommendation] = []
-
-        if !context.isAuthenticated {
-            recommendations.append(recommendation(
-                id: "license-activation",
-                title: "Lisans aktivasyonunu tamamla",
-                summary: "Quantum bot suite ve gelişmiş otomasyon akışları için lisans merkezi üzerinden TRC20 aktivasyonunu kalıcı hale getir.",
-                fallbackSectionID: "quantum-bot-suite",
-                category: .strategy
-            ))
-        }
 
         if context.retryRate >= 0.2 || context.queueDepth >= 4 {
             recommendations.append(recommendation(
@@ -338,6 +328,12 @@ public final class TrainingGuideStore: ObservableObject {
         return sections
     }
 
+    private static func mergedSections(from html: String) -> [TrainingSection] {
+        var seen = Set<String>()
+        let combined = extractSections(from: html) + supplementalSections()
+        return combined.filter { seen.insert($0.id).inserted }
+    }
+
     private static func buildPresets(from sections: [TrainingSection]) -> [StrategyPreset] {
         func sectionID(preferredIDs: [String], category: TrainingCategory) -> String {
             for preferredID in preferredIDs {
@@ -405,7 +401,7 @@ public final class TrainingGuideStore: ObservableObject {
             StrategyPreset(
                 id: "copy-surge",
                 title: "Copy Surge",
-                summary: "Aktif copy-trade ve yüksek frekanslı senkron akışı için premium preset.",
+                summary: "Aktif copy-trade ve yüksek frekanslı senkron akışı için yüksek tempolu preset.",
                 sourceSectionID: sectionID(preferredIDs: ["api-reference", "operations", "support", "system-overview"], category: .api),
                 dcaAmount: 30,
                 dcaPeriodSec: 20,
@@ -419,6 +415,95 @@ public final class TrainingGuideStore: ObservableObject {
                 requiresLicense: true
             )
         ]
+    }
+
+    private static func supplementalSections() -> [TrainingSection] {
+        [
+            section(
+                id: "financial-architecture-blueprint",
+                title: "Quantum AI Finansal Mimari",
+                summary: "SwiftUI istemci, FastAPI servisleri, Kafka olay akisi, Redis idempotency ve Postgres audit omurgasi ile kurumsal dijital varlik yonetimi hedeflenir.",
+                category: .architecture,
+                highlights: [
+                    "On uc SwiftUI ve opsiyonel web istemcisi ile tek marka dili uzerinden calisir.",
+                    "Arka uc FastAPI, Kafka, Redis ve Postgres ile gercek zamanli akisi ayristirir.",
+                    "Trace-ID, Prometheus ve Grafana ile p95/p99 gecikme ve hata butcesi izlenir."
+                ]
+            ),
+            section(
+                id: "mega-pipeline-automation",
+                title: "Mega Pipeline Otomasyon Hatti",
+                summary: "Idempotent API girisi, Kafka orders.incoming, risk motoru, adaptorler ve audit hattini outbox deseni ile dayanikli hale getirir.",
+                category: .automation,
+                highlights: [
+                    "Outbox ve replay guvenligi ile tekrarlanan emirler tek sonuc uretecek sekilde kontrol edilir.",
+                    "Back-pressure, batch tuketim ve idempotent consumer yapisi yuk altinda kararlilik saglar.",
+                    "Trade bot, copy-trade, whale radar ve God Mode gorunurlugu ayni orkestrasyon rayina baglanir."
+                ]
+            ),
+            section(
+                id: "bot-capability-matrix",
+                title: "Bot ve God Mode Yetenek Matrisi",
+                summary: "Trade bot kurulumu, cuzdan referansi, copy-trade, grid stratejileri ve whale takip yetenekleri tek sistem profili altinda toplanir.",
+                category: .strategy,
+                highlights: [
+                    "Grid, marjin, teknik analiz ve sinyal uretimi ortak runtime ayarlariyla calisir.",
+                    "Whale radar ve copy-trade akislari kontrol listeleriyle izlenir.",
+                    "God Mode panelleri karar, gozlemlenebilirlik ve guvenlik katmanlarini birlikte gosterir."
+                ]
+            ),
+            section(
+                id: "security-pqc-rails",
+                title: "Guvenlik, PQC ve QRNG Raylari",
+                summary: "ENV ve secret manager tabanli anahtar korumasi, moduler post-kuantum kripto katmani ve opsiyonel QRNG/QKD kokleri sistemin guvenlik raylarini tanimlar.",
+                category: .security,
+                highlights: [
+                    "Minimum yetki, anahtar rotasyonu ve audit kayitlari saldiri yuzeyini azaltir.",
+                    "PCI DSS ve EMV prensiplerine uygun bir kripto soyutlama katmani hedeflenir.",
+                    "QRNG tohumlama ve opsiyonel QKD anahtar paylasimi moduler arayuzler uzerinden eklenir."
+                ]
+            ),
+            section(
+                id: "quality-observability-runbook",
+                title: "Kalite ve Operasyon Runbook'u",
+                summary: "TDD ve BDD birlikteligini, async testleri, readiness denetimlerini ve yuk/chaos senaryolarini temel alan calisma modeli uygulamaya enjekte edilir.",
+                category: .operations,
+                highlights: [
+                    "Health ve ready uclari Kafka opsiyonelligi ile denetlenir.",
+                    "In-memory Redis, Postgres ve Kafka taklitleri ile test kapsami artirilir.",
+                    "Idempotency carpismalari, tekrar deneme ve saglayici kota riskleri duzenli stres testleriyle olculur."
+                ]
+            ),
+            section(
+                id: "roadmap-90-days",
+                title: "90 Gunluk Uretim Yol Haritasi",
+                summary: "Idempotency sertlestirmesi, async veri yolu, fraud kurallari, QRNG/PQC arayuzleri ve canary dagitim adimlari 12 haftalik net fazlara bolunur.",
+                category: .deployment,
+                highlights: [
+                    "Hafta 1-4: UNIQUE idempotency, /ready davranisi ve async veri katmani gecisi.",
+                    "Hafta 5-8: chaos testleri, fraud sinirlari, whale veri kaynaklari ve QRNG/PQC POC calismalari.",
+                    "Hafta 9-12: canary dagitim, SLO takibi, security scanning, SBOM ve geri alma plani."
+                ]
+            )
+        ]
+    }
+
+    private static func section(
+        id: String,
+        title: String,
+        summary: String,
+        category: TrainingCategory,
+        highlights: [String]
+    ) -> TrainingSection {
+        TrainingSection(
+            id: id,
+            title: title,
+            summary: summary,
+            highlights: highlights,
+            category: category,
+            codeBlockCount: 0,
+            diagramCount: 0
+        )
     }
 
     private static func category(for id: String, title: String) -> TrainingCategory {

@@ -7,6 +7,18 @@ import TipKit
 
 @MainActor
 public final class AppEnvironment: ObservableObject {
+    public enum LaunchControl {
+        private static let arguments = Set(ProcessInfo.processInfo.arguments)
+
+        public static var isUITesting: Bool {
+            arguments.contains("-ui-testing")
+        }
+
+        public static var usesStaticRuntime: Bool {
+            arguments.contains("-ui-testing-static-runtime")
+        }
+    }
+
     private struct RuntimeSettingsSnapshot: Equatable {
         let usesSimulation: Bool
         let symbol: String
@@ -16,6 +28,7 @@ public final class AppEnvironment: ObservableObject {
     @Published public var settings: SettingsStore
     public let storage: StorageService
     public let wallet: WalletService
+    public let walletPortfolio: WalletPortfolioService
     public let market: MarketDataService
     public let bot: BotService
     public let alerts: AlertService
@@ -31,6 +44,7 @@ public final class AppEnvironment: ObservableObject {
     public let walletActivation: WalletActivationStore
     public let simulations: SimulationControlCenter
     public let runtimeMetrics: RuntimeMetricsRegistry
+    public let runtimeAdmin: RuntimeAdminMonitor
     public lazy var remoteMonitor: RemoteMonitor = RemoteMonitor(env: self)
     private var hasBootstrapped = false
     private var runtimeSettingsApplyPending = false
@@ -42,11 +56,19 @@ public final class AppEnvironment: ObservableObject {
     public static func liveInSim() -> AppEnvironment {
         let flags = FeatureFlags.load()
         let settings = SettingsStore(flags: flags)
+        if LaunchControl.usesStaticRuntime {
+            settings.isPaperTrading = true
+            settings.liveAdapters = false
+            settings.marketBridgeEnabled = false
+            settings.telemetryEnabled = false
+            settings.selectedSymbol = "BTCUSDT"
+        }
         let storage = StorageService()
         let audit = AuditService(storage: storage)
         let metrics = MetricsCenter()
         let runtimeMetrics = RuntimeMetricsRegistry()
         let wallet = WalletService(storage: storage, audit: audit)
+        let walletPortfolio = WalletPortfolioService()
         let market = MarketDataService(metrics: metrics, runtimeMetrics: runtimeMetrics)
         let bot = BotService(market: market, storage: storage, audit: audit, metrics: metrics)
         let alerts = AlertService(market: market, metrics: metrics)
@@ -59,12 +81,14 @@ public final class AppEnvironment: ObservableObject {
         let marketBridge = CoinMarketCapBridgeService()
         let walletActivation = WalletActivationStore()
         let simulations = SimulationControlCenter.shared
+        let runtimeAdmin = RuntimeAdminMonitor()
         simulations.applyFeatureFlags(flags)
         
         return AppEnvironment(
             settings: settings,
             storage: storage,
             wallet: wallet,
+            walletPortfolio: walletPortfolio,
             market: market,
             bot: bot,
             alerts: alerts,
@@ -79,14 +103,16 @@ public final class AppEnvironment: ObservableObject {
             marketBridge: marketBridge,
             walletActivation: walletActivation,
             simulations: simulations,
-            runtimeMetrics: runtimeMetrics
+            runtimeMetrics: runtimeMetrics,
+            runtimeAdmin: runtimeAdmin
         )
     }
 
-    public init(settings: SettingsStore, storage: StorageService, wallet: WalletService, market: MarketDataService, bot: BotService, alerts: AlertService, sync: SyncClient, metrics: MetricsCenter, audit: AuditService, health: HealthPanelModel, copyTrade: CopyTradeService, watchlist: WatchlistService, training: TrainingGuideStore, trainingJourney: TrainingJourneyStore, marketBridge: CoinMarketCapBridgeService, walletActivation: WalletActivationStore, simulations: SimulationControlCenter, runtimeMetrics: RuntimeMetricsRegistry) {
+    public init(settings: SettingsStore, storage: StorageService, wallet: WalletService, walletPortfolio: WalletPortfolioService, market: MarketDataService, bot: BotService, alerts: AlertService, sync: SyncClient, metrics: MetricsCenter, audit: AuditService, health: HealthPanelModel, copyTrade: CopyTradeService, watchlist: WatchlistService, training: TrainingGuideStore, trainingJourney: TrainingJourneyStore, marketBridge: CoinMarketCapBridgeService, walletActivation: WalletActivationStore, simulations: SimulationControlCenter, runtimeMetrics: RuntimeMetricsRegistry, runtimeAdmin: RuntimeAdminMonitor) {
         self.settings = settings
         self.storage = storage
         self.wallet = wallet
+        self.walletPortfolio = walletPortfolio
         self.market = market
         self.bot = bot
         self.alerts = alerts
@@ -102,7 +128,9 @@ public final class AppEnvironment: ObservableObject {
         self.walletActivation = walletActivation
         self.simulations = simulations
         self.runtimeMetrics = runtimeMetrics
+        self.runtimeAdmin = runtimeAdmin
         bindChildObjectChanges()
+        bindAutonomyControlCenter()
     }
 
     public func bootstrap() async {
@@ -115,6 +143,15 @@ public final class AppEnvironment: ObservableObject {
             return nil
         }()
         // Ağır işler ilk frame sonrasına itiliyor
+        if Self.LaunchControl.isUITesting {
+            runtimeMetrics.recordLaunch()
+            applyRuntimeSettings()
+            if #available(iOS 15.0, macOS 12.0, *), let interval = interval as? OSSignpostIntervalState {
+                QAISignpost.end("App Bootstrap", interval)
+            }
+            return
+        }
+
         Task { @MainActor [weak self] in
             guard let self else { return }
             try? self.wallet.ensureKeypair()
@@ -129,9 +166,19 @@ public final class AppEnvironment: ObservableObject {
             self.runtimeMetrics.recordLaunch()
             self.configureTipKitIfNeeded()
             self.applyRuntimeSettings()
+            self.walletPortfolio.startIfNeeded(
+                selectedNetworkID: self.settings.selectedWalletNetworkID,
+                walletService: self.wallet,
+                networks: self.wallet.supportedNetworks()
+            )
             self.health.bind()
             self.simulations.bootstrap()
+            self.runtimeAdmin.startIfNeeded()
             _ = self.remoteMonitor
+            AutonomyControlCenter.shared.refresh(
+                runtimeMetrics: self.runtimeMetrics,
+                portfolio: self.walletPortfolio
+            )
             if #available(iOS 15.0, macOS 12.0, *), let interval = interval as? OSSignpostIntervalState {
                 QAISignpost.end("App Bootstrap", interval)
             }
@@ -203,6 +250,12 @@ public final class AppEnvironment: ObservableObject {
             }
         }
 
+        walletPortfolio.reconfigure(
+            selectedNetworkID: settings.selectedWalletNetworkID,
+            walletService: wallet,
+            networks: wallet.supportedNetworks()
+        )
+
         appliedRuntimeSettings = snapshot
     }
 
@@ -226,6 +279,7 @@ public final class AppEnvironment: ObservableObject {
 
         forwardObjectChanges(from: settings)
         forwardObjectChanges(from: storage)
+        forwardObjectChanges(from: walletPortfolio)
         forwardObjectChanges(from: market)
         forwardObjectChanges(from: bot)
         forwardObjectChanges(from: alerts)
@@ -238,6 +292,7 @@ public final class AppEnvironment: ObservableObject {
         forwardObjectChanges(from: walletActivation)
         forwardObjectChanges(from: simulations)
         forwardObjectChanges(from: runtimeMetrics)
+        forwardObjectChanges(from: runtimeAdmin)
     }
 
     private func forwardObjectChanges<Object: ObservableObject>(from object: Object) {
@@ -259,5 +314,41 @@ public final class AppEnvironment: ObservableObject {
             self.forwardedObjectChangePending = false
             self.objectWillChange.send()
         }
+    }
+
+    private func bindAutonomyControlCenter() {
+        let autonomy = AutonomyControlCenter.shared
+        let refreshAutonomy: () -> Void = { [weak self] in
+            guard let self else { return }
+            autonomy.refresh(
+                runtimeMetrics: self.runtimeMetrics,
+                portfolio: self.walletPortfolio
+            )
+        }
+
+        walletPortfolio.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { _ in refreshAutonomy() }
+            .store(in: &forwardedObjectChangeCancellables)
+
+        runtimeMetrics.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { _ in refreshAutonomy() }
+            .store(in: &forwardedObjectChangeCancellables)
+
+        CognitiveTwinRegistry.shared.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { _ in refreshAutonomy() }
+            .store(in: &forwardedObjectChangeCancellables)
+
+        BarakfakihCitadel.shared.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { _ in refreshAutonomy() }
+            .store(in: &forwardedObjectChangeCancellables)
+
+        TelepathyGateway.shared.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { _ in refreshAutonomy() }
+            .store(in: &forwardedObjectChangeCancellables)
     }
 }

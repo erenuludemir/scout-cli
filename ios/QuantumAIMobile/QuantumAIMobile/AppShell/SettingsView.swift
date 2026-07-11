@@ -12,7 +12,6 @@ private enum SettingsDateFormatters {
 public struct SettingsView: View {
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
-    @State private var showInvoice = false
     private let showsBackButton: Bool
 
     public init(showsBackButton: Bool = false) {
@@ -26,7 +25,7 @@ public struct SettingsView: View {
 
                 SettingsHeroCard(
                     effectiveMode: env.runtimeUsesSimulation ? "Simülasyon" : "Canlı",
-                    licenseText: env.settings.isAuthenticated ? "Enterprise" : "Ücretsiz",
+                    licenseText: "Free of Charge",
                     activationDate: env.settings.licenseActivatedAt
                 )
 
@@ -97,11 +96,21 @@ public struct SettingsView: View {
                         .buttonStyle(.plain)
 
                         NavigationLink {
-                            LicenseCenterView(onPurchase: { showInvoice = true })
+                            WalletView(showsBackButton: true)
                         } label: {
                             SettingsMenuRow(
-                                title: "Lisans Merkezi",
-                                subtitle: env.settings.isAuthenticated ? "Aktif abonelik ve erişim seviyesi" : "TRC20 ile aktivasyon"
+                                title: "Referans Araçları",
+                                subtitle: "Adres, yerel imza provası ve isteğe bağlı harici bağlantılar"
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        NavigationLink {
+                            AccessCenterView()
+                        } label: {
+                            SettingsMenuRow(
+                                title: "Erişim Merkezi",
+                                subtitle: "Ücretsiz erişim, cihaz durumu ve kullanılabilir özellikler"
                             )
                         }
                         .buttonStyle(.plain)
@@ -160,21 +169,76 @@ public struct SettingsView: View {
 
                 GlassCard {
                     VStack(alignment: .leading, spacing: 14) {
-                        SectionTitle("Lisans Durumu", icon: "crown.fill")
+                        SectionTitle("Autonomy Studio", icon: "brain")
+                        NavigationLink {
+                            AutonomyStudioView()
+                        } label: {
+                            SettingsMenuRow(
+                                title: "Autonomy Studio",
+                                subtitle: "Quantum ops, neural command, citadel ve training yüzeylerini tek merkezden aç"
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        NavigationLink {
+                            QuantumPerformanceDashboard(showsBackButton: true)
+                        } label: {
+                            SettingsMenuRow(
+                                title: "Quantum Ops",
+                                subtitle: "QKD / PQC dashboard, tehdit metrikleri ve terminal görünümü"
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        NavigationLink {
+                            DigitalTwinView(showsBackButton: true)
+                        } label: {
+                            SettingsMenuRow(
+                                title: "Digital Twin",
+                                subtitle: "Bilişsel ikiz, senkronizasyon ve mentor modu"
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        NavigationLink {
+                            NeuralCommandView(showsBackButton: true)
+                        } label: {
+                            SettingsMenuRow(
+                                title: "Neural Command",
+                                subtitle: "Niyet çözücü, komut geçmişi ve latency görünümü"
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        NavigationLink {
+                            EternityView(showsBackButton: true)
+                        } label: {
+                            SettingsMenuRow(
+                                title: "Dashboard ETERNITY",
+                                subtitle: "Twin, citadel ve neural overlay durumları"
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                GlassCard {
+                    VStack(alignment: .leading, spacing: 14) {
+                        SectionTitle("Erişim Durumu", icon: "checkmark.shield.fill")
                         HStack(alignment: .top, spacing: 14) {
-                            Image(systemName: env.settings.isAuthenticated ? "checkmark.seal.fill" : "crown.fill")
+                            Image(systemName: "checkmark.seal.fill")
                                 .font(.title2)
-                                .foregroundStyle(env.settings.isAuthenticated ? QAITheme.success : QAITheme.accent)
+                                .foregroundStyle(QAITheme.success)
 
                             VStack(alignment: .leading, spacing: 6) {
-                                Text(env.settings.isAuthenticated ? "Enterprise Lisans Aktif" : "Ücretsiz Sürüm")
+                                Text("Ücretsiz Erişim Açık")
                                     .font(.system(.headline, design: .rounded))
                                     .foregroundStyle(QAITheme.textPrimary)
-                                Text(env.settings.isAuthenticated ? "Bot, panel ve cüzdan özellikleri tam erişimde." : "Aktivasyon sonrası premium bot akışları kalıcı olarak açılır.")
+                                Text("Bot, panel, eğitim ve referans araçları uygulama içinde ücretsiz erişilebilir.")
                                     .font(.subheadline)
                                     .foregroundStyle(QAITheme.textSecondary)
 
-                                if let date = env.settings.licenseActivatedAt, env.settings.isAuthenticated {
+                                if let date = env.settings.licenseActivatedAt {
                                     Text("Aktivasyon: \(SettingsDateFormatters.timestamp.string(from: date))")
                                         .font(.caption)
                                         .foregroundStyle(QAITheme.textSecondary)
@@ -184,13 +248,7 @@ public struct SettingsView: View {
                             Spacer()
                         }
 
-                        if env.settings.isAuthenticated {
-                            StatusStrip(label: "Erişim", value: "Premium mod aktif", color: QAITheme.success)
-                        } else {
-                            PrimaryActionButton(title: "Lisans Satin Al (USDT)") {
-                                showInvoice = true
-                            }
-                        }
+                        StatusStrip(label: "Erişim", value: "Free of Charge", color: QAITheme.success)
                     }
                 }
             }
@@ -201,16 +259,6 @@ public struct SettingsView: View {
         .accessibilityIdentifier("settings-screen")
         .background(AppBackground())
         .screenNavigationChromeHidden()
-        .sheet(isPresented: $showInvoice) {
-            NavigationStack {
-                SaaSInvoiceView()
-                    .toolbar {
-                        ToolbarItem(placement: closeToolbarPlacement) {
-                            Button("Kapat") { showInvoice = false }
-                        }
-                    }
-            }
-        }
         .onChange(of: env.settings.isPaperTrading) { _, _ in
             env.applyRuntimeSettings()
         }
@@ -373,40 +421,33 @@ private struct MarketPreferencesView: View {
     }
 }
 
-private struct LicenseCenterView: View {
+private struct AccessCenterView: View {
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
-    let onPurchase: () -> Void
 
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 18) {
-                ScreenHeader(title: "Lisans Merkezi", showsBackButton: true, onBack: { dismiss() })
+                ScreenHeader(title: "Erişim Merkezi", showsBackButton: true, onBack: { dismiss() })
 
                 GlassCard {
                     VStack(alignment: .leading, spacing: 16) {
-                        SectionTitle("Lisans Merkezi", icon: "checkmark.shield.fill")
+                        SectionTitle("Uygulama Erişimi", icon: "checkmark.shield.fill")
                         StatusStrip(
                             label: "Durum",
-                            value: env.settings.isAuthenticated ? "Aktif" : "Pasif",
-                            color: env.settings.isAuthenticated ? QAITheme.success : QAITheme.warning
+                            value: "Ücretsiz ve Açık",
+                            color: QAITheme.success
                         )
 
-                        if let date = env.settings.licenseActivatedAt, env.settings.isAuthenticated {
-                            Text("Bu cihazda lisans kalıcı olarak saklandı. Aktivasyon zamanı: \(date.formatted(date: .abbreviated, time: .shortened)).")
-                                .font(.subheadline)
-                                .foregroundStyle(QAITheme.textSecondary)
-                        } else {
-                            Text("TRC20 ödeme doğrulaması tamamlandığında lisans durumu otomatik kaydedilir ve tüm menüler premium modda açılır.")
+                        if let date = env.settings.licenseActivatedAt {
+                            Text("Bu cihazda tam erişim App Store ücretsiz sürümü için aktif. Son doğrulama zamanı: \(date.formatted(date: .abbreviated, time: .shortened)).")
                                 .font(.subheadline)
                                 .foregroundStyle(QAITheme.textSecondary)
                         }
 
-                        if !env.settings.isAuthenticated {
-                            PrimaryActionButton(title: "USDT ile Aktivasyon") {
-                                onPurchase()
-                            }
-                        }
+                        Text("Bu sürüm uygulama içi ödeme, kripto abonelik veya ayrı lisans aktivasyonu gerektirmez.")
+                            .font(.subheadline)
+                            .foregroundStyle(QAITheme.textSecondary)
                     }
                 }
             }
@@ -445,7 +486,7 @@ private struct SettingsHeroCard: View {
 
                 HStack(spacing: 10) {
                     StatusStrip(label: "Feed", value: effectiveMode, color: effectiveMode == "Canlı" ? QAITheme.success : QAITheme.warning)
-                    StatusStrip(label: "Lisans", value: licenseText, color: licenseText == "Enterprise" ? QAITheme.accent : QAITheme.surfaceMuted)
+                    StatusStrip(label: "Erişim", value: licenseText, color: QAITheme.success)
                 }
 
                 if let activationDate {

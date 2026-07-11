@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="pageTitleRoadmap">QuantumAI Mobile Roadmap</title>
+  <meta name="description" content="QuantumAI roadmap, release sequencing, runtime hardening, Cloudflare deployment, and SLO-driven promotion." data-i18n-meta="metaDescriptionRoadmap">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b1220'/%3E%3Cpath d='M20 18h24v24H34l8 8h-9l-8-8h-5V18zm8 8v8h8v-8h-8z' fill='%232dd4bf'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <span class="brand-kicker" data-i18n="roadmapBrandKicker">Roadmap</span>
+        <span class="brand-title" data-i18n="roadmapBrandTitle">SLO-driven release path</span>
+      </div>
+      <div class="nav-wrap">
+        <nav class="nav">
+          <a data-nav href="index.html" data-i18n="navOverview">Overview</a>
+          <a data-nav href="architecture.html" data-i18n="navArchitecture">Architecture</a>
+          <a data-nav href="runtime.html" data-i18n="navRuntime">Runtime</a>
+          <a data-nav href="mobile.html" data-i18n="navMobile">Mobile</a>
+          <a data-nav href="roadmap.html" data-i18n="navRoadmap">Roadmap</a>
+        </nav>
+        <div class="lang-switch" aria-label="Language selector">
+          <button type="button" class="lang-button" data-lang="en">EN</button>
+          <button type="button" class="lang-button" data-lang="tr">TR</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow" data-i18n="roadmapHeroEyebrow">Release sequencing</div>
+      <h1 data-i18n="roadmapHeroTitle">Ship only after device, runtime, and domain stay aligned.</h1>
+      <p class="lead" data-i18n="roadmapHeroLead">
+        The next release path is not only UI polish. It includes queue health, replay safety, physical-device navigation, and domain presentation parity.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-kicker" data-i18n="roadmapPhaseALabel">Phase A</div>
+          <div data-i18n="roadmapPhaseAText">Keep physical-device UITest lane stable and scriptable with one command.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-kicker" data-i18n="roadmapPhaseBLabel">Phase B</div>
+          <div data-i18n="roadmapPhaseBText">Re-profile with full connected runtime stack and compare against the baseline leak traces.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-kicker" data-i18n="roadmapPhaseCLabel">Phase C</div>
+          <div data-i18n="roadmapPhaseCText">Deploy this static package to Cloudflare Pages and bind both apex and www domains.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-kicker" data-i18n="roadmapPhaseDLabel">Phase D</div>
+          <div data-i18n="roadmapPhaseDText">Promote the release only when device smoke, runtime readiness, and archive/export evidence all stay green.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="shell footer" data-i18n="footerText">
+    Static package prepared for Cloudflare Pages and custom domain binding.
+  </footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

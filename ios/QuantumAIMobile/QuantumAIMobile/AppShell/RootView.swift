@@ -6,6 +6,12 @@ public struct RootView: View {
     @State private var selectedTab: AppTab = .dashboard
     @State private var showTraining = false
     @State private var hasEvaluatedTrainingPresentation = false
+    @State private var sceneRefreshTask: Task<Void, Never>?
+    private let launchArguments = ProcessInfo.processInfo.arguments
+
+    private var forceTrainingOnLaunch: Bool {
+        launchArguments.contains("-force-training-on-launch")
+    }
 
     public init() {}
 
@@ -19,7 +25,6 @@ public struct RootView: View {
             NavigationStack {
                 currentScreen
             }
-            .id(selectedTab)
         }
         .preferredColorScheme(.dark)
         .safeAreaInset(edge: .bottom) {
@@ -32,25 +37,28 @@ public struct RootView: View {
         .task {
             guard !hasEvaluatedTrainingPresentation else { return }
             hasEvaluatedTrainingPresentation = true
-            showTraining = env.trainingJourney.shouldPresentOnLaunch
+            showTraining = forceTrainingOnLaunch && env.trainingJourney.shouldPresentOnLaunch
         }
-        .onChange(of: scenePhase) { _, phase in
-            DispatchQueue.main.async {
-                if phase == .active {
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            sceneRefreshTask?.cancel()
+            if newPhase == .active {
+                sceneRefreshTask = Task {
+                    await Task.yield()
+                    guard !Task.isCancelled else { return }
                     env.applyRuntimeSettings()
                     env.market.refreshForActiveScene()
                     env.marketBridge.refreshForActiveScene()
-                    if env.settings.marketBridgeEnabled {
-                        Task {
-                            await Task.yield()
-                            await env.marketBridge.refreshNow()
-                        }
-                    }
-                } else {
-                    env.market.pauseForInactiveScene()
-                    env.marketBridge.pauseForInactiveScene()
+                    env.walletPortfolio.refreshForActiveScene()
                 }
+            } else {
+                env.market.pauseForInactiveScene()
+                env.marketBridge.pauseForInactiveScene()
+                env.walletPortfolio.pauseForInactiveScene()
             }
+        }
+        .onDisappear {
+            sceneRefreshTask?.cancel()
+            sceneRefreshTask = nil
         }
         #if os(macOS)
         .sheet(isPresented: $showTraining) {
@@ -102,7 +110,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         case .simulations:
             return "Sürüm"
         case .wallet:
-            return "Cüzdan"
+            return "Referans"
         case .trade:
             return "Botlar"
         case .settings:
@@ -117,7 +125,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         case .simulations:
             return "square.stack.3d.up"
         case .wallet:
-            return "lock.shield"
+            return "doc.text.magnifyingglass"
         case .trade:
             return "gearshape.2"
         case .settings:
@@ -128,10 +136,11 @@ enum AppTab: String, CaseIterable, Identifiable {
 
 private struct QuantumTabBar: View {
     @Binding var selectedTab: AppTab
+    private let primaryTabs: [AppTab] = [.dashboard, .simulations, .trade, .settings]
 
     var body: some View {
         HStack(spacing: 8) {
-            ForEach(AppTab.allCases) { tab in
+            ForEach(primaryTabs) { tab in
                 Button {
                     withAnimation(.spring(response: 0.34, dampingFraction: 0.84)) {
                         selectedTab = tab

@@ -64,7 +64,7 @@ public struct TechStackView: View {
             .background(Color.white.opacity(0.05))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .onAppear {
-                BursaNetworkEngine.shared.processApplePay(amount: 42)
+                BursaNetworkEngine.shared.prepareFreeAccessState()
             }
         }
         .padding()

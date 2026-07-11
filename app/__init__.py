@@ -14,6 +14,12 @@ def create_app() -> Flask:
         pass
 
     try:
+        from integrations.wallet.flask_ext import register_qai_wallet
+        register_qai_wallet(app)
+    except Exception:
+        pass
+
+    try:
         from integrations.linear.flask_ext import register_qai_linear
         register_qai_linear(app)
     except Exception:

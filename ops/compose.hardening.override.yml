@@ -1,0 +1,64 @@
+services:
+  prometheus:
+    init: true
+    stop_grace_period: 2m
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+  postgres-exporter:
+    init: true
+    stop_grace_period: 45s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./configs/postgres-exporter/postgres_exporter.yml:/etc/postgres_exporter/postgres_exporter.yml:ro
+    command:
+      - --config.file=/etc/postgres_exporter/postgres_exporter.yml
+  demo-app-redpanda:
+    init: true
+    stop_grace_period: 2m
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+  mcai-redpanda:
+    init: true
+    stop_grace_period: 2m
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+  gli:
+    init: true
+    stop_grace_period: 45s
+    restart: unless-stopped
+    healthcheck:
+      start_period: 45s
+  gli-mainnet:
+    init: true
+    stop_grace_period: 45s
+    restart: unless-stopped
+    healthcheck:
+      start_period: 45s
+  gli-sepolia:
+    init: true
+    stop_grace_period: 45s
+    restart: unless-stopped
+    healthcheck:
+      start_period: 45s
+  watchtower:
+    init: true
+    stop_grace_period: 30s
+    restart: unless-stopped
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_ROLLING_RESTART: "true"
+      WATCHTOWER_INCLUDE_RESTARTING: "false"
+      WATCHTOWER_INCLUDE_STOPPED: "false"
+      WATCHTOWER_REVIVE_STOPPED: "false"
+      WATCHTOWER_TIMEOUT: "30s"

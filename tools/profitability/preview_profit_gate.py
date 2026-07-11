@@ -28,7 +28,7 @@ USD_PRICES = {
 }
 
 
-def fail(message: str, code: int = 1) -> None:
+def fail(message: str, code: int=1) -> None:
     print(json.dumps({"ok": False, "error": message}, ensure_ascii=False))
     raise SystemExit(code)
 
@@ -74,7 +74,7 @@ def normalize_symbol(raw: str) -> str:
     return symbol
 
 
-def decimal_to_float(value: Decimal, places: str = "0.00000001") -> float:
+def decimal_to_float(value: Decimal, places: str="0.00000001") -> float:
     quantized = value.quantize(Decimal(places), rounding=ROUND_HALF_UP)
     return float(quantized)
 
@@ -207,6 +207,13 @@ def best_candidate(candidates: list[dict[str, Any]]) -> dict[str, Any] | None:
     return max(candidates, key=key)
 
 
+def _resolve_fetcher():
+    module = sys.modules.get("preview_profit_gate")
+    if module is not None and callable(getattr(module, "fetch_quote", None)):
+        return module.fetch_quote
+    return fetch_quote
+
+
 def main() -> None:
     from_token = normalize_symbol(sys.argv[1] if len(sys.argv) > 1 else "USDT")
     to_token = normalize_symbol(sys.argv[2] if len(sys.argv) > 2 else "ETH")
@@ -228,8 +235,9 @@ def main() -> None:
         fail("invalid_gateway_url")
 
     candidates: list[dict[str, Any]] = []
+    fetcher = _resolve_fetcher()
     for amount in amounts:
-        quote = fetch_quote(
+        quote = fetcher(
             gateway_url,
             from_token=from_token,
             to_token=to_token,

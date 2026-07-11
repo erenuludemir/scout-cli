@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: qai-runtime-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["qai-runtime-api:8787"]
+
+  - job_name: redpanda
+    static_configs:
+      - targets: ["qai-redpanda:9644"]

@@ -1,290 +1,151 @@
-# Docker Compose Merge Strategy
+# Docker Compose Strategy
 
-## Overview
-This document specifies how Docker Compose files are merged and prioritized in QuantumAI-Dockerized-System.
+This repository contains several independent Compose lanes. Do not merge every
+Compose file together. Select the lane that matches the service being operated.
 
-## File Hierarchy & Merge Order
+## File Hierarchy
 
-When running `docker compose up`, files are merged in this order (last wins):
-
-```bash
-docker compose \
-  --file compose.yml \                    # 1. Base services (dex, usdt-v2, gateway, gli, etc.)
-  --file docker-compose.base.yml \        # 2. MCAI services (api, router, sim, postgres, redis, redpanda)
-  --file compose.override.yml \           # 3. Local dev overrides (optional)
-  --project-name quantumai-stack \
-  up -d
-```
+The supported files are organized as independent root API, core gateway, MCAI,
+USDT v2, ManagerAI, runtime, monitoring, and compatibility lanes. The file list
+used for `config` must be the same list used for `up`.
 
 ## File Descriptions
 
-### 1. `compose.yml` (PRIMARY)
-**Purpose**: Main application stack
-**Contains**:
-- Gateway (Nginx reverse proxy)
-- Core services: dex, quantumai-usdt, quantumai-usdt-v2
-- GLI (Generalized Liquidity Interface) x3 instances
-- RossettaAI (model serving)
-- Metrics (Prometheus exporter)
-- managerai (AI orchestrator)
-- Demo apps (demo-app-qai, demo-app-redis, demo-app-redpanda)
-- Redis cache (port 6381)
-- Watchtower (container updates)
+### Root Python API
 
-**Networks**:
-- `default`: All main services + gateway
-- `demo_core`: Demo apps
-- `demo_data`: Demo apps
-- `mcai_net`: MCAI services (isolated)
-- `monitoring`: Metrics scraping
+`docker-compose.yml` builds the root Flask application from `Dockerfile` and
+publishes it on `127.0.0.1:${HOST_PORT:-5003}`. This is the smallest application
+smoke-test lane.
 
-### 2. `docker-compose.base.yml` (MCAI STACK)
-**Purpose**: Market, routing, and simulation microservices
-**Contains** (12 services):
-- mcai-api, mcai-feeder, mcai-router
-- mcai-sim, mcai-large-exec
-- mcai-risk, mcai-small-agg
-- mcai-trade-engine
-- mcai-postgres (PostgreSQL 16, port 55433)
-- mcai-redis (Redis 7-alpine, port 6380)
-- mcai-redpanda (Kafka broker, port 29093)
-
-**Networks**:
-- Uses `default` network (defined as empty `{}`)
-- **BUG**: Should use `mcai_net` for network_mode or explicit network assignment
-- Currently, MCAI services are on composed network, NOT isolated
-
-### 3. `compose.override.yml` (LOCAL DEV)
-**Purpose**: Override settings for local development
-**Examples**:
-- Increase resource limits for debugging
-- Add volume mounts for source code
-- Change ports for Colima integration
-
-### Optional Files (Do NOT Merge By Default)
-- ❌ `compose.master.yml` - Fallback/legacy (don't use)
-- ❌ `compose.monitoring.yml` - Extra monitoring (conditional)
-- ❌ `compose.debug.yaml` - Debug mode (conditional)
-- ❌ `compose.managerai.yml` - ManagerAI specific (conditional)
-- ❌ `compose.hardening.override.yml` - Security hardening (conditional)
-- ❌ `compose.runtime.fix.yml` - Bug fixes (conditional, broken)
-- ❌ `docker-compose.usdt.yml` - USDT only (deprecated)
-
----
-
-## Recommended Compose Commands
-
-### Standard Startup (Development)
 ```bash
-docker compose \
-  --file compose.yml \
-  --file docker-compose.base.yml \
-  --file compose.override.yml \
-  --project-name quantumai-stack \
-  up -d
+docker compose -f docker-compose.yml config --quiet
+docker compose -f docker-compose.yml up --build
 ```
 
-### Production Startup
+### Core Gateway Stack
+
+`compose.yml` contains `dex`, `redis`, `quantumai-usdt`, and `gateway`. All four
+services share the named `mcai_net` network. Gateway starts only after its two
+HTTP dependencies are healthy.
+
 ```bash
-docker compose \
-  --file compose.yml \
-  --file docker-compose.base.yml \
-  --file compose.prod.yml \        # (create if needed)
-  --project-name quantumai-stack \
-  up -d
+docker compose -f compose.yml config --quiet
+docker compose -f compose.yml up --build
 ```
 
-### Monitoring Only
+For the supported development overrides:
+
 ```bash
 docker compose \
-  --file compose.yml \
-  --file compose.monitoring.yml \
-  --project-name quantumai-stack \
-  up -d
+  -f compose.yml \
+  -f docker-compose.base.yml \
+  -f compose.override.yml \
+  -p quantumai-stack \
+  config --quiet
+
+docker compose \
+  -f compose.yml \
+  -f docker-compose.base.yml \
+  -f compose.override.yml \
+  -p quantumai-stack \
+  up --build
 ```
 
----
+`docker-compose.base.yml` adds the standalone MCAI development services:
+PostgreSQL, Redis, Redpanda, router, risk, trade engine, and API. The lightweight
+engine containers currently run `payload/neural_ignition.py` and are development
+scaffolding, not production trading services.
+
+### Canonical USDT v2
+
+The canonical USDT v2 source directory is `quantumai-usdt-v2/` (without a
+leading space). `docker-compose.override.yml` defines its local service and a
+Redis dependency.
+
+```bash
+docker compose -f docker-compose.base.yml -f docker-compose.override.yml config --quiet
+```
+
+The former leading-space directory was a byte-for-byte duplicate and is retired.
+
+### ManagerAI
+
+`compose.managerai.yml` is the dedicated, self-contained ManagerAI control-plane
+lane. Use `ops/qai_managerai_stack.sh` for its guarded lifecycle. Apply actions
+remain opt-in through `MANAGERAI_APPLY_ON_CRITICAL=1`.
+
+```bash
+docker compose -f compose.managerai.yml config --quiet
+```
+
+### Runtime and Monitoring
+
+- `backend/qai_runtime/compose.dev.yml` is the FastAPI runtime development lane.
+- `compose.monitoring.yml` is the optional monitoring lane.
+- `stack/docker-compose.yml` is the isolated legacy stack lane.
+- `compose.master.yml` is retained for compatibility and is not the default.
+
+Validate each file independently before use.
+
+## Experimental Overlays
+
+The following files are retained as source/configuration but are not part of the
+default merge order:
+
+- `compose.hardening.override.yml`
+- `compose.performance.yml`
+- `compose.prod.yml`
+- `compose.resilience.override.yml`
+- `compose.runtime.fix.yml`
+- `docker-compose.usdt.yml`
+
+These overlays were authored against older service inventories. Do not combine
+them with a supported lane without first checking the rendered service graph,
+dependencies, mounts, ports, and health checks.
+
+## Environment Files
+
+- `.env` and `.env.local` are local runtime inputs and must never be committed.
+- `.env.example` and explicitly named `*.example` files contain placeholders.
+- Prefer `${VARIABLE:-default}` for safe non-secret defaults.
+- Production secrets must come from the deployment platform or a secret store.
+
+Both `.env` files are optional for configuration rendering but may be required
+to start services that declare `env_file`.
 
 ## Network Architecture
 
-### Current State (Mixed)
-```
-Main Stack (compose.yml):
-┌─────────────────────────────────────┐
-│ default network                     │
-├─────────────────────────────────────┤
-│ gateway → dex, usdt-v2, gli, etc   │
-│ managerai → [all above]             │
-│                                     │
-│ ISSUE: mcai_net defined but         │
-│        services use default!        │
-└─────────────────────────────────────┘
+- Use Compose service names for container-to-container traffic, never localhost.
+- The core gateway services communicate on `mcai_net`.
+- Independent lanes get independent project networks unless an explicit shared
+  network is documented.
+- Host-published control-plane ports should bind to `127.0.0.1` by default.
 
-MCAI Stack (docker-compose.base.yml):
-┌─────────────────────────────────────┐
-│ default network (from compose)      │
-├─────────────────────────────────────┤
-│ mcai-api, mcai-router, mcai-sim     │
-│ mcai-postgres, mcai-redis           │
-│ mcai-redpanda                       │
-│                                     │
-│ ISSUE: Shares 'default' with main   │
-│        stack - unnecessary coupling │
-└─────────────────────────────────────┘
+Examples:
+
+```text
+http://gateway:8080
+redis://redis:6379/0
 ```
 
-### Recommended State (Isolated)
-```
-┌─────────────────────────┐   ┌──────────────────────┐
-│ default (main stack)    │   │ mcai_net (MCAI)      │
-├─────────────────────────┤   ├──────────────────────┤
-│ gateway                 │   │ mcai-api             │
-│ dex, usdt-v2, gli       │   │ mcai-router          │
-│ rosettaai, managerai    │   │ mcai-sim             │
-│ redis, metrics          │   │ mcai-postgres        │
-└─────────────────────────┘   │ mcai-redis           │
-         ↓                     │ mcai-redpanda        │
-    Can access main           └──────────────────────┘
-    services via DNS
-    (gateway, etc)        (Optional) API Gateway
-                          between mcai_net & default
-```
+## Troubleshooting and Validation
 
----
+Render a lane before every start or deployment:
 
-## Configuration Management
-
-### Environment Variables
-- **`.env.local`**: Local development (override .env.example)
-- **`.env`**: Runtime environment (git-ignored, never commit)
-- **`env.template`**: Template with all available options
-- **`.env.example`**: Example with placeholder values
-
-All environment variables use defaults:
 ```bash
-${VARIABLE:-default_value}
+docker compose -f FILE config --quiet
 ```
 
-### How to Start Different Stack Configurations
+For a merge, preserve the documented order and render the exact same file list
+that will be passed to `up`.
 
-#### Option 1: Full Stack (Recommended)
+After startup, check both container health and the public HTTP endpoint:
+
 ```bash
-# Both main + MCAI services
-docker compose \
-  --file compose.yml \
-  --file docker-compose.base.yml \
-  up -d
+docker compose -f FILE ps
+curl -fsS http://127.0.0.1:PORT/health
 ```
 
-#### Option 2: Main Stack Only
-```bash
-# Gateway, API services, no MCAI
-docker compose --file compose.yml up -d
-```
-
-#### Option 3: MCAI Only
-```bash
-# Market engines, feeder, etc.
-# WARNING: Will fail because depends_on missing
-docker compose --file docker-compose.base.yml up -d
-```
-
----
-
-## Dependency Chain
-
-```
-Main Stack Order:
-  1. redis (no deps) → starts first
-  2. dex, usdt, rosettaai (start in parallel)
-  3. gateway (depends_on: dex, usdt-v2, rosettaai) → starts when all healthy
-  4. managerai (depends_on: SUPERVIZOR_COMPOSE_FILES) → orchestrates rest
-  5. metrics (depends_on: gateway, usdt-v2, rosettaai, managerai)
-
-MCAI Stack Order:
-  1. mcai-postgres (service_started)
-  2. mcai-redis (service_healthy)
-  3. mcai-redpanda (service_healthy)
-  4. mcai-* services (all above must be healthy)
-```
-
----
-
-## Health Check Strategy
-
-All services follow this pattern:
-```yaml
-healthcheck:
-  test:
-    - CMD-SHELL
-    - wget -q -O - http://127.0.0.1:PORT/health || curl -fsS http://127.0.0.1:PORT/health
-  interval: 20s
-  timeout: 10s
-  retries: 12
-  start_period: 30s
-```
-
-**Probes used**:
-- HTTP `/health` endpoint (preferred)
-- Fallback to `/` if `/health` unavailable
-- Redis: `redis-cli ping`
-- PostgreSQL: `pg_isready`
-
----
-
-## Troubleshooting
-
-### Problem: "dependency failed to start"
-```
-Check compose merge order:
-  1. Verify --file order is correct
-  2. Check service.depends_on.service_name exists in merged config
-  3. Increase retries/timeout in healthcheck
-```
-
-### Problem: "service not found" (container-to-container)
-```
-Check networks:
-  1. Both services must be on same network (default or mcai_net)
-  2. Use service hostname (not localhost)
-  3. Example: http://gateway:8080 NOT http://localhost:8080
-```
-
-### Problem: "MCAI services failing"
-```
-Check docker-compose.base.yml networks:
-  1. Should define mcai_net explicitly
-  2. OR use external: true to reference compose.yml's mcai_net
-  3. Services should NOT share 'default' with main stack
-```
-
----
-
-## Future Improvements
-
-1. **Create `compose.prod.yml`**
-   - Remove dev volumes
-   - Set resource limits stricter
-   - Add logging centralization
-
-2. **Create `compose.ci.yml`**
-   - Scale down to minimal services
-   - Use test databases
-   - Disable autoheal/watchtower
-
-3. **Unify Network Strategy**
-   - Keep mcai_net isolated
-   - Add API gateway between default & mcai_net if needed
-   - Document service-to-service communication rules
-
-4. **Auto-Documentation**
-   - Generate from compose files dynamically
-   - Include port mappings, env vars per service
-   - Output as table/visual diagram
-
----
-
-## References
-- [Docker Compose Docs](https://docs.docker.com/compose/compose-file/)
-- [Networking Guide](https://docs.docker.com/compose/networking/)
-- [Health Checks](https://docs.docker.com/engine/reference/builder/#healthcheck)
+If a dependency fails, verify that the dependency is present in the rendered
+service list, both services share a network, and the health-check command exists
+inside the image.

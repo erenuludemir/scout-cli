@@ -20,9 +20,12 @@ public struct PrimaryActionButton: View {
         Button(action: action) {
             Text(title)
                 .font(QAITokens.Typography.bodyStrong)
+                .lineLimit(2)
+                .minimumScaleFactor(0.82)
+                .multilineTextAlignment(.center)
                 .foregroundStyle(style == .primary ? QAITokens.Palette.backgroundBottom : QAITokens.Palette.textPrimary)
                 .frame(maxWidth: .infinity)
-                .frame(height: 58)
+                .frame(minHeight: 58)
                 .background(style == .primary ? QAITokens.Palette.gold : QAITokens.Palette.cardElevated)
                 .clipShape(RoundedRectangle(cornerRadius: QAITokens.Radius.button, style: .continuous))
         }

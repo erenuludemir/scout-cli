@@ -1,0 +1,323 @@
+services:
+  demo-app-redpanda:
+    restart: unless-stopped
+    mem_limit: 2048m
+    mem_reservation: 1024m
+    cpus: "2.00"
+    labels:
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL","wget -qO- http://127.0.0.1:9644/v1/status/ready >/dev/null 2>&1 || curl -fsS http://127.0.0.1:9644/v1/status/ready >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 45s
+  dex:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  quantumai-usdt:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  redis:
+    restart: unless-stopped
+    mem_limit: 512m
+    mem_reservation: 192m
+    cpus: "0.75"
+    labels:
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL","redis-cli ping | grep -q PONG"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+  quantumai-usdt-v2:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  rosettaai:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  gateway:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  gli-sepolia:
+    restart: unless-stopped
+    mem_limit: 512m
+    mem_reservation: 128m
+    labels:
+      autoheal: "true"
+  mcai-postgres:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.25"
+    labels:
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-postgres} -h 127.0.0.1"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+  mcai-redis:
+    restart: unless-stopped
+    mem_limit: 512m
+    mem_reservation: 192m
+    cpus: "0.75"
+    labels:
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL","redis-cli ping | grep -q PONG"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+  mcai-redpanda:
+    restart: unless-stopped
+    mem_limit: 2048m
+    mem_reservation: 1024m
+    cpus: "2.00"
+    labels:
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL","wget -qO- http://127.0.0.1:9644/v1/status/ready >/dev/null 2>&1 || curl -fsS http://127.0.0.1:9644/v1/status/ready >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 45s
+  mcai-feeder:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.25"
+    labels:
+      autoheal: "true"
+  mcai-large-exec:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.25"
+    labels:
+      autoheal: "true"
+  mcai-sim:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.25"
+    labels:
+      autoheal: "true"
+  mcai-small-agg:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.25"
+    labels:
+      autoheal: "true"
+  postgres-exporter:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.25"
+    labels:
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-postgres} -h 127.0.0.1"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+  watchtower:
+    restart: unless-stopped
+    mem_limit: 512m
+    mem_reservation: 128m
+    labels:
+      autoheal: "true"
+  gli-mainnet:
+    restart: unless-stopped
+    mem_limit: 512m
+    mem_reservation: 128m
+    labels:
+      autoheal: "true"
+  managerai:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  metrics:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  demo-app-redis:
+    restart: unless-stopped
+    mem_limit: 512m
+    mem_reservation: 192m
+    cpus: "0.75"
+    labels:
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL","redis-cli ping | grep -q PONG"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+  demo-app-qai:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  mcai-api:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  mcai-risk:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.25"
+    labels:
+      autoheal: "true"
+  demo-app-cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.2
+    restart: unless-stopped
+    mem_limit: 256m
+    mem_reservation: 128m
+    cpus: "0.50"
+    privileged: false
+    read_only: true
+    ports:
+      - "${CADVISOR_HOST_PORT:-18080}:8080"
+    command:
+      - --docker_only=true
+      - --housekeeping_interval=30s
+      - --max_housekeeping_interval=35s
+      - --store_container_labels=false
+      - --disable_metrics=advtcp,cpu_topology,cpuset,disk,hugetlb,memory_numa,network_tcp,network_udp,percpu,process,referenced_memory,resctrl,sched,tcp,udp
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+    networks:
+      - ops_isolated
+    healthcheck:
+      test: ["CMD-SHELL","wget -qO- http://127.0.0.1:8080/healthz >/dev/null 2>&1 || curl -fsS http://127.0.0.1:8080/healthz >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    tmpfs:
+      - /tmp
+  prometheus:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.00"
+    ports:
+      - "${PROMETHEUS_HOST_PORT:-19090}:9090"
+    labels:
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL","wget -qO- http://127.0.0.1:9090/-/healthy >/dev/null 2>&1 || curl -fsS http://127.0.0.1:9090/-/healthy >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+  autoheal:
+    image: willfarrell/autoheal:latest
+    restart: unless-stopped
+    mem_limit: 128m
+    mem_reservation: 64m
+    cpus: "0.25"
+    read_only: true
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: all
+      AUTOHEAL_INTERVAL: ${AUTOHEAL_INTERVAL:-15}
+      AUTOHEAL_START_PERIOD: ${AUTOHEAL_START_PERIOD:-120}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - ops_isolated
+    healthcheck:
+      test: ["CMD-SHELL","test -S /var/run/docker.sock"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    tmpfs:
+      - /tmp
+  mcai-router:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.25"
+    labels:
+      autoheal: "true"
+  quantumai-usdt-apps:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    labels:
+      autoheal: "true"
+  gli:
+    restart: unless-stopped
+    mem_limit: 512m
+    mem_reservation: 128m
+    labels:
+      autoheal: "true"
+  grafana:
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 256m
+    cpus: "1.00"
+    ports:
+      - "${GRAFANA_HOST_PORT:-13000}:3000"
+    labels:
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL","wget -qO- http://127.0.0.1:3000/api/health >/dev/null 2>&1 || curl -fsS http://127.0.0.1:3000/api/health >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+  mcai-trade-engine:
+    restart: unless-stopped
+    mem_limit: 1024m
+    mem_reservation: 384m
+    cpus: "1.25"
+    labels:
+      autoheal: "true"
+
+networks:
+  ops_isolated:
+    driver: bridge
+    internal: true

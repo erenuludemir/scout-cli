@@ -1,0 +1,8 @@
+.venv
+.venv313
+__pycache__
+*.pyc
+data/runtime.log
+data/runtime.pid
+data/runtime-worker.pid
+tests/__pycache__

@@ -126,7 +126,7 @@ public struct IntelligenceCenterView: View {
             .padding(16)
             .padding(.bottom, QAITheme.dockedBottomPadding)
         }
-        .background(QAITheme.shellGradient.ignoresSafeArea())
+        .background(AppBackground())
         .navigationTitle("Beyin Merkezi")
         .qaiNavigationTitleDisplayMode(.inline)
         .task {
@@ -190,7 +190,7 @@ public struct StrategyLibraryView: View {
                                         .foregroundStyle(QAITheme.textSecondary)
                                 }
                                 Spacer()
-                                Text(preset.requiresLicense ? "Premium" : "Hazır")
+                                Text(preset.requiresLicense ? "Advanced" : "Hazır")
                                     .font(.caption.bold())
                                     .foregroundStyle(preset.requiresLicense ? QAITheme.accent : QAITheme.success)
                             }
@@ -253,7 +253,7 @@ public struct StrategyLibraryView: View {
             .padding(16)
             .padding(.bottom, QAITheme.dockedBottomPadding)
         }
-        .background(QAITheme.shellGradient.ignoresSafeArea())
+        .background(AppBackground())
         .navigationTitle("Strateji Kütüphanesi")
         .qaiNavigationTitleDisplayMode(.inline)
         .task {
@@ -273,6 +273,8 @@ public struct StrategyLibraryView: View {
 
 public struct RunbookCenterView: View {
     @EnvironmentObject private var env: AppEnvironment
+    @State private var actionStatus = "Runtime snapshot bekleniyor"
+    @State private var isRunningAction = false
 
     public init() {}
 
@@ -288,6 +290,20 @@ public struct RunbookCenterView: View {
                             .font(.subheadline)
                             .foregroundStyle(QAITheme.textSecondary)
                     }
+                }
+
+                runtimeOperationsCard
+
+                if !env.runtimeAdmin.runbook.trendPoints.isEmpty {
+                    runtimeTrendCard
+                }
+
+                if !env.runtimeAdmin.runbook.topicActivity.isEmpty {
+                    topicActivityCard
+                }
+
+                if !env.runtimeAdmin.recentAudits.isEmpty {
+                    runtimeAuditCard
                 }
 
                 ForEach(runbookSections) { section in
@@ -320,17 +336,311 @@ public struct RunbookCenterView: View {
             .padding(16)
             .padding(.bottom, QAITheme.dockedBottomPadding)
         }
-        .background(QAITheme.shellGradient.ignoresSafeArea())
+        .background(AppBackground())
         .navigationTitle("Runbook")
         .qaiNavigationTitleDisplayMode(.inline)
         .task {
             env.training.loadIfNeeded()
+            let refreshed = await env.runtimeAdmin.refresh()
+            actionStatus = refreshed ? env.runtimeAdmin.lastAction : (env.runtimeAdmin.lastError ?? "Runtime snapshot alınamadı")
         }
     }
 
     private var runbookSections: [TrainingSection] {
         env.training.guide.sections.filter {
             $0.category == .operations || $0.category == .security || $0.category == .deployment || $0.category == .api
+        }
+    }
+
+    private var runtimeOperationsCard: some View {
+        CardView {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Canlı Runtime Runbook")
+                            .font(.system(.headline, design: .rounded).weight(.semibold))
+                            .foregroundStyle(QAITheme.textPrimary)
+                        Text("Backend readiness, outbox durumu ve replay/drain operasyonları bu yüzeyden yönetilir.")
+                            .font(.subheadline)
+                            .foregroundStyle(QAITheme.textSecondary)
+                    }
+                    Spacer()
+                    NavigationLink {
+                        HQAdminView(showsBackButton: true)
+                    } label: {
+                        Text("HQ Admin")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(QAITheme.background)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(QAITheme.accent)
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                HStack(spacing: 10) {
+                    BrainMetricChip(title: "API", value: env.runtimeAdmin.isReady ? "READY" : env.runtimeAdmin.readiness.status.uppercased(), tint: env.runtimeAdmin.isReady ? QAITheme.success : QAITheme.warning)
+                    BrainMetricChip(title: "Bağımlılık", value: env.runtimeAdmin.dependencySummary, tint: QAITheme.accent)
+                    BrainMetricChip(title: "Due", value: "\(env.runtimeAdmin.outbox.due)", tint: env.runtimeAdmin.outbox.due > 0 ? QAITheme.warning : QAITheme.success)
+                    BrainMetricChip(title: "DLQ", value: "\(env.runtimeAdmin.outbox.deadLetter)", tint: env.runtimeAdmin.outbox.deadLetter > 0 ? QAITheme.error : QAITheme.panelBlue)
+                }
+
+                Text("Audit: \(env.runtimeAdmin.auditSummary)")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(QAITheme.textSecondary)
+
+                if !env.runtimeAdmin.runbook.topics.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Topic Rotaları")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(QAITheme.textSecondary)
+                        ForEach(env.runtimeAdmin.runbook.topics.keys.sorted(), id: \.self) { key in
+                            HStack {
+                                Text(key.uppercased())
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(QAITheme.textPrimary)
+                                Spacer()
+                                Text(env.runtimeAdmin.runbook.topics[key] ?? "-")
+                                    .font(.caption.monospaced())
+                                    .foregroundStyle(QAITheme.textSecondary)
+                            }
+                        }
+                    }
+                }
+
+                Text(actionStatus)
+                    .font(.caption)
+                    .foregroundStyle(QAITheme.textSecondary)
+
+                HStack(spacing: 10) {
+                    actionButton(title: env.runtimeAdmin.isRefreshing ? "Yenileniyor..." : "Yenile", disabled: isRunningAction || env.runtimeAdmin.isRefreshing) {
+                        let refreshed = await env.runtimeAdmin.refresh()
+                        actionStatus = refreshed ? env.runtimeAdmin.lastAction : (env.runtimeAdmin.lastError ?? "Runtime yenileme başarısız")
+                    }
+                    actionButton(title: "Drain", disabled: isRunningAction) {
+                        let result = await env.runtimeAdmin.drainOutbox()
+                        actionStatus = result.map { "Drain sent \($0.sent) • failed \($0.failed) • dlq \($0.deadLettered)" } ?? (env.runtimeAdmin.lastError ?? "Drain başarısız")
+                    }
+                    actionButton(title: "Replay DLQ", disabled: isRunningAction || env.runtimeAdmin.outbox.deadLetter == 0) {
+                        let replayed = await env.runtimeAdmin.replayDeadLetters(limit: 25)
+                        actionStatus = replayed.map { "Replay dead letters \($0)" } ?? (env.runtimeAdmin.lastError ?? "Replay başarısız")
+                    }
+                }
+            }
+        }
+    }
+
+    private var runtimeAuditCard: some View {
+        CardView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Son Backend Audit İzleri")
+                    .font(.system(.headline, design: .rounded).weight(.semibold))
+                    .foregroundStyle(QAITheme.textPrimary)
+
+                ForEach(env.runtimeAdmin.recentAudits.prefix(6)) { audit in
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text(audit.action.replacingOccurrences(of: "_", with: " ").uppercased())
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(QAITheme.textPrimary)
+                            Spacer()
+                            Text(audit.createdAtText)
+                                .font(.caption.monospaced())
+                                .foregroundStyle(QAITheme.textSecondary)
+                        }
+                        Text("\(audit.topic) • \(audit.status)")
+                            .font(.caption)
+                            .foregroundStyle(audit.status == "publish_failed" ? QAITheme.error : QAITheme.textSecondary)
+                        if let detail = audit.detail, !detail.isEmpty {
+                            Text(detail)
+                                .font(.caption)
+                                .foregroundStyle(QAITheme.textSecondary)
+                                .lineLimit(2)
+                        }
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(auditTint(audit))
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+            }
+        }
+    }
+
+    private var runtimeTrendCard: some View {
+        CardView {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Native Runtime Trends")
+                    .font(.system(.headline, design: .rounded).weight(.semibold))
+                    .foregroundStyle(QAITheme.textPrimary)
+
+                RuntimeSparklineCard(
+                    title: "Outbox Pressure",
+                    subtitle: "due / failed / dlq",
+                    series: [
+                        RuntimeSparklineSeries(label: "Due", values: env.runtimeAdmin.runbook.trendPoints.map(\.outboxDue), tint: QAITheme.warning),
+                        RuntimeSparklineSeries(label: "Failed", values: env.runtimeAdmin.runbook.trendPoints.map(\.outboxFailed), tint: QAITheme.panelBlue),
+                        RuntimeSparklineSeries(label: "DLQ", values: env.runtimeAdmin.runbook.trendPoints.map(\.outboxDeadLetter), tint: QAITheme.error)
+                    ]
+                )
+
+                RuntimeSparklineCard(
+                    title: "Relay Activity",
+                    subtitle: "sent / replay / dead-letter",
+                    series: [
+                        RuntimeSparklineSeries(label: "Sent", values: env.runtimeAdmin.runbook.trendPoints.map(\.relaySent), tint: QAITheme.success),
+                        RuntimeSparklineSeries(label: "Replay", values: env.runtimeAdmin.runbook.trendPoints.map(\.relayReplay), tint: QAITheme.warning),
+                        RuntimeSparklineSeries(label: "DLQ", values: env.runtimeAdmin.runbook.trendPoints.map(\.relayDeadLetter), tint: QAITheme.error)
+                    ]
+                )
+            }
+        }
+    }
+
+    private var topicActivityCard: some View {
+        CardView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Topic Activity")
+                    .font(.system(.headline, design: .rounded).weight(.semibold))
+                    .foregroundStyle(QAITheme.textPrimary)
+
+                ForEach(env.runtimeAdmin.runbook.topicActivity.prefix(6)) { activity in
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(activity.topic)
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(QAITheme.textPrimary)
+                            Spacer()
+                            Text(activity.lastSeenAtText)
+                                .font(.caption.monospaced())
+                                .foregroundStyle(QAITheme.textSecondary)
+                        }
+
+                        HStack(spacing: 10) {
+                            BrainMetricChip(title: "Sent", value: "\(activity.sentCount)", tint: QAITheme.success)
+                            BrainMetricChip(title: "Replay", value: "\(activity.replayCount)", tint: QAITheme.warning)
+                            BrainMetricChip(title: "DLQ", value: "\(activity.deadLetterCount)", tint: activity.deadLetterCount > 0 ? QAITheme.error : QAITheme.panelBlue)
+                        }
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(QAITheme.surfaceMuted.opacity(0.35))
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+            }
+        }
+    }
+
+    private func actionButton(
+        title: String,
+        disabled: Bool,
+        action: @escaping @MainActor () async -> Void
+    ) -> some View {
+        Button {
+            guard !disabled else { return }
+            isRunningAction = true
+            Task { @MainActor in
+                await action()
+                isRunningAction = false
+            }
+        } label: {
+            Text(title)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(disabled ? QAITheme.textSecondary : QAITheme.background)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(disabled ? QAITheme.panelBlue.opacity(0.45) : QAITheme.accent)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+    }
+
+    private func auditTint(_ audit: RuntimeAdminAuditEntry) -> Color {
+        if audit.action == "dead_letter" || audit.status == "publish_failed" {
+            return QAITheme.error.opacity(0.16)
+        }
+        if audit.action == "replay" {
+            return QAITheme.warning.opacity(0.16)
+        }
+        return QAITheme.success.opacity(0.14)
+    }
+}
+
+private struct RuntimeSparklineSeries: Identifiable {
+    let id = UUID()
+    let label: String
+    let values: [Int]
+    let tint: Color
+}
+
+private struct RuntimeSparklineCard: View {
+    let title: String
+    let subtitle: String
+    let series: [RuntimeSparklineSeries]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(QAITheme.textPrimary)
+            Text(subtitle)
+                .font(.caption)
+                .foregroundStyle(QAITheme.textSecondary)
+
+            GeometryReader { geometry in
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(QAITheme.surfaceMuted.opacity(0.26))
+                    ForEach(series) { item in
+                        RuntimeSparklineShape(values: item.values)
+                            .stroke(item.tint, style: StrokeStyle(lineWidth: 2.2, lineCap: .round, lineJoin: .round))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 10)
+                    }
+                }
+            }
+            .frame(height: 84)
+
+            HStack(spacing: 10) {
+                ForEach(series) { item in
+                    HStack(spacing: 6) {
+                        Circle()
+                            .fill(item.tint)
+                            .frame(width: 8, height: 8)
+                        Text("\(item.label) \(item.values.last ?? 0)")
+                            .font(.caption.monospaced())
+                            .foregroundStyle(QAITheme.textSecondary)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(QAITheme.surfaceMuted.opacity(0.22))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+}
+
+private struct RuntimeSparklineShape: Shape {
+    let values: [Int]
+
+    func path(in rect: CGRect) -> Path {
+        guard values.count > 1 else { return Path() }
+        let maxValue = max(values.max() ?? 0, 1)
+        let stepX = rect.width / CGFloat(max(values.count - 1, 1))
+
+        return Path { path in
+            for (index, value) in values.enumerated() {
+                let x = CGFloat(index) * stepX
+                let ratio = CGFloat(value) / CGFloat(maxValue)
+                let y = rect.maxY - (ratio * rect.height)
+                if index == 0 {
+                    path.move(to: CGPoint(x: x, y: y))
+                } else {
+                    path.addLine(to: CGPoint(x: x, y: y))
+                }
+            }
         }
     }
 }
@@ -385,7 +695,7 @@ private struct TrainingSectionDetailView: View {
                 .padding(.bottom, QAITheme.dockedBottomPadding)
             }
         }
-        .background(QAITheme.shellGradient.ignoresSafeArea())
+        .background(AppBackground())
         .navigationTitle(section?.title ?? "Kaynak")
         .qaiNavigationTitleDisplayMode(.inline)
     }

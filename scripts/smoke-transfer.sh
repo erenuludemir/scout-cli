@@ -68,7 +68,7 @@ ETH_SENDER_ADDRESS="$(grep -E '^ETH_SENDER_ADDRESS=' .env | cut -d= -f2- || true
 ETH_PRIVATE_KEY="$(grep -E '^ETH_PRIVATE_KEY=' .env | cut -d= -f2- || true)"
 if [[ -z "$INFURA_PROJECT_ID" || "$INFURA_PROJECT_ID" == __REQUIRED_INFURA_ID__ ]] || \
   [[ -z "$ETH_SENDER_ADDRESS" || "$ETH_SENDER_ADDRESS" == __YOUR_WALLET_ADDRESS__ ]] || \
-  [[ -z "$ETH_PRIVATE_KEY" || "$ETH_PRIVATE_KEY" == __YOUR_PRIVATE_KEY__(never commit real key) ]]; then
+  [[ -z "$ETH_PRIVATE_KEY" || "$ETH_PRIVATE_KEY" == "__YOUR_PRIVATE_KEY__(never commit real key)" ]]; then
   echo "[ERR] .env zorunlu alanlar boş. Doldur ve tekrar çalıştır."
   exit 1
 fi

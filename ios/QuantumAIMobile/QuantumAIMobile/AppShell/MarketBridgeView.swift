@@ -14,6 +14,8 @@ public struct MarketBridgeView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
     @State private var selectedSection: BridgeSection = .snapshot
+    @State private var hasPreparedRuntime = false
+    @State private var settingsRefreshTask: Task<Void, Never>?
     private let showsBackButton: Bool
 
     public init(showsBackButton: Bool = false) {
@@ -73,16 +75,28 @@ public struct MarketBridgeView: View {
         .background(AppBackground())
         .screenNavigationChromeHidden()
         .task {
-            env.training.loadIfNeeded()
-            env.applyRuntimeSettings()
+            guard !hasPreparedRuntime else { return }
+            hasPreparedRuntime = true
+            await Task.yield()
+            if env.settings.marketBridgeEnabled {
+                env.applyRuntimeSettings()
+            }
+        }
+        .task(id: selectedSection) {
+            await prepareSection(selectedSection)
         }
         .onChange(of: env.settings.selectedSymbol) { _, symbol in
             guard env.settings.marketBridgeEnabled, !symbol.isEmpty else { return }
-            env.applyRuntimeSettings()
+            scheduleSettingsRefresh(immediate: false, reason: "MarketBridgeView.settingsRefresh")
         }
         .onChange(of: env.settings.marketBridgeEnabled) { _, isEnabled in
-            _ = isEnabled
-            env.applyRuntimeSettings()
+            settingsRefreshTask?.cancel()
+            guard isEnabled else { return }
+            scheduleSettingsRefresh(immediate: true, reason: "MarketBridgeView.settingsRefresh")
+        }
+        .onDisappear {
+            settingsRefreshTask?.cancel()
+            settingsRefreshTask = nil
         }
     }
 
@@ -92,6 +106,31 @@ public struct MarketBridgeView: View {
 
     private func openBridgeSite() {
         openURL(env.marketBridge.bridgeURL(for: env.settings.selectedSymbol))
+    }
+
+    private func scheduleSettingsRefresh(immediate: Bool, reason: StaticString) {
+        settingsRefreshTask?.cancel()
+        settingsRefreshTask = Task { @MainActor in
+            if !immediate {
+                try? await Task.sleep(for: .milliseconds(250))
+            } else {
+                await Task.yield()
+            }
+            guard !Task.isCancelled else { return }
+            if #available(iOS 15.0, macOS 12.0, *) {
+                QAISignpost.event(reason, message: "symbol=\(env.settings.selectedSymbol) enabled=\(env.settings.marketBridgeEnabled)")
+            }
+            env.applyRuntimeSettings()
+        }
+    }
+
+    @MainActor
+    private func prepareSection(_ section: BridgeSection) async {
+        guard section == .guide else { return }
+        if #available(iOS 15.0, macOS 12.0, *) {
+            QAISignpost.event("MarketBridgeView.sectionSwitch", message: "section=\(section.rawValue)")
+        }
+        env.training.loadIfNeeded(priority: .utility)
     }
 }
 
@@ -147,8 +186,11 @@ private struct MarketBridgeHeroCard: View {
                     .font(QAITokens.Typography.body)
                     .foregroundStyle(QAITokens.Palette.textSecondary)
 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: QAITokens.Spacing.xs) {
+                LazyVGrid(
+                    columns: [GridItem(.adaptive(minimum: 112), spacing: QAITokens.Spacing.xs)],
+                    alignment: .leading,
+                    spacing: QAITokens.Spacing.xs
+                ) {
                         BridgeBadge(title: isEnabled ? "Köprü Açık" : "Köprü Kapalı", color: isEnabled ? QAITokens.Palette.teal : QAITokens.Palette.warning)
                         BridgeBadge(title: usesSimulation ? "Simülasyon" : "Canlı Operasyon", color: usesSimulation ? QAITokens.Palette.warning : QAITokens.Palette.gold)
                         BridgeBadge(title: selectedSymbol, color: QAITokens.Palette.cardElevated)
@@ -158,7 +200,6 @@ private struct MarketBridgeHeroCard: View {
                                 BridgeBadge(title: "Rank #\(rank)", color: QAITokens.Palette.chipAmber)
                             }
                         }
-                    }
                 }
 
                 if let lastError, !lastError.isEmpty {
@@ -175,14 +216,27 @@ private struct MarketBridgeHeroCard: View {
                         .foregroundStyle(QAITokens.Palette.textSecondary)
                 }
 
-                HStack(spacing: 10) {
-                    PrimaryActionButton(title: isLoading ? "Yenileniyor..." : "Yenile") {
-                        refresh()
-                    }
-                        .disabled(isLoading || !isEnabled)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) {
+                        PrimaryActionButton(title: isLoading ? "Yenileniyor..." : "Yenile") {
+                            refresh()
+                        }
+                            .disabled(isLoading || !isEnabled)
 
-                    PrimaryActionButton(title: "Siteyi Aç", style: .secondary) {
-                        openSite()
+                        PrimaryActionButton(title: "Siteyi Aç", style: .secondary) {
+                            openSite()
+                        }
+                    }
+
+                    VStack(spacing: QAITokens.Spacing.s) {
+                        PrimaryActionButton(title: isLoading ? "Yenileniyor..." : "Yenile") {
+                            refresh()
+                        }
+                            .disabled(isLoading || !isEnabled)
+
+                        PrimaryActionButton(title: "Siteyi Aç", style: .secondary) {
+                            openSite()
+                        }
                     }
                 }
             }
@@ -216,22 +270,17 @@ private struct CoinMarketSnapshotCard: View {
                     .foregroundStyle(QAITokens.Palette.textPrimary)
 
                 if let snapshot {
-                    HStack(spacing: 10) {
+                    LazyVGrid(
+                        columns: [GridItem(.adaptive(minimum: 148, maximum: 240), spacing: 10)],
+                        alignment: .leading,
+                        spacing: 10
+                    ) {
                         SnapshotMetric(title: "Fiyat", value: money(snapshot.priceUSD), tint: QAITokens.Palette.chipAmber)
                         SnapshotMetric(title: "Rank", value: snapshot.rank.map { "#\($0)" } ?? "—", tint: QAITokens.Palette.chipBlue)
-                    }
-
-                    HStack(spacing: 10) {
                         SnapshotMetric(title: "Market Cap", value: compact(snapshot.marketCapUSD), tint: QAITokens.Palette.chipTeal)
                         SnapshotMetric(title: "24s Hacim", value: compact(snapshot.volume24hUSD), tint: QAITokens.Palette.chipAmber)
-                    }
-
-                    HStack(spacing: 10) {
                         SnapshotMetric(title: "FDV", value: compact(snapshot.fullyDilutedMarketCapUSD), tint: QAITokens.Palette.chipBlue)
                         SnapshotMetric(title: "Watchlist", value: snapshot.watchCount.map { "\($0)" } ?? "—", tint: QAITokens.Palette.cardElevated)
-                    }
-
-                    HStack(spacing: 10) {
                         SnapshotMetric(title: "Circulating", value: compact(snapshot.circulatingSupply), tint: QAITokens.Palette.cardElevated)
                         SnapshotMetric(title: "Max Supply", value: compact(snapshot.maxSupply), tint: QAITokens.Palette.cardElevated)
                     }
@@ -300,21 +349,41 @@ private struct TrainingDocumentCard: View {
                     .font(QAITokens.Typography.body)
                     .foregroundStyle(QAITokens.Palette.textSecondary)
 
-                HStack(spacing: 10) {
-                    if let url = htmlURL {
-                        Link(destination: url) {
-                            Label("HTML Rehber", systemImage: "doc.viewfinder")
-                                .font(QAITokens.Typography.bodyStrong)
-                                .foregroundStyle(QAITokens.Palette.textPrimary)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 58)
-                                .background(QAITokens.Palette.cardElevated)
-                                .clipShape(RoundedRectangle(cornerRadius: QAITokens.Radius.button, style: .continuous))
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) {
+                        if let url = htmlURL {
+                            Link(destination: url) {
+                                Label("HTML Rehber", systemImage: "doc.viewfinder")
+                                    .font(QAITokens.Typography.bodyStrong)
+                                    .foregroundStyle(QAITokens.Palette.textPrimary)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(minHeight: 58)
+                                    .background(QAITokens.Palette.cardElevated)
+                                    .clipShape(RoundedRectangle(cornerRadius: QAITokens.Radius.button, style: .continuous))
+                            }
+                        }
+
+                        PrimaryActionButton(title: "CMC Köprüsü") {
+                            openBridge()
                         }
                     }
 
-                    PrimaryActionButton(title: "CMC Köprüsü") {
-                        openBridge()
+                    VStack(spacing: QAITokens.Spacing.s) {
+                        if let url = htmlURL {
+                            Link(destination: url) {
+                                Label("HTML Rehber", systemImage: "doc.viewfinder")
+                                    .font(QAITokens.Typography.bodyStrong)
+                                    .foregroundStyle(QAITokens.Palette.textPrimary)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(minHeight: 58)
+                                    .background(QAITokens.Palette.cardElevated)
+                                    .clipShape(RoundedRectangle(cornerRadius: QAITokens.Radius.button, style: .continuous))
+                            }
+                        }
+
+                        PrimaryActionButton(title: "CMC Köprüsü") {
+                            openBridge()
+                        }
                     }
                 }
             }
@@ -334,7 +403,11 @@ private struct BridgeSectionPicker: View {
     @Binding var selectedSection: BridgeSection
 
     var body: some View {
-        HStack(spacing: 8) {
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 110, maximum: 180), spacing: 8)],
+            alignment: .leading,
+            spacing: 8
+        ) {
             ForEach(BridgeSection.allCases) { section in
                 Button {
                     withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
@@ -389,6 +462,8 @@ private struct BridgeBadge: View {
         Text(title)
             .font(QAITokens.Typography.caption)
             .foregroundStyle(QAITokens.Palette.textPrimary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.82)
             .padding(.horizontal, 10)
             .padding(.vertical, 7)
             .background(color)
@@ -443,14 +518,27 @@ private struct CoinMarketCapBridgeConsoleCard: View {
                 .background(QAITokens.Palette.cardElevated)
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
-                HStack(spacing: 10) {
-                    PrimaryActionButton(title: isLoading ? "Yenileniyor..." : "Snapshot Yenile") {
-                        refresh()
-                    }
-                        .disabled(!isEnabled || isLoading)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) {
+                        PrimaryActionButton(title: isLoading ? "Yenileniyor..." : "Snapshot Yenile") {
+                            refresh()
+                        }
+                            .disabled(!isEnabled || isLoading)
 
-                    PrimaryActionButton(title: "CoinMarketCap Aç", style: .secondary) {
-                        openSite()
+                        PrimaryActionButton(title: "CoinMarketCap Aç", style: .secondary) {
+                            openSite()
+                        }
+                    }
+
+                    VStack(spacing: QAITokens.Spacing.s) {
+                        PrimaryActionButton(title: isLoading ? "Yenileniyor..." : "Snapshot Yenile") {
+                            refresh()
+                        }
+                            .disabled(!isEnabled || isLoading)
+
+                        PrimaryActionButton(title: "CoinMarketCap Aç", style: .secondary) {
+                            openSite()
+                        }
                     }
                 }
             }

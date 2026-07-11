@@ -295,6 +295,7 @@ private struct TradeHeroCard: View {
                 }
             }
         }
+        .accessibilityIdentifier("bots-screen")
     }
 }
 

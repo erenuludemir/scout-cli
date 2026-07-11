@@ -1,5 +1,11 @@
 services:
   quantumai-usdt-v2:
+    build:
+      context: ./quantumai-usdt-v2
+      dockerfile: Dockerfile
+    image: quantumai-usdt-v2:local
+    ports:
+      - "127.0.0.1:5005:5002"
     restart: unless-stopped
     environment:
       - PYTHONUNBUFFERED=1
@@ -9,6 +15,7 @@ services:
       - redis
 
   redis:
+    image: redis:7-alpine
     restart: unless-stopped
     volumes:
       - redis_data:/data

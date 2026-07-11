@@ -16,7 +16,7 @@ public enum ShellTab: String, CaseIterable, Identifiable {
         case .markets:
             return "Piyasalar"
         case .wallet:
-            return "Cüzdan"
+            return "Referans"
         case .bots:
             return "Botlar"
         case .settings:
@@ -31,7 +31,7 @@ public enum ShellTab: String, CaseIterable, Identifiable {
         case .markets:
             return "chart.line.uptrend.xyaxis"
         case .wallet:
-            return "lock.shield"
+            return "doc.text.magnifyingglass"
         case .bots:
             return "gearshape.2"
         case .settings:
@@ -42,6 +42,7 @@ public enum ShellTab: String, CaseIterable, Identifiable {
 
 public struct BottomTabBar: View {
     @Binding private var selectedTab: ShellTab
+    private let primaryTabs: [ShellTab] = [.panel, .markets, .bots, .settings]
 
     public init(selectedTab: Binding<ShellTab>) {
         self._selectedTab = selectedTab
@@ -49,7 +50,7 @@ public struct BottomTabBar: View {
 
     public var body: some View {
         HStack(spacing: QAITokens.Spacing.xs) {
-            ForEach(ShellTab.allCases) { tab in
+            ForEach(primaryTabs) { tab in
                 Button {
                     selectedTab = tab
                 } label: {
@@ -58,11 +59,13 @@ public struct BottomTabBar: View {
                             .font(.system(size: 16, weight: .semibold))
                         Text(tab.title)
                             .font(QAITokens.Typography.tab)
-                            .lineLimit(1)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.8)
+                            .multilineTextAlignment(.center)
                     }
                     .foregroundStyle(selectedTab == tab ? QAITokens.Palette.backgroundBottom : QAITokens.Palette.textPrimary)
                     .frame(maxWidth: .infinity)
-                    .frame(minHeight: 54)
+                    .frame(minHeight: 58)
                     .padding(.vertical, 8)
                     .background(selectedTab == tab ? QAITokens.Palette.gold : QAITokens.Palette.tabIdle)
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))

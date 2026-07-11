@@ -10,6 +10,7 @@ public final class SettingsStore: ObservableObject {
         static let isAuthenticated = "qai.settings.isAuthenticated"
         static let licenseActivatedAt = "qai.settings.licenseActivatedAt"
         static let selectedSymbol = "qai.settings.selectedSymbol"
+        static let selectedWalletNetworkID = "qai.settings.selectedWalletNetworkID"
         static let dcaAmount = "qai.settings.dcaAmount"
         static let dcaPeriodSec = "qai.settings.dcaPeriodSec"
         static let gridLower = "qai.settings.gridLower"
@@ -56,6 +57,10 @@ public final class SettingsStore: ObservableObject {
         didSet { defaults.set(selectedSymbol, forKey: Key.selectedSymbol) }
     }
 
+    @Published public var selectedWalletNetworkID: String {
+        didSet { defaults.set(selectedWalletNetworkID, forKey: Key.selectedWalletNetworkID) }
+    }
+
     @Published public var dcaAmount: Double {
         didSet { defaults.set(dcaAmount, forKey: Key.dcaAmount) }
     }
@@ -90,9 +95,14 @@ public final class SettingsStore: ObservableObject {
         self.liveAdapters = defaults.object(forKey: Key.liveAdapters) as? Bool ?? flags.liveAdapters
         self.telemetryEnabled = defaults.object(forKey: Key.telemetryEnabled) as? Bool ?? flags.telemetry
         self.marketBridgeEnabled = defaults.object(forKey: Key.marketBridgeEnabled) as? Bool ?? true
-        self.isAuthenticated = defaults.object(forKey: Key.isAuthenticated) as? Bool ?? false
-        self.licenseActivatedAt = defaults.object(forKey: Key.licenseActivatedAt) as? Date
+        self.isAuthenticated = defaults.object(forKey: Key.isAuthenticated) as? Bool ?? true
+        self.licenseActivatedAt = defaults.object(forKey: Key.licenseActivatedAt) as? Date ?? .now
         self.selectedSymbol = defaults.string(forKey: Key.selectedSymbol) ?? "BTCUSDT"
+        let configuredWalletNetwork = LiveOpsConfiguration.load(defaults: defaults).preferredWalletNetworkID
+        let resolvedWalletNetwork = WalletChainRegistry.network(
+            id: defaults.string(forKey: Key.selectedWalletNetworkID) ?? configuredWalletNetwork
+        )?.id ?? WalletChainRegistry.defaultNetwork.id
+        self.selectedWalletNetworkID = resolvedWalletNetwork
         self.dcaAmount = defaults.object(forKey: Key.dcaAmount) as? Double ?? 25
         self.dcaPeriodSec = defaults.object(forKey: Key.dcaPeriodSec) as? Int ?? 30
         self.gridLower = defaults.object(forKey: Key.gridLower) as? Double ?? 48_000
@@ -100,5 +110,13 @@ public final class SettingsStore: ObservableObject {
         self.gridSteps = defaults.object(forKey: Key.gridSteps) as? Int ?? 5
         self.copyRatio = defaults.object(forKey: Key.copyRatio) as? Double ?? 1.0
         self.shockThreshold = defaults.object(forKey: Key.shockThreshold) as? Double ?? 0.01
+
+        // App Store build is free of charge; full access is available without an in-app payment step.
+        defaults.set(true, forKey: Key.isAuthenticated)
+        if self.licenseActivatedAt == nil {
+            let activatedAt = Date()
+            self.licenseActivatedAt = activatedAt
+            defaults.set(activatedAt, forKey: Key.licenseActivatedAt)
+        }
     }
 }

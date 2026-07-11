@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>qai.sim_mode</key>
+    <false/>
+    <key>qai.telemetry_level</key>
+    <string>minimal</string>
+    <key>qai.live_endpoints</key>
+    <array>
+        <string>http://192.168.1.39:5003</string>
+    </array>
+    <key>qai.wallet.default_network</key>
+    <string>ethereum</string>
+    <key>qai.wallet.addresses</key>
+    <dict>
+        <key>default</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>evm</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>ethereum</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>base</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>arbitrum</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>optimism</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>polygon</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>bsc</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>avalanche</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>linea</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>blast</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>scroll</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+        <key>zksync</key>
+        <string>0xda93812D7D1F3D326ef8156D94175238948Da04f</string>
+    </dict>
+</dict>
+</plist>

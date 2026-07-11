@@ -1,0 +1,14 @@
+{
+  "id": "quantumai-sample-model",
+  "version": "2026.03.18",
+  "type": "rule-based-demo",
+  "metadata": {
+    "source": "repo-fallback-sample",
+    "description": "Fallback artifact used when external DATA_BASE model is not mounted."
+  },
+  "features": [
+    "text-length",
+    "ascii-sum",
+    "deterministic-score"
+  ]
+}

@@ -96,7 +96,7 @@ public enum TrainingModuleOption: String, CaseIterable, Identifiable, Codable, S
         case .scenarios: return "Senaryo Görevleri"
         case .security: return "Güvenlik Eğitimi"
         case .sandbox: return "Test / Sandbox"
-        case .walletActivation: return "Cüzdan Aktivasyonu"
+        case .walletActivation: return "Referans Doğrulama"
         }
     }
 
@@ -107,7 +107,7 @@ public enum TrainingModuleOption: String, CaseIterable, Identifiable, Codable, S
         case .scenarios: return "Gerçek görev benzeri senaryo kartları ile ilerle."
         case .security: return "Face ID, doğrulama ve güvenli işlem akışını tamamla."
         case .sandbox: return "Risk üretmeden ayrı model üzerinde pratik yap."
-        case .walletActivation: return "Binance, Coinbase, Trust ve MetaMask akışını doğrula."
+        case .walletActivation: return "Harici referans uygulamalarının geri dönüş ve doğrulama akışını gözden geçir."
         }
     }
 }

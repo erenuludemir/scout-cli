@@ -1,5 +1,4 @@
 export DOCKER_USERNAME="erenuludemir"
-export DOCKER_PAT="dckr_pat_DZ7yqjlEYIEXGF0Sodw30_iwPMg"
 
 set -Eeuo pipefail
 
@@ -17,7 +16,7 @@ if [[ ! -f ".env" ]]; then
 APP_DIR="$HOME/QuantumAI-Dockerized-System"
 HOST_PORT=5003
 PLAN=A
-GLI_DRY_RUN=0
+GLI_DRY_RUN=1
 DEFAULT_CHAINID=1
 INFURA_PROJECT_ID=__REQUIRED_INFURA_ID__
 ETH_SENDER_ADDRESS=__YOUR_WALLET_ADDRESS__

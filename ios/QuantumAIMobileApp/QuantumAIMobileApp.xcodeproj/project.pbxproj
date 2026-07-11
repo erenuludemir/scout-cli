@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02B500A46B0A79BF0A084278 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CBE962CAEF930C54FAA3D96D /* LaunchScreen.storyboard */; };
 		326F0CAEBDC6336BC6811F99 /* HostRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1F6ED4D43E4058C03EB028 /* HostRootView.swift */; };
 		3A5E7C1B7A568F53FF0455EA /* QuantumAIMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 305393CECC575F86552817BB /* QuantumAIMobile */; };
 		B8079737374F078B77030887 /* QuantumAIMobileAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF3E3D2ADF468D1DB2C12EF /* QuantumAIMobileAppUITests.swift */; };
@@ -28,10 +29,11 @@
 /* Begin PBXFileReference section */
 		3A1F6ED4D43E4058C03EB028 /* HostRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostRootView.swift; sourceTree = "<group>"; };
 		43DC605B2CFD98ECE5A17739 /* QuantumAIMobile */ = {isa = PBXFileReference; lastKnownFileType = folder; name = QuantumAIMobile; path = ../QuantumAIMobile; sourceTree = SOURCE_ROOT; };
+		64DF0F13B5A4C328F2026CC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7029F2845D35060FED72702A /* QuantumAIMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantumAIMobileApp.swift; sourceTree = "<group>"; };
-		87F599413F7587B2DDEDF60C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		87F599413F7587B2DDEDF60C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		9AA721D98AB8B0A99D28B8FA /* QuantumAIMobileAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = QuantumAIMobileAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD69ECE95C1FDF3B42B2C7F9 /* QuantumAIMobileApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = QuantumAIMobileApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD69ECE95C1FDF3B42B2C7F9 /* QuantumAIMobileApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuantumAIMobileApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B79B61B584B5F382FE7C3B6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EB74D4C6AD19244EAEDDC531 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EFF3E3D2ADF468D1DB2C12EF /* QuantumAIMobileAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantumAIMobileAppUITests.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 				EB74D4C6AD19244EAEDDC531 /* Info.plist */,
 				87F599413F7587B2DDEDF60C /* PrivacyInfo.xcprivacy */,
 				7029F2845D35060FED72702A /* QuantumAIMobileApp.swift */,
+				CBE962CAEF930C54FAA3D96D /* LaunchScreen.storyboard */,
 			);
 			path = QuantumAIMobileApp;
 			sourceTree = "<group>";
@@ -186,6 +189,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5FCDC35CD5D2CC076732BA8 /* Assets.xcassets in Resources */,
+				02B500A46B0A79BF0A084278 /* LaunchScreen.storyboard in Resources */,
 				D167134D0C29C8F89F87E0CA /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -219,6 +223,17 @@
 			targetProxy = 90EDD141855828834A6AC9B9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CBE962CAEF930C54FAA3D96D /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				64DF0F13B5A4C328F2026CC5 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		0D415E43D8F49A2B524E97AB /* Debug */ = {
@@ -257,10 +272,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGNING_ALLOWED = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YH698TG69K;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -282,7 +296,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -352,10 +366,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGNING_ALLOWED = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YH698TG69K;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -371,7 +384,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.erenuludemir.quantumaimobile;
@@ -411,6 +424,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				EXECUTABLE_NAME = QuantumAIMobileApp;
 				INFOPLIST_FILE = QuantumAIMobileApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuantumAIMobile;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -430,6 +445,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				EXECUTABLE_NAME = QuantumAIMobileApp;
 				INFOPLIST_FILE = QuantumAIMobileApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuantumAIMobile;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -1,1 +1,0 @@
-/Users/erenuludemir/QuantumAI-Dockerized-System/scripts/start_all.sh

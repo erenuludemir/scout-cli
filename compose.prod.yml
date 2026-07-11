@@ -1,0 +1,266 @@
+# Production Override Configuration
+# Stack with optimize resources and production-ready settings
+# Usage: docker compose -f compose.yml -f compose.prod.yml up -d
+
+version: "3.9"
+
+x-prod-service:
+  restart: always
+  deploy:
+    placement:
+      constraints: [node.role == manager]
+  labels:
+    environment: production
+    monitoring: "true"
+
+services:
+  # ===== Production Resource Tuning =====
+  gateway:
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1500M
+        reservations:
+          cpus: "1.0"
+          memory: 1000M
+    environment:
+      NGINX_WORKER_PROCESSES: 8
+      NGINX_WORKER_CONNECTIONS: 4096
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+        max-file: "7"
+        labels: "service=gateway,env=prod"
+
+  dex:
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1024M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+        max-file: "7"
+        labels: "service=dex,env=prod"
+
+  quantumai-usdt-v2:
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1024M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+    environment:
+      GUNICORN_WORKERS: 8
+      GUNICORN_TIMEOUT: 180
+      PYTHONUNBUFFERED: "1"
+      LOG_LEVEL: WARNING # Reduce verbosity in production
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+        max-file: "7"
+        labels: "service=usdt-v2,env=prod"
+
+  redis:
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+    command: >
+      redis-server
+      --maxmemory 1gb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --dbfilename dump.rdb
+    volumes:
+      - redis_prod_data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: "5"
+
+  rosettaai:
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+        reservations:
+          cpus: "1.0"
+          memory: 1536M
+    environment:
+      LOG_LEVEL: WARNING
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+        max-file: "7"
+        labels: "service=rosettaai,env=prod"
+
+  managerai:
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1024M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+    environment:
+      LOG_LEVEL: WARNING
+      SUPERVIZOR_DOCKER_TIMEOUT_SECS: "30"
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+        max-file: "7"
+        labels: "service=managerai,env=prod"
+
+  metrics:
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    environment:
+      METRICS_SCRAPE_TIMEOUT_SECS: "10"
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: "5"
+
+  # ===== Monitoring Stack =====
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: prometheus-prod
+    restart: always
+    ports:
+      - "127.0.0.1:19090:9090"
+    volumes:
+      - ./monitoring/prometheus.prod.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_prod_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=30d"
+      - "--query.timeout=5m"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+    networks:
+      - monitoring
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: "5"
+
+  grafana:
+    image: grafana/grafana:10.4.5
+    container_name: grafana-prod
+    restart: always
+    ports:
+      - "127.0.0.1:13000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_INSTALL_PLUGINS: "grafana-pie-chart-panel"
+      GF_SERVER_ROOT_URL: "https://monitoring.example.com"
+      GF_SECURITY_COOKIE_SECURE: "true"
+      GF_SECURITY_COOKIE_SAMESITE: "Lax"
+    volumes:
+      - grafana_prod_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.5"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: "5"
+
+  # ===== Reverse Proxy & SSL =====
+  # Enable this for production HTTPS/SSL termination
+  # caddy:
+  #   image: caddy:latest
+  #   container_name: caddy-prod
+  #   restart: always
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./configs/Caddyfile:/etc/caddy/Caddyfile:ro
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   environment:
+  #     DOMAIN: api.example.com
+  #   networks:
+  #     - default
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-size: 50m
+  #       max-file: '5'
+
+# ===== Production Volumes =====
+volumes:
+  redis_prod_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/quantumai/redis
+  prometheus_prod_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/quantumai/prometheus
+  grafana_prod_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/quantumai/grafana
+
+# ===== Production Networks =====
+networks:
+  monitoring:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1500
