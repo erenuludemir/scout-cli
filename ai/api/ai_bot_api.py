@@ -14,26 +14,50 @@ from pydantic import BaseModel, Field
 app = FastAPI(title="QuantumAI Bot API", version="1.0.0")
 ROOT = Path(os.getenv("QAI_ROOT", Path(__file__).resolve().parents[2]))
 PYTHON_BIN = os.getenv("QAI_PYTHON", sys.executable)
+COMMAND_TIMEOUT_SECS = max(1, int(os.getenv("QAI_COMMAND_TIMEOUT_SECS", "600")))
+MAX_DIAGNOSTIC_CHARS = 4000
+MAX_STDOUT_LINES = 100
 
 
 class DatasetRequest(BaseModel):
-    symbol: str = Field(default="BTCUSDT")
-    interval: str = Field(default="1h")
-    limit: int = Field(default=1200)
+    symbol: str = Field(default="BTCUSDT", pattern=r"^[A-Z0-9]{3,20}$")
+    interval: str = Field(default="1h", pattern=r"^[1-9][0-9]*[smhdwM]$")
+    limit: int = Field(default=1200, ge=100, le=5000)
 
 
 class StrategyRequest(BaseModel):
-    account_equity: float = Field(default=10000.0)
-    risk_pct: float = Field(default=0.01)
+    account_equity: float = Field(default=10000.0, gt=0.0, le=1_000_000_000.0)
+    risk_pct: float = Field(default=0.01, gt=0.0, le=0.1)
 
 
 def run_py(module_path: Path, env: dict[str, str] | None = None) -> dict[str, Any]:
     merged = os.environ.copy()
     if env:
         merged.update(env)
-    proc = subprocess.run([PYTHON_BIN, str(module_path)], cwd=str(ROOT), env=merged, capture_output=True, text=True)
-    stdout = proc.stdout.strip().splitlines()
-    stderr = proc.stderr.strip()
+    try:
+        proc = subprocess.run(
+            [PYTHON_BIN, str(module_path)],
+            cwd=str(ROOT),
+            env=merged,
+            capture_output=True,
+            text=True,
+            timeout=COMMAND_TIMEOUT_SECS,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise HTTPException(
+            status_code=504,
+            detail={
+                "error": "command-timeout",
+                "timeout_secs": COMMAND_TIMEOUT_SECS,
+                "module": str(module_path),
+            },
+        ) from exc
+
+    stdout = [
+        line[-MAX_DIAGNOSTIC_CHARS:]
+        for line in proc.stdout.strip().splitlines()[-MAX_STDOUT_LINES:]
+    ]
+    stderr = proc.stderr.strip()[-MAX_DIAGNOSTIC_CHARS:]
     if proc.returncode != 0:
         raise HTTPException(status_code=500, detail={"returncode": proc.returncode, "stderr": stderr, "stdout": stdout})
     if not stdout:

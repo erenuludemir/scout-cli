@@ -1,0 +1,109 @@
+services:
+  managerai:
+    build:
+      context: .
+      dockerfile: managerai/Dockerfile
+    image: quantumai-dockerized-system-managerai:latest
+    container_name: managerai
+    command: ["uvicorn", "managerai.app:app", "--host", "0.0.0.0", "--port", "8012"]
+    working_dir: /app
+    environment:
+      COLIMA_PROFILE: "${COLIMA_PROFILE:-mcai-colima}"
+      DOCKER_HOST: unix:///colima/${COLIMA_PROFILE:-mcai-colima}/docker.sock
+      MANAGERAI_BASE_DIR: /repo
+      MANAGERAI_STATE_DIR: /repo/_state/managerai
+      MANAGERAI_REPORT_DIR: /repo/_reports/managerai
+      MANAGERAI_LOG_DIR: /repo/_logs/managerai
+      MANAGERAI_BROKER_QUEUE_DIR: /repo/_state/managerai/queue
+      SUPERVIZOR_HISTORY_FILE: /repo/_logs/manager_ai/history.jsonl
+      SUPERVIZOR_DOCKER_TIMEOUT_SECS: "${SUPERVIZOR_DOCKER_TIMEOUT_SECS:-10}"
+      SUPERVIZOR_SERVICE_ALLOWLIST: "managerai,gateway,dex,quantumai-usdt,quantumai-usdt-v2,rosettaai,metrics,redis,gli,gli-mainnet,gli-sepolia,autoheal,watchtower"
+    volumes:
+      - .:/repo
+      - ${HOME}/.colima:/colima:ro
+    ports:
+      - "127.0.0.1:8012:8012"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8012/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  managerai-broker:
+    build:
+      context: .
+      dockerfile: managerai/Dockerfile
+    image: quantumai-dockerized-system-managerai-broker:latest
+    container_name: managerai-broker
+    command: ["uvicorn", "managerai.broker:app", "--host", "0.0.0.0", "--port", "8787"]
+    working_dir: /app
+    environment:
+      MANAGERAI_BASE_DIR: /app
+      MANAGERAI_STATE_DIR: /app/_state/managerai
+      MANAGERAI_REPORT_DIR: /app/_reports/managerai
+      MANAGERAI_LOG_DIR: /app/_logs/managerai
+      MANAGERAI_BROKER_QUEUE_DIR: /app/_state/managerai/queue
+    volumes:
+      - ./_state/managerai:/app/_state/managerai
+      - ./_reports/managerai:/app/_reports/managerai
+      - ./_logs/managerai:/app/_logs/managerai
+    ports:
+      - "127.0.0.1:8787:8787"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -fsS http://127.0.0.1:8787/healthz >/dev/null || exit 1
+      interval: 60s
+      timeout: 30s
+      retries: 5
+      start_period: 60s
+
+  managerai-guard:
+    build:
+      context: .
+      dockerfile: managerai/Dockerfile
+    image: quantumai-dockerized-system-managerai-guard:latest
+    container_name: managerai-guard
+    command: ["python", "-m", "managerai.guard"]
+    working_dir: /app
+    environment:
+      COLIMA_PROFILE: "${COLIMA_PROFILE:-mcai-colima}"
+      DOCKER_HOST: unix:///colima/${COLIMA_PROFILE:-mcai-colima}/docker.sock
+      MANAGERAI_REPO_ROOT: /repo
+      MANAGERAI_QAI_MANAGER: /repo/ops/qai_manager_ai.sh
+      MANAGERAI_BASE_DIR: /repo
+      MANAGERAI_STATE_DIR: /repo/_state/managerai
+      MANAGERAI_REPORT_DIR: /repo/_reports/managerai
+      MANAGERAI_LOG_DIR: /repo/_logs/managerai
+      MANAGERAI_BROKER_QUEUE_DIR: /repo/_state/managerai/queue
+      MANAGERAI_BROKER_URL: http://managerai:8012
+      MANAGERAI_BROKER_FALLBACK_URL: http://managerai-broker:8787
+      MANAGERAI_LOOP_INTERVAL_SECS: "600"
+      MANAGERAI_APPLY_ON_CRITICAL: "${MANAGERAI_APPLY_ON_CRITICAL:-0}"
+      MANAGERAI_APPLY_ON_HIGH: "0"
+      MANAGERAI_LOG_LINES: "80"
+      MANAGERAI_COOLDOWN_SECS: "900"
+      MANAGERAI_MAX_RESTART_COUNT: "6"
+      MANAGERAI_DELAY_SECS: "2"
+      MANAGERAI_CMD_TIMEOUT_SECS: "420"
+      MANAGERAI_EXCLUDE_SERVICES: "managerai-broker,managerai-guard"
+      MANAGERAI_COMPOSE_FILES: "compose.master.yml,compose.yml,compose.override.yml,docker-compose.base.yml,docker-compose.override.yml,compose.managerai.yml"
+      SUPERVIZOR_SERVICE_ALLOWLIST: "managerai,gateway,dex,quantumai-usdt,quantumai-usdt-v2,rosettaai,metrics,redis,gli,gli-mainnet,gli-sepolia,autoheal,watchtower"
+    volumes:
+      - .:/repo
+      - ${HOME}/.colima:/colima:ro
+    depends_on:
+      managerai:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - test -s /repo/_state/managerai/heartbeat.json && [ $$(( $$(date +%s) - $$(stat -c %Y /repo/_state/managerai/heartbeat.json) )) -lt 1200 ]
+      interval: 90s
+      timeout: 30s
+      retries: 5
+      start_period: 120s

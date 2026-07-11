@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QuantumAI ManagerAI Panel</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">QuantumAI Container Copilot</p>
+          <h1>ManagerAI Mission Control</h1>
+          <p class="subtitle">
+            Container sagligini, log sinyallerini, restart riskini ve otomatik aksiyonlari tek panelden yonet.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="refreshBtn" class="ghost">Refresh</button>
+          <button id="diagnoseBtn" class="secondary">Diagnose</button>
+          <button id="autopilotDryBtn" class="secondary">Autopilot Dry Run</button>
+          <button id="autopilotApplyBtn" class="primary">Apply Safe Actions</button>
+        </div>
+      </section>
+
+      <section class="metrics" id="metrics"></section>
+
+      <section class="controls surface">
+        <div class="control-group">
+          <p class="kicker">Filter</p>
+          <div class="control-row">
+            <select id="serviceFilter" class="control-input">
+              <option value="">All services</option>
+            </select>
+            <button id="clearFilterBtn" class="ghost small">Clear</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <p class="kicker">Auto Refresh</p>
+          <div class="control-row">
+            <label class="toggle">
+              <input id="autoRefreshToggle" type="checkbox" checked />
+              <span id="autoRefreshLabel">On</span>
+            </label>
+            <select id="refreshInterval" class="control-input compact">
+              <option value="10">10s</option>
+              <option value="15" selected>15s</option>
+              <option value="30">30s</option>
+              <option value="60">60s</option>
+            </select>
+          </div>
+        </div>
+        <div class="control-group">
+          <p class="kicker">State</p>
+          <div id="refreshState" class="muted">Ready</div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel surface">
+          <div class="panel-head">
+            <div>
+              <p class="kicker">Overview</p>
+              <h2>Service Radar</h2>
+            </div>
+            <div class="tiny-meta" id="overviewMeta">loading</div>
+          </div>
+          <div id="servicesGrid" class="services-grid"></div>
+        </article>
+
+        <article class="panel panel-side">
+          <section class="surface">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">Actions</p>
+                <h2>Autopilot Feed</h2>
+              </div>
+            </div>
+            <div id="actionsFeed" class="stack-list muted">Henuz aksiyon yok.</div>
+          </section>
+
+          <section class="surface">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">Resident</p>
+                <h2>Guard State</h2>
+              </div>
+            </div>
+            <div id="residentFeed" class="stack-list muted">Yukleniyor.</div>
+          </section>
+
+          <section class="surface">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">Memory</p>
+                <h2>Recent History</h2>
+              </div>
+            </div>
+            <div id="historyFeed" class="stack-list muted">Yukleniyor.</div>
+          </section>
+        </article>
+      </section>
+    </main>
+
+    <template id="serviceCardTemplate">
+      <article class="service-card">
+        <div class="service-top">
+          <div>
+            <p class="service-name"></p>
+            <p class="service-compose"></p>
+          </div>
+          <span class="service-status"></span>
+        </div>
+        <div class="score-band">
+          <div class="score-fill"></div>
+        </div>
+        <div class="service-stats"></div>
+        <div class="service-action"></div>
+        <div class="service-controls"></div>
+        <div class="reason-list"></div>
+      </article>
+    </template>
+
+    <script src="./assets/app.js" defer></script>
+  </body>
+  </html>

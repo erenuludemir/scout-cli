@@ -37,6 +37,12 @@ yarn-error.log
 # ===== Docker & Compose =====
 docker-compose.*.yml
 compose.*.yml
+!compose.master.yml
+!compose.yml
+!compose.override.yml
+!compose.managerai.yml
+!docker-compose.base.yml
+!docker-compose.override.yml
 .docker
 
 # ===== Dependencies & Caches =====
